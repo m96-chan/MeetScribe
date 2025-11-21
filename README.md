@@ -55,7 +55,6 @@ Gemini 2 Ultra / Flash — 高速・低コスト
 共通 Minutes 形式に変換：
 
 ```json
-コードをコピーする
 {
   "summary": "...",
   "decisions": [...],
