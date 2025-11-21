@@ -1,93 +1,80 @@
-# Pull Request
+# プルリクエスト
 
-## Summary
-<!-- Brief description of what this PR does -->
+## 概要
 
-## Type of Change
-<!-- Check all that apply -->
-- [ ] Bug fix (non-breaking change which fixes an issue)
-- [ ] New feature (non-breaking change which adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
-- [ ] Refactoring (code change that neither fixes a bug nor adds a feature)
-- [ ] Documentation update
-- [ ] Test update
+## 変更の種類
+- [ ] バグ修正（既存機能を壊さない修正）
+- [ ] 新機能（既存機能を壊さない機能追加）
+- [ ] 破壊的変更（既存機能の動作を変更する修正や機能）
+- [ ] リファクタリング（バグ修正でも機能追加でもないコード変更）
+- [ ] ドキュメント更新
+- [ ] テスト更新
 
-## Related Issues
-<!-- Link to related issues using "Closes #<issue-number>" or "Relates to #<issue-number>" -->
+## 関連Issue
 
 Closes #
 
-## Changes Made
-<!-- Detailed list of changes -->
+## 変更内容
 
 -
 -
 -
 
-## Test Plan
-<!-- Describe how this change was tested -->
+## テスト計画
 
-### Unit Tests
-- [ ] Added unit tests for new functionality
-- [ ] Updated existing unit tests
-- [ ] All unit tests pass
+### ユニットテスト
+- [ ] 新機能のユニットテストを追加
+- [ ] 既存のユニットテストを更新
+- [ ] すべてのユニットテストが成功
 
-### Integration Tests
-- [ ] Added integration tests
-- [ ] Updated existing integration tests
-- [ ] All integration tests pass
+### 統合テスト
+- [ ] 統合テストを追加
+- [ ] 既存の統合テストを更新
+- [ ] すべての統合テストが成功
 
-### Manual Testing
-<!-- Describe manual testing steps -->
+### 手動テスト
 
 1.
 2.
 3.
 
-### Test Coverage
-<!-- If applicable, note test coverage changes -->
+### テストカバレッジ
 
-- Coverage before: __%
-- Coverage after: __%
+- 変更前: __%
+- 変更後: __%
 
-## TDD Checklist
-<!-- Confirm TDD practices were followed -->
+## TDDチェックリスト
 
-- [ ] Tests were written before implementation (Red phase)
-- [ ] Implementation makes tests pass (Green phase)
-- [ ] Code was refactored for clarity and maintainability (Refactor phase)
-- [ ] Edge cases are covered by tests
-- [ ] Test names clearly describe what is being tested
+- [ ] 実装前にテストを作成（Redフェーズ）
+- [ ] 実装によりテストが成功（Greenフェーズ）
+- [ ] 可読性と保守性のためにリファクタリング（Refactorフェーズ）
+- [ ] エッジケースがテストでカバーされている
+- [ ] テスト名が何をテストしているか明確に説明している
 
-## Documentation
-<!-- Check all that apply -->
+## ドキュメント
 
-- [ ] Code comments added/updated
-- [ ] README.md updated
-- [ ] Architecture docs updated (if applicable)
-- [ ] API documentation updated (if applicable)
+- [ ] コードコメントを追加/更新
+- [ ] README.mdを更新
+- [ ] アーキテクチャドキュメントを更新（該当する場合）
+- [ ] APIドキュメントを更新（該当する場合）
 
-## Pre-Merge Checklist
-<!-- Ensure all items are checked before requesting review -->
+## マージ前チェックリスト
 
-- [ ] Code follows the project's style guidelines
-- [ ] Self-review of code completed
-- [ ] Comments added for complex logic
-- [ ] No unnecessary console.log or debug code
-- [ ] No hardcoded values (use config/env instead)
-- [ ] Error handling implemented appropriately
-- [ ] Security considerations addressed
+- [ ] コードがプロジェクトのスタイルガイドラインに従っている
+- [ ] コードのセルフレビューを完了
+- [ ] 複雑なロジックにコメントを追加
+- [ ] 不要なconsole.logやデバッグコードがない
+- [ ] ハードコードされた値がない（config/envを使用）
+- [ ] エラーハンドリングが適切に実装されている
+- [ ] セキュリティ上の考慮事項に対処している
 
-## Breaking Changes
-<!-- If this PR introduces breaking changes, describe them and migration path -->
+## 破壊的変更
 
-N/A
+なし
 
-## Screenshots/Demo
-<!-- If applicable, add screenshots or demo links -->
+## スクリーンショット/デモ
 
-## Additional Notes
-<!-- Any additional information for reviewers -->
+## 追加メモ
 
 ---
 

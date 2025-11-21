@@ -1,111 +1,94 @@
 ---
-name: Bug Report
-about: Create a report to help us improve
+name: バグ報告
+about: 改善のためのバグ報告を作成
 title: '[BUG] '
 labels: bug
 assignees: ''
 ---
 
-# Bug Report
+# バグ報告
 
-## Description
-<!-- A clear and concise description of what the bug is -->
+## 説明
 
-## Expected Behavior
-<!-- What should happen -->
+## 期待される動作
 
-## Actual Behavior
-<!-- What actually happens -->
+## 実際の動作
 
-## Steps to Reproduce
-<!-- Detailed steps to reproduce the behavior -->
+## 再現手順
 
 1.
 2.
 3.
 4.
 
-## Environment
-<!-- Please complete the following information -->
+## 環境
 
-- OS: [e.g. Windows 11, Ubuntu 22.04, macOS Ventura]
-- Python Version: [e.g. 3.11.5]
-- MeetScribe Version/Commit: [e.g. v0.1.0 or commit hash]
-- Installation Method: [e.g. pip install, Docker, source]
+- OS: [例: Windows 11, Ubuntu 22.04, macOS Ventura]
+- Pythonバージョン: [例: 3.11.5]
+- MeetScribeバージョン/コミット: [例: v0.1.0 または コミットハッシュ]
+- インストール方法: [例: pip install, Docker, ソースから]
 
-## Configuration
-<!-- If applicable, share relevant configuration (redact sensitive data) -->
+## 設定
 
 ```yaml
-# Paste relevant config.yaml sections here
+# 関連するconfig.yamlのセクションを貼り付けてください（機密データは削除）
 ```
 
-## Logs and Error Messages
-<!-- Include relevant log output and error messages -->
+## ログとエラーメッセージ
 
 ```
-Paste error messages and logs here
+エラーメッセージとログをここに貼り付けてください
 ```
 
-## TDD Context
-<!-- Help us write tests to prevent regression -->
+## TDDコンテキスト
 
-### Failing Test Case
-<!-- If you can, describe what a test case would look like for this bug -->
+### 失敗するテストケース
 
 ```python
-# Example test that should pass but currently fails
+# 成功すべきだが現在失敗するテストの例
 def test_bug_reproduction():
-    # Setup
+    # セットアップ
 
-    # Action
+    # アクション
 
-    # Assert (what should happen)
+    # アサート（期待される動作）
     pass
 ```
 
-### Root Cause (if known)
-<!-- If you've identified the root cause, describe it here -->
+### 根本原因（わかる場合）
 
-### Affected Components
-<!-- Check all that apply -->
+### 影響を受けるコンポーネント
 
-- [ ] INPUT layer (recording providers)
-- [ ] CONVERT layer (transcription)
-- [ ] LLM layer (minutes generation)
-- [ ] OUTPUT layer (rendering)
-- [ ] Core (runner, daemon, config)
+- [ ] INPUT層（録音プロバイダー）
+- [ ] CONVERT層（文字起こし）
+- [ ] LLM層（議事録生成）
+- [ ] OUTPUT層（レンダリング）
+- [ ] Core（ランナー、デーモン、設定）
 - [ ] CLI
-- [ ] Documentation
-- [ ] Other: ___________
+- [ ] ドキュメント
+- [ ] その他: ___________
 
-## Additional Context
-<!-- Add any other context about the problem here -->
+## 追加情報
 
-### Screenshots
-<!-- If applicable, add screenshots to help explain your problem -->
+### スクリーンショット
 
-### Related Issues
-<!-- Link to related issues if any -->
+### 関連Issue
 
-### Workaround
-<!-- If you found a temporary workaround, describe it here -->
+### 回避策
 
-## Severity
-<!-- Rate the impact of this bug -->
+## 重要度
 
-- [ ] Critical (system crash, data loss, security issue)
-- [ ] High (major feature broken, no workaround)
-- [ ] Medium (feature partially broken, workaround exists)
-- [ ] Low (minor issue, cosmetic)
+- [ ] クリティカル（システムクラッシュ、データ損失、セキュリティ問題）
+- [ ] 高（主要機能が動作しない、回避策なし）
+- [ ] 中（機能が部分的に動作しない、回避策あり）
+- [ ] 低（軽微な問題、見た目の問題）
 
-## Reproducibility
-<!-- How often can you reproduce this bug? -->
+## 再現性
 
-- [ ] Always (100% reproducible)
-- [ ] Frequently (>50% of the time)
-- [ ] Sometimes (<50% of the time)
-- [ ] Rare (happened once or twice)
+- [ ] 常に再現する（100%再現可能）
+- [ ] 頻繁に再現する（50%以上）
+- [ ] 時々再現する（50%未満）
+- [ ] まれに再現する（1〜2回発生）
 
 ---
 

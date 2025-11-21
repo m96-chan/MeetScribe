@@ -1,157 +1,136 @@
 ---
-name: Feature Request
-about: Suggest an idea for MeetScribe
+name: 機能リクエスト
+about: MeetScribeへのアイデアを提案
 title: '[FEATURE] '
 labels: enhancement
 assignees: ''
 ---
 
-# Feature Request
+# 機能リクエスト
 
-## Problem Statement
-<!-- Is your feature request related to a problem? Please describe. -->
-<!-- A clear and concise description of what the problem is. Ex. I'm always frustrated when [...] -->
+## 問題の説明
 
-## Proposed Solution
-<!-- A clear and concise description of what you want to happen -->
+## 提案する解決策
 
-## Use Cases
-<!-- Describe specific scenarios where this feature would be useful -->
+## ユースケース
 
 1.
 2.
 3.
 
-## Expected Behavior
-<!-- Describe how the feature should work from a user's perspective -->
+## 期待される動作
 
-## TDD Approach
-<!-- Help us implement this feature with test-driven development -->
+## TDDアプローチ
 
-### Acceptance Criteria
-<!-- Define what "done" looks like with testable criteria -->
+### 受け入れ基準
 
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] Criterion 3
+- [ ] 基準1
+- [ ] 基準2
+- [ ] 基準3
 
-### Test Scenarios
-<!-- Describe test cases that would verify this feature works correctly -->
+### テストシナリオ
 
-#### Happy Path
+#### 正常系
 ```python
-# Example test for the main use case
+# 主要ユースケースのテスト例
 def test_feature_happy_path():
-    # Given (setup)
+    # Given（セットアップ）
 
-    # When (action)
+    # When（アクション）
 
-    # Then (assertion)
+    # Then（アサート）
     pass
 ```
 
-#### Edge Cases
-<!-- List edge cases that should be tested -->
+#### エッジケース
 
 1.
 2.
 3.
 
-#### Error Cases
-<!-- List error conditions that should be handled -->
+#### エラーケース
 
 1.
 2.
 3.
 
-## Technical Considerations
+## 技術的考慮事項
 
-### Affected Components
-<!-- Check all components that would be impacted -->
+### 影響を受けるコンポーネント
 
-- [ ] INPUT layer (new recording provider or modification)
-- [ ] CONVERT layer (new transcription engine or modification)
-- [ ] LLM layer (new LLM engine or modification)
-- [ ] OUTPUT layer (new renderer or modification)
-- [ ] Core (runner, daemon, config changes)
-- [ ] CLI (new commands or options)
-- [ ] Documentation
-- [ ] Other: ___________
+- [ ] INPUT層（新しい録音プロバイダーまたは変更）
+- [ ] CONVERT層（新しい文字起こしエンジンまたは変更）
+- [ ] LLM層（新しいLLMエンジンまたは変更）
+- [ ] OUTPUT層（新しいレンダラーまたは変更）
+- [ ] Core（ランナー、デーモン、設定変更）
+- [ ] CLI（新しいコマンドやオプション）
+- [ ] ドキュメント
+- [ ] その他: ___________
 
-### Architecture Impact
-<!-- Does this feature require changes to the core architecture? -->
+### アーキテクチャへの影響
 
-- [ ] No architectural changes needed
-- [ ] Minor changes (new module, extend existing interface)
-- [ ] Major changes (new layer, breaking changes)
+- [ ] アーキテクチャの変更は不要
+- [ ] 軽微な変更（新しいモジュール、既存インターフェースの拡張）
+- [ ] 大きな変更（新しいレイヤー、破壊的変更）
 
-### Dependencies
-<!-- List any new dependencies or external services required -->
+### 依存関係
 
 -
 -
 
-### Configuration
-<!-- Will this feature require new configuration options? -->
+### 設定
 
 ```yaml
-# Example configuration for this feature
+# この機能の設定例
 feature_name:
   option1: value1
   option2: value2
 ```
 
-## Alternatives Considered
-<!-- Describe alternative solutions or features you've considered -->
+## 検討した代替案
 
-## Implementation Ideas
-<!-- If you have ideas about how to implement this, share them here -->
+## 実装アイデア
 
-### API Design (if applicable)
+### API設計（該当する場合）
 ```python
-# Proposed interface or API
+# 提案するインターフェースまたはAPI
 class NewProvider:
     def method_name(self, param: Type) -> ReturnType:
-        """Description"""
+        """説明"""
         pass
 ```
 
-### Data Model (if applicable)
+### データモデル（該当する場合）
 ```python
-# Proposed data structures
+# 提案するデータ構造
 @dataclass
 class NewModel:
     field1: str
     field2: int
 ```
 
-## Additional Context
-<!-- Add any other context, screenshots, or examples about the feature request here -->
+## 追加情報
 
-### References
-<!-- Links to similar features in other tools, documentation, etc. -->
+### 参考資料
 
 -
 -
 
-### Related Issues
-<!-- Link to related issues if any -->
+### 関連Issue
 
-## Priority
-<!-- Rate the importance of this feature -->
+## 優先度
 
-- [ ] Critical (blocking main use case)
-- [ ] High (significant improvement to user experience)
-- [ ] Medium (nice to have, improves workflow)
-- [ ] Low (minor convenience)
+- [ ] クリティカル（主要ユースケースをブロック）
+- [ ] 高（ユーザーエクスペリエンスの大幅な改善）
+- [ ] 中（あると便利、ワークフローの改善）
+- [ ] 低（軽微な利便性）
 
-## Effort Estimate
-<!-- If you have an idea of the implementation complexity -->
+## 実装工数の見積もり
 
-- [ ] Small (few hours, single file change)
-- [ ] Medium (1-2 days, multiple files)
-- [ ] Large (several days, architectural changes)
-- [ ] Unknown
+- [ ] 小（数時間、単一ファイルの変更）
+- [ ] 中（1〜2日、複数ファイル）
+- [ ] 大（数日、アーキテクチャの変更）
+- [ ] 不明
 
 ---
 
