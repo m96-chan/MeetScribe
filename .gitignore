@@ -231,3 +231,7 @@ config_*.yaml
 # Generated documentation (keep source docs in docs/)
 *.pdf
 !docs/**/*.pdf
+
+# GitHub Issues - track ZIP files for processing, keep processed archive
+!.github/issues/*.zip
+!.github/issues/processed/

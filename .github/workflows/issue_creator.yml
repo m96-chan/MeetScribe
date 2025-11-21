@@ -1,16 +1,38 @@
-name: Create Issues
+name: Create Issues from ZIP
+
 on:
+  push:
+    paths:
+      - '.github/issues/*.zip'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  issues: write
+
 jobs:
-  create:
+  create-issues:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
       - name: Create issues
-        uses: peter-evans/create-issue-from-file@v4
-        with:
-          content-filepath: .github/issues
-          owner: ${{ github.repository_owner }}
-          repo: ${{ github.event.repository.name }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python .github/workflows/create_issues.py
+
+      - name: Commit processed ZIPs
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .github/issues/processed/
+          git diff --staged --quiet || (git commit -m "chore: archive processed ZIPs [skip ci]" && git push)
