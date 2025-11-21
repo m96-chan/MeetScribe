@@ -57,7 +57,14 @@ def create_issue(title, body, labels, repo):
         for label in labels:
             cmd.extend(['--label', label])
 
-        result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+
+        if result.returncode != 0:
+            error_msg = f"gh CLI failed (exit {result.returncode})"
+            if result.stderr:
+                error_msg += f": {result.stderr.strip()}"
+            raise RuntimeError(error_msg)
+
         return result.stdout.strip()
     finally:
         os.unlink(body_file)
@@ -68,12 +75,15 @@ def process_zip(zip_path, repo):
     print(f"Processing: {zip_path.name}")
 
     issues_created = 0
+    issues_failed = 0
 
     with tempfile.TemporaryDirectory() as temp_dir:
         with zipfile.ZipFile(zip_path, 'r') as zf:
             zf.extractall(temp_dir)
 
-        for json_file in Path(temp_dir).glob('*.json'):
+        json_files = sorted(Path(temp_dir).glob('*.json'))
+
+        for json_file in json_files:
             print(f"  - {json_file.name}")
 
             try:
@@ -90,7 +100,10 @@ def process_zip(zip_path, repo):
 
             except Exception as e:
                 print(f"    ✗ Failed: {e}")
+                issues_failed += 1
+                # Continue processing other issues
 
+    print(f"  Summary: {issues_created} created, {issues_failed} failed")
     return issues_created
 
 
