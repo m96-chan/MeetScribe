@@ -11,9 +11,9 @@ issues:
   overview: 'Auto-generated task #1 for MeetScribe.'
   priority: P0
   related_files: ''
-  tasks: '- [ ] Implement
-
-    - [ ] Test'
+  tasks: |-
+    - [ ] Implement
+    - [ ] Test
   title: Implement Discord PCM receiver
 - acceptance_criteria: ''
   components: ''
@@ -27,9 +27,9 @@ issues:
   overview: 'Auto-generated task #2 for MeetScribe.'
   priority: P0
   related_files: ''
-  tasks: '- [ ] Implement
-
-    - [ ] Test'
+  tasks: |-
+    - [ ] Implement
+    - [ ] Test
   title: Whisper API wrapper
 - acceptance_criteria: ''
   components: ''
@@ -43,9 +43,9 @@ issues:
   overview: 'Auto-generated task #3 for MeetScribe.'
   priority: P0
   related_files: ''
-  tasks: '- [ ] Implement
-
-    - [ ] Test'
+  tasks: |-
+    - [ ] Implement
+    - [ ] Test
   title: NotebookLM API client
 - acceptance_criteria: ''
   components: ''
@@ -59,9 +59,9 @@ issues:
   overview: 'Auto-generated task #4 for MeetScribe.'
   priority: P0
   related_files: ''
-  tasks: '- [ ] Implement
-
-    - [ ] Test'
+  tasks: |-
+    - [ ] Implement
+    - [ ] Test
   title: Google Docs renderer
 - acceptance_criteria: ''
   components: ''
@@ -75,7 +75,7 @@ issues:
   overview: 'Auto-generated task #5 for MeetScribe.'
   priority: P0
   related_files: ''
-  tasks: '- [ ] Implement
-
-    - [ ] Test'
+  tasks: |-
+    - [ ] Implement
+    - [ ] Test
   title: Runner pipeline core
