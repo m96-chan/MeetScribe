@@ -23,23 +23,49 @@ Discord / Zoom / Google Meet / WebRTC / ProcTap（秘匿録音）など異なる
 
 ---
 
-### ✔ 2. Transcription 層（CONVERT 層）
-音声 → テキスト化をモジュール単位で差し替え可能。
+### ✔ 2. CONVERT 層（Transcription / Audio Handling 層）
+
+CONVERT 層は「録音データを LLM が扱える形式に変換する」責務を持ち、  
+必ずしも **音声 → テキスト化（Transcription）だけではない**。
+
+MeetScribe の CONVERT 層は、次の2つの役割を兼ねる柔軟な層として設計されています。
+
+#### **(A) 通常の音声 → テキスト変換（Transcription）**
+Whisper / Gemini Audio / Deepgram などを用いて、  
+録音した音声をテキスト化し、統一フォーマットの Transcript オブジェクトを返します。
 
 - Whisper API（OpenAI Whisper-1）
-- faster-whisper（GPUローカル）
-- Gemini 2 Flash Audio
+- faster-whisper（ローカルGPU）
+- Gemini 2 Flash Audio（高速・長時間対応）
 - Deepgram（予定）
 
-出力は共通の Transcript JSON 形式：
+#### **(B) 音声をそのまま LLM に渡す「パススルー変換」**
+NotebookLM や ChatGPT Audio のように、  
+**音声ファイルそのものを LLM に渡せるケースでは、  
+テキスト化をスキップ**して Transcript を生成します。
+
+例：音声ファイルを NotebookLM の「音声ドキュメント」としてアップロード。
+
+#### **Transcript オブジェクト（統一データモデル）**
+CONVERT 層は最終的に必ず以下の統一データモデルを返します：
 
 ```json
 {
-  "text": "...",
-  "segments": [ ... ],
-  "speaker_map": { ... }
+  "text": "...",              # テキスト or None（パススルー時）
+  "audio_path": "...",        # 音声ファイルパス
+  "segments": [...],          # セグメント情報（任意）
+  "audio_info": {...},        # 録音メタデータ（duration / codec など）
+  "meeting_info": {...},      # 会議情報（source / participants など）
+  "metadata": {...},          # コンバータ内部情報
+  "processing_history": [...] # デバッグ用処理履歴
 }
 ```
+テキスト化した場合は text に内容が入る
+
+テキスト化をスキップした場合は audio_path のみ
+
+LLM 層はこの Transcript を共通入力として扱うため、
+変換方式に依存しない一貫したパイプラインが構築できます
 
 ✔ 3. LLM 層（NotebookLM / ChatGPT / Gemini / Claude）
 議事録生成エンジンを自由に選択：
