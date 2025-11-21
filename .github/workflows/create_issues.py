@@ -45,8 +45,33 @@ def create_issue_body(data):
     return "\n".join(lines)
 
 
+def ensure_label_exists(label, repo):
+    """Create label if it doesn't exist."""
+    # Check if label exists
+    result = subprocess.run(
+        ['gh', 'label', 'list', '--repo', repo, '--json', 'name'],
+        capture_output=True, text=True, check=False
+    )
+
+    if result.returncode == 0:
+        import json
+        existing_labels = json.loads(result.stdout)
+        label_names = [l['name'] for l in existing_labels]
+
+        if label not in label_names:
+            # Create label with default color
+            subprocess.run(
+                ['gh', 'label', 'create', label, '--repo', repo, '--color', 'ededed'],
+                capture_output=True, text=True, check=False
+            )
+
+
 def create_issue(title, body, labels, repo):
     """Create GitHub issue using gh CLI."""
+    # Ensure all labels exist first
+    for label in labels:
+        ensure_label_exists(label, repo)
+
     with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.md') as f:
         f.write(body)
         body_file = f.name
