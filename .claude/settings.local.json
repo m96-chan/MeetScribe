@@ -4,7 +4,21 @@
       "Bash(mkdir:*)",
       "Bash(tree:*)",
       "Bash(python -c:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(git checkout:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh issue create:*)",
+      "Bash(gh label list:*)",
+      "Bash(gh api:*)",
+      "Bash(mv:*)",
+      "Bash(rm:*)",
+      "Bash(gh issue view:*)",
+      "Bash(issue_200.json)",
+      "Bash(cat:*)",
+      "Bash(issue_198.json)",
+      "Bash(issue_197.json)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh issue list:*)"
     ],
     "deny": [],
     "ask": []
