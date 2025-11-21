@@ -1,0 +1,81 @@
+issues:
+- acceptance_criteria: ''
+  components: ''
+  directory: inputs/discord_bot/pcm_receiver.py
+  doc_references: Claude.md, architecture.md, pipeline.md
+  implementation_notes: ''
+  labels:
+  - feature
+  layer: INPUT
+  milestone: v0.1
+  overview: 'Auto-generated task #1 for MeetScribe.'
+  priority: P0
+  related_files: ''
+  tasks: '- [ ] Implement
+
+    - [ ] Test'
+  title: Implement Discord PCM receiver
+- acceptance_criteria: ''
+  components: ''
+  directory: converters/whisper_api/transcribe.py
+  doc_references: Claude.md, architecture.md, pipeline.md
+  implementation_notes: ''
+  labels:
+  - feature
+  layer: CONVERT
+  milestone: v0.1
+  overview: 'Auto-generated task #2 for MeetScribe.'
+  priority: P0
+  related_files: ''
+  tasks: '- [ ] Implement
+
+    - [ ] Test'
+  title: Whisper API wrapper
+- acceptance_criteria: ''
+  components: ''
+  directory: llm/notebooklm/client.py
+  doc_references: Claude.md, architecture.md, pipeline.md
+  implementation_notes: ''
+  labels:
+  - feature
+  layer: LLM
+  milestone: v0.1
+  overview: 'Auto-generated task #3 for MeetScribe.'
+  priority: P0
+  related_files: ''
+  tasks: '- [ ] Implement
+
+    - [ ] Test'
+  title: NotebookLM API client
+- acceptance_criteria: ''
+  components: ''
+  directory: outputs/google_docs/writer.py
+  doc_references: Claude.md, architecture.md, pipeline.md
+  implementation_notes: ''
+  labels:
+  - feature
+  layer: OUTPUT
+  milestone: v0.1
+  overview: 'Auto-generated task #4 for MeetScribe.'
+  priority: P0
+  related_files: ''
+  tasks: '- [ ] Implement
+
+    - [ ] Test'
+  title: Google Docs renderer
+- acceptance_criteria: ''
+  components: ''
+  directory: core/pipeline.py
+  doc_references: Claude.md, architecture.md, pipeline.md
+  implementation_notes: ''
+  labels:
+  - feature
+  layer: CORE
+  milestone: v0.1
+  overview: 'Auto-generated task #5 for MeetScribe.'
+  priority: P0
+  related_files: ''
+  tasks: '- [ ] Implement
+
+    - [ ] Test'
+  title: Runner pipeline core
