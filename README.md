@@ -39,6 +39,8 @@ Discord / Zoom / Google Meet / WebRTC / ProcTap（秘匿録音）など異なる
   "segments": [ ... ],
   "speaker_map": { ... }
 }
+```
+
 ✔ 3. LLM 層（NotebookLM / ChatGPT / Gemini / Claude）
 議事録生成エンジンを自由に選択：
 
@@ -52,7 +54,7 @@ Gemini 2 Ultra / Flash — 高速・低コスト
 
 共通 Minutes 形式に変換：
 
-json
+```json
 コードをコピーする
 {
   "summary": "...",
@@ -60,6 +62,7 @@ json
   "action_items": [...],
   "url": "https://..."
 }
+```
 NotebookLM は API Key / ServiceAccount の両方に対応。
 
 ✔ 4. Output 層（最終成果物生成）
@@ -91,19 +94,18 @@ meetscribe daemon で起動。
 ✔ 6. 完全 CLI / Docker 実行モデル
 MeetScribe は Docker/CLI 原理主義で設計。
 
-arduino
-コードをコピーする
+```arduino
 meetscribe run --config configs/discord.yaml
-Daemon:
+```
 
-arduino
-コードをコピーする
+Daemon:
+```arduino
 meetscribe daemon --config configs/discord.yaml
+```
 Config-driven pipeline により、ユーザーは自由に INPUT / LLM / OUTPUT を切替可能。
 
 📦 Directory Structure (v0.1)
-markdown
-コードをコピーする
+```markdown
 meetscribe/
   core/
     runner.py
@@ -155,24 +157,20 @@ meetscribe/
   utils/
     audio.py
     file.py
+```
+
 🚀 Quick Start (MVP)
 1. 会議テンプレ生成
-csharp
-コードをコピーする
-meetscribe init discord
+`meetscribe init discord`
+
 2. Discord 会議を録音・議事録化
-arduino
-コードをコピーする
-meetscribe run --config configs/discord.yaml
+`meetscribe run --config configs/discord.yaml`
 3. Discord 会議を自動監視
-arduino
-コードをコピーする
-meetscribe daemon --config configs/discord.yaml
+`meetscribe daemon --config configs/discord.yaml`
 ⚙ Config Example
 configs/discord.yaml
 
-yaml
-コードをコピーする
+```yaml
 meeting:
   source: discord
   channel_id: "1234"
@@ -194,6 +192,8 @@ auth:
 
   google_docs:
     service_account: "keys/google.json"
+```
+
 🧪 Status
 MeetScribe は現在 v0.1 - Core Architecture Draft
 主要機能は順次開発中。
