@@ -1,0 +1,41 @@
+# MeetScribe Example Configuration
+# Copy this file to config.yaml and customize for your setup
+
+input:
+  provider: discord  # discord, zoom, meet, proctap, obs
+  params:
+    bot_token: YOUR_DISCORD_BOT_TOKEN
+    guild_id: YOUR_GUILD_ID
+    channel_id: YOUR_CHANNEL_ID
+    auto_join: false  # true = auto-join meetings, false = notify only
+
+convert:
+  engine: whisper  # whisper, faster-whisper, gemini, passthrough
+  params:
+    model: whisper-1
+    language: ja  # or 'auto' for automatic detection
+    api_key: YOUR_OPENAI_API_KEY
+
+llm:
+  engine: notebooklm  # notebooklm, chatgpt, claude, gemini
+  params:
+    api_key: YOUR_NOTEBOOKLM_API_KEY
+    # Alternatively, use service account:
+    # service_account_path: path/to/service-account.json
+
+output:
+  format: markdown  # markdown, json, pdf, docs, notebooklm
+  params:
+    output_dir: ./meetings
+
+# Working directory for storing raw audio and transcripts
+working_dir: ./meetings
+
+# Delete raw audio after processing (recommended for production)
+cleanup_audio: false
+
+# Optional metadata
+metadata:
+  project: my-project
+  team: my-team
+  version: 0.1.0

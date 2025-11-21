@@ -185,13 +185,60 @@ meetscribe/
 ```
 
 🚀 Quick Start (MVP)
-1. 会議テンプレ生成
-`meetscribe init discord`
 
-2. Discord 会議を録音・議事録化
-`meetscribe run --config configs/discord.yaml`
-3. Discord 会議を自動監視
-`meetscribe daemon --config configs/discord.yaml`
+### 1. インストール
+
+```bash
+# Clone repository
+git clone https://github.com/yourusername/meetscribe.git
+cd meetscribe
+
+# Install dependencies
+pip install -r requirements.txt
+
+# または開発版インストール
+pip install -e .
+```
+
+### 2. 環境変数の設定
+
+```bash
+# .env.example をコピー
+cp .env.example .env
+
+# .env ファイルを編集して API キーを設定
+nano .env
+```
+
+### 3. 設定テンプレート生成
+
+```bash
+# Discord用の設定ファイルを生成
+meetscribe init discord
+
+# config_discord.yaml を編集
+nano config_discord.yaml
+```
+
+### 4. パイプライン実行
+
+```bash
+# 会議を録音・議事録化
+meetscribe run --config config_discord.yaml
+
+# Discord 会議を自動監視（デーモンモード）
+meetscribe daemon --config config_discord.yaml
+```
+
+### 5. テスト実行
+
+```bash
+# 単体テストを実行
+pytest tests/
+
+# カバレッジ付き
+pytest --cov=meetscribe tests/
+```
 ⚙ Config Example
 configs/discord.yaml
 
