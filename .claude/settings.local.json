@@ -3,7 +3,8 @@
     "allow": [
       "Bash(mkdir:*)",
       "Bash(tree:*)",
-      "Bash(python -c:*)"
+      "Bash(python -c:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
