@@ -21,16 +21,15 @@ def get_llm_provider(engine_name: str, config: Dict[str, Any]) -> LLMProvider:
     Raises:
         ValueError: If engine is not supported
     """
-    engines = {
-        'notebooklm': 'meetscribe.llm.notebooklm_provider.NotebookLMProvider',
-        'chatgpt': 'meetscribe.llm.chatgpt_provider.ChatGPTProvider',
-        'claude': 'meetscribe.llm.claude_provider.ClaudeProvider',
-        'gemini': 'meetscribe.llm.gemini_provider.GeminiProvider',
-    }
-
-    if engine_name not in engines:
+    # Map engine names to classes
+    if engine_name == 'notebooklm':
+        from .notebooklm_provider import NotebookLMProvider
+        return NotebookLMProvider(config)
+    elif engine_name == 'chatgpt':
+        raise NotImplementedError("ChatGPT provider not yet implemented")
+    elif engine_name == 'claude':
+        raise NotImplementedError("Claude provider not yet implemented")
+    elif engine_name == 'gemini':
+        raise NotImplementedError("Gemini provider not yet implemented")
+    else:
         raise ValueError(f"Unsupported LLM engine: {engine_name}")
-
-    # For MVP, raise NotImplementedError
-    # LLM providers will be implemented in future versions
-    raise NotImplementedError(f"LLM provider '{engine_name}' not yet implemented")

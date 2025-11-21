@@ -205,3 +205,29 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# MeetScribe specific
+# Generated meeting data
+meetings/*/
+meetings/**/*.json
+meetings/**/*.mp3
+meetings/**/*.wav
+meetings/**/*.m4a
+
+# Test audio files
+sample_audio.*
+test_audio.*
+*.mp3
+*.wav
+*.m4a
+*.flac
+
+# User configs (keep example configs)
+config.yaml
+config_*.yaml
+!config.example.yaml
+!config.poc.yaml
+
+# Generated documentation (keep source docs in docs/)
+*.pdf
+!docs/**/*.pdf

@@ -12,7 +12,7 @@ def get_input_provider(provider_name: str, config: Dict[str, Any]) -> InputProvi
     Get INPUT provider by name.
 
     Args:
-        provider_name: Provider identifier (discord, zoom, meet, etc.)
+        provider_name: Provider identifier (file, discord, zoom, meet, etc.)
         config: Provider configuration
 
     Returns:
@@ -21,17 +21,19 @@ def get_input_provider(provider_name: str, config: Dict[str, Any]) -> InputProvi
     Raises:
         ValueError: If provider is not supported
     """
-    providers = {
-        'discord': 'meetscribe.inputs.discord_provider.DiscordProvider',
-        'zoom': 'meetscribe.inputs.zoom_provider.ZoomProvider',
-        'meet': 'meetscribe.inputs.meet_provider.MeetProvider',
-        'proctap': 'meetscribe.inputs.proctap_provider.ProcTapProvider',
-        'obs': 'meetscribe.inputs.obs_provider.OBSProvider',
-    }
-
-    if provider_name not in providers:
+    # Map provider names to classes
+    if provider_name == 'file':
+        from .file_provider import FileProvider
+        return FileProvider(config)
+    elif provider_name == 'discord':
+        raise NotImplementedError("Discord provider not yet implemented")
+    elif provider_name == 'zoom':
+        raise NotImplementedError("Zoom provider not yet implemented")
+    elif provider_name == 'meet':
+        raise NotImplementedError("Meet provider not yet implemented")
+    elif provider_name == 'proctap':
+        raise NotImplementedError("ProcTap provider not yet implemented")
+    elif provider_name == 'obs':
+        raise NotImplementedError("OBS provider not yet implemented")
+    else:
         raise ValueError(f"Unsupported input provider: {provider_name}")
-
-    # For MVP, raise NotImplementedError
-    # Providers will be implemented in future versions
-    raise NotImplementedError(f"Provider '{provider_name}' not yet implemented")

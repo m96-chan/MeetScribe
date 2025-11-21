@@ -252,3 +252,69 @@ Apache License 2.0
 MeetScribe aims to become **the open-source Meeting OS** for developers, creators, and teams.
 
 ---
+
+## 14. Development Guidelines (for AI Assistants)
+
+When working on MeetScribe, please follow these guidelines:
+
+### File Organization
+
+1. **Tests**: All test files must be placed in `tests/` directory
+   - Unit tests: `tests/test_*.py`
+   - Integration tests: `tests/test_*_integration.py`
+   - PoC/E2E tests: `tests/test_*_pipeline.py`
+
+2. **Documentation**: All documentation must be placed in `docs/` directory
+   - Architecture docs: `docs/architecture.md`, `docs/pipeline.md`, etc.
+   - Guides: `docs/POC_GUIDE.md`, `docs/DEVELOPMENT.md`, etc.
+   - Keep only `README.md` and `CLAUDE.md` in project root
+
+3. **Configuration**:
+   - Example configs: Keep in root with `.example.` prefix
+   - User configs: User-created configs will be gitignored
+   - PoC configs: Keep `config.poc.yaml` in root for easy testing
+
+### Git Ignore Strategy
+
+4. **Generated Files**: Use wildcards to ignore generated files
+   - Audio files: `*.mp3`, `*.wav`, `*.m4a`, `*.flac`
+   - Meeting data: `meetings/*/`, `meetings/**/*.json`
+   - Test artifacts: `sample_audio.*`, `test_audio.*`
+   - User configs: `config.yaml`, `config_*.yaml` (except examples)
+
+5. **Documentation**:
+   - Generated PDFs: Ignore in root with `*.pdf`
+   - Keep PDFs in docs: Use `!docs/**/*.pdf` exception
+
+### Code Organization
+
+6. **Providers**: Each provider should be in its own file
+   - File naming: `<name>_provider.py` for INPUT
+   - Converter naming: `<name>_converter.py` for CONVERT
+   - Renderer naming: `<name>_renderer.py` for OUTPUT
+
+7. **Factories**: Update factories when adding new providers
+   - Use dynamic imports: `from .module import Class`
+   - Maintain clear error messages for unimplemented providers
+
+### Testing Strategy
+
+8. **Test Placement**:
+   - Unit tests for core models: `tests/test_models.py`
+   - Unit tests for utilities: `tests/test_<module>.py`
+   - Integration tests: `tests/test_<feature>_integration.py`
+   - E2E pipeline tests: `tests/test_*_pipeline.py`
+
+9. **Mock Mode**:
+   - All providers should support mock/PoC mode
+   - Log clearly when running in mock mode
+   - Provide realistic mock data for testing
+
+### Remember These Rules
+
+- **Tests go in `tests/`**, not in root
+- **Docs go in `docs/`**, not in root (except README.md and CLAUDE.md)
+- **Use wildcards in .gitignore** for generated/temporary files
+- **Keep examples in root** with `.example.` prefix for user convenience
+
+---

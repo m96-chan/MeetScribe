@@ -12,7 +12,7 @@ def get_output_renderer(format_name: str, config: Dict[str, Any]) -> OutputRende
     Get OUTPUT renderer by name.
 
     Args:
-        format_name: Format identifier (markdown, json, pdf, docs, notebooklm)
+        format_name: Format identifier (url, markdown, json, pdf, docs)
         config: Renderer configuration
 
     Returns:
@@ -21,17 +21,17 @@ def get_output_renderer(format_name: str, config: Dict[str, Any]) -> OutputRende
     Raises:
         ValueError: If format is not supported
     """
-    formats = {
-        'markdown': 'meetscribe.outputs.markdown_renderer.MarkdownRenderer',
-        'json': 'meetscribe.outputs.json_renderer.JSONRenderer',
-        'pdf': 'meetscribe.outputs.pdf_renderer.PDFRenderer',
-        'docs': 'meetscribe.outputs.docs_renderer.DocsRenderer',
-        'notebooklm': 'meetscribe.outputs.notebooklm_renderer.NotebookLMRenderer',
-    }
-
-    if format_name not in formats:
+    # Map format names to classes
+    if format_name == 'url':
+        from .url_renderer import URLRenderer
+        return URLRenderer(config)
+    elif format_name == 'markdown':
+        raise NotImplementedError("Markdown renderer not yet implemented")
+    elif format_name == 'json':
+        raise NotImplementedError("JSON renderer not yet implemented")
+    elif format_name == 'pdf':
+        raise NotImplementedError("PDF renderer not yet implemented")
+    elif format_name == 'docs':
+        raise NotImplementedError("Google Docs renderer not yet implemented")
+    else:
         raise ValueError(f"Unsupported output format: {format_name}")
-
-    # For MVP, raise NotImplementedError
-    # Renderers will be implemented in future versions
-    raise NotImplementedError(f"Output renderer '{format_name}' not yet implemented")

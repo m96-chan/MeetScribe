@@ -12,7 +12,7 @@ def get_converter(engine_name: str, config: Dict[str, Any]) -> ConvertProvider:
     Get CONVERT provider by name.
 
     Args:
-        engine_name: Engine identifier (whisper, gemini, passthrough, etc.)
+        engine_name: Engine identifier (passthrough, whisper, gemini, etc.)
         config: Converter configuration
 
     Returns:
@@ -21,16 +21,15 @@ def get_converter(engine_name: str, config: Dict[str, Any]) -> ConvertProvider:
     Raises:
         ValueError: If engine is not supported
     """
-    engines = {
-        'whisper': 'meetscribe.converters.whisper_converter.WhisperConverter',
-        'faster-whisper': 'meetscribe.converters.faster_whisper_converter.FasterWhisperConverter',
-        'gemini': 'meetscribe.converters.gemini_converter.GeminiConverter',
-        'passthrough': 'meetscribe.converters.passthrough_converter.PassthroughConverter',
-    }
-
-    if engine_name not in engines:
+    # Map engine names to classes
+    if engine_name == 'passthrough':
+        from .passthrough_converter import PassthroughConverter
+        return PassthroughConverter(config)
+    elif engine_name == 'whisper':
+        raise NotImplementedError("Whisper converter not yet implemented")
+    elif engine_name == 'faster-whisper':
+        raise NotImplementedError("Faster-whisper converter not yet implemented")
+    elif engine_name == 'gemini':
+        raise NotImplementedError("Gemini converter not yet implemented")
+    else:
         raise ValueError(f"Unsupported converter engine: {engine_name}")
-
-    # For MVP, raise NotImplementedError
-    # Converters will be implemented in future versions
-    raise NotImplementedError(f"Converter '{engine_name}' not yet implemented")

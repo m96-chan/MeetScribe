@@ -1,0 +1,40 @@
+# MeetScribe PoC Configuration
+# Proof of Concept: File → Passthrough → NotebookLM → URL Display
+
+input:
+  provider: file
+  params:
+    # Path to your audio file (update this with actual path)
+    audio_path: "./sample_audio.mp3"
+    copy_to_working_dir: false
+    working_dir: ./meetings
+
+convert:
+  engine: passthrough
+  params:
+    include_audio_info: true
+
+llm:
+  engine: notebooklm
+  params:
+    # API key (optional for mock mode)
+    # api_key: YOUR_NOTEBOOKLM_API_KEY
+    notebook_title_prefix: "PoC Meeting"
+
+output:
+  format: url
+  params:
+    output_dir: ./meetings
+    save_metadata: true
+
+# Working directory for storing meeting data
+working_dir: ./meetings
+
+# Don't cleanup audio in PoC mode
+cleanup_audio: false
+
+# Metadata
+metadata:
+  project: meetscribe-poc
+  version: 0.1.0
+  mode: proof-of-concept

@@ -266,25 +266,33 @@ auth:
     service_account: "keys/google.json"
 ```
 
+📚 Documentation
+
+詳細なドキュメントは `docs/` ディレクトリにあります：
+
+- [Architecture Overview](docs/architecture.md) - システムアーキテクチャ
+- [Pipeline Specification](docs/pipeline.md) - パイプライン仕様
+- [Design Principles](docs/design_principles.md) - 設計原則
+- [Development Guide](docs/DEVELOPMENT.md) - 開発者ガイド
+- [PoC Guide](docs/POC_GUIDE.md) - PoC実行ガイド
+- [PoC Complete](docs/POC_COMPLETE.md) - PoC完成レポート
+- [Project Summary](docs/PROJECT_SUMMARY.md) - プロジェクト概要
+
+---
+
 🧪 Status
-MeetScribe は現在 v0.1 - Core Architecture Draft
+MeetScribe は現在 v0.1 - PoC Complete
 主要機能は順次開発中。
 
- Directory design
-
- meeting_id 仕様
-
- Discord recorder
-
- Whisper converter
-
- NotebookLM / ChatGPT LLM clients
-
- Output renderers (Docs / PDF / MD)
-
- Daemon
-
- CLI
+✅ Directory design
+✅ meeting_id 仕様
+✅ PoC Pipeline (File → Passthrough → NotebookLM → URL)
+⏳ Discord recorder
+⏳ Whisper converter
+⏳ NotebookLM production API
+⏳ Output renderers (Docs / PDF / MD)
+⏳ Daemon
+✅ CLI
 
 📜 License
 Apache License 2.0
