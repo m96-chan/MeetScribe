@@ -18,7 +18,19 @@
       "Bash(issue_198.json)",
       "Bash(issue_197.json)",
       "Bash(gh issue comment:*)",
-      "Bash(gh issue list:*)"
+      "Bash(gh issue list:*)",
+      "Bash(git pull:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(python -m flake8:*)",
+      "Bash(python -m pylint:*)",
+      "Bash(python -m ruff:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(gh auth status:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(gh label create:*)",
+      "Bash(gh repo view:*)"
     ],
     "deny": [],
     "ask": []
