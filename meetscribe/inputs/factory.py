@@ -25,6 +25,9 @@ def get_input_provider(provider_name: str, config: Dict[str, Any]) -> InputProvi
     if provider_name == 'file':
         from .file_provider import FileProvider
         return FileProvider(config)
+    elif provider_name == 'zip':
+        from .zip_provider import ZipProvider
+        return ZipProvider(config)
     elif provider_name == 'discord':
         raise NotImplementedError("Discord provider not yet implemented")
     elif provider_name == 'zoom':
