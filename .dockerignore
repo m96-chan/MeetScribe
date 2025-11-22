@@ -1,0 +1,81 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.github/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Tests
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Meetings data (will be mounted as volume)
+meetings/
+*.mp3
+*.wav
+*.m4a
+*.flac
+*.ogg
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Credentials
+*.json
+!package.json
+google-credentials.json
+keys/
+
+# Config files (will be mounted)
+config.yaml
+config_*.yaml
+!config.example.yaml
+
+# Temporary files
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Sample files
+sample/
+sample_audio.*

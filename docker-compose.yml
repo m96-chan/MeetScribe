@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  meetscribe:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: meetscribe:latest
+    container_name: meetscribe
+    restart: unless-stopped
+
+    # Environment variables
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - NOTEBOOKLM_API_KEY=${NOTEBOOKLM_API_KEY:-}
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN:-}
+      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID:-}
+      - DISCORD_CHANNEL_ID=${DISCORD_CHANNEL_ID:-}
+      - GOOGLE_CREDENTIALS_PATH=${GOOGLE_CREDENTIALS_PATH:-}
+      - GOOGLE_DRIVE_FOLDER_ID=${GOOGLE_DRIVE_FOLDER_ID:-}
+      - ZOOM_API_KEY=${ZOOM_API_KEY:-}
+      - ZOOM_API_SECRET=${ZOOM_API_SECRET:-}
+      - MEETSCRIBE_WORKING_DIR=/app/meetings
+
+    # Load environment from .env file
+    env_file:
+      - .env
+
+    # Mount volumes for data persistence
+    volumes:
+      - ./meetings:/app/meetings
+      - ./config.yaml:/app/config.yaml:ro
+      - ./google-credentials.json:/app/google-credentials.json:ro
+
+    # Networking
+    networks:
+      - meetscribe-network
+
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # Default command (can be overridden)
+    command: ["--help"]
+
+  # Development service with live code reload
+  meetscribe-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: meetscribe:dev
+    container_name: meetscribe-dev
+    restart: unless-stopped
+
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - NOTEBOOKLM_API_KEY=${NOTEBOOKLM_API_KEY:-}
+      - DISCORD_BOT_TOKEN=${DISCORD_BOT_TOKEN:-}
+      - DISCORD_GUILD_ID=${DISCORD_GUILD_ID:-}
+      - DISCORD_CHANNEL_ID=${DISCORD_CHANNEL_ID:-}
+      - MEETSCRIBE_WORKING_DIR=/app/meetings
+
+    env_file:
+      - .env
+
+    volumes:
+      - .:/app
+      - ./meetings:/app/meetings
+
+    networks:
+      - meetscribe-network
+
+    # Keep container running for development
+    command: ["tail", "-f", "/dev/null"]
+
+    profiles:
+      - dev
+
+networks:
+  meetscribe-network:
+    driver: bridge
