@@ -2,9 +2,12 @@
 Factory for LLM layer providers.
 """
 
+import logging
 from typing import Any, Dict
 
 from ..core.providers import LLMProvider
+
+logger = logging.getLogger(__name__)
 
 
 def get_llm_provider(engine_name: str, config: Dict[str, Any]) -> LLMProvider:
@@ -42,4 +45,17 @@ def get_llm_provider(engine_name: str, config: Dict[str, Any]) -> LLMProvider:
 
         return GeminiProvider(config)
     else:
+        # Try plugin registry as fallback
+        try:
+            from ..core.plugin import PluginRegistry
+
+            registry = PluginRegistry()
+            plugin_class = registry.get_plugin_class(engine)
+
+            if plugin_class is not None:
+                logger.debug(f"Loading LLM provider from plugin: {engine}")
+                return plugin_class(config)
+        except ImportError:
+            pass
+
         raise ValueError(f"Unsupported LLM engine: {engine_name}")

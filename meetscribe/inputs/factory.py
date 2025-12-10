@@ -2,9 +2,12 @@
 Factory for INPUT layer providers.
 """
 
+import logging
 from typing import Any, Dict
 
 from ..core.providers import InputProvider
+
+logger = logging.getLogger(__name__)
 
 
 def get_input_provider(provider_name: str, config: Dict[str, Any]) -> InputProvider:
@@ -54,4 +57,17 @@ def get_input_provider(provider_name: str, config: Dict[str, Any]) -> InputProvi
     elif provider == "proctap":
         raise NotImplementedError("ProcTap provider not yet implemented")
     else:
+        # Try plugin registry as fallback
+        try:
+            from ..core.plugin import PluginRegistry
+
+            registry = PluginRegistry()
+            plugin_class = registry.get_plugin_class(provider)
+
+            if plugin_class is not None:
+                logger.debug(f"Loading input provider from plugin: {provider}")
+                return plugin_class(config)
+        except ImportError:
+            pass
+
         raise ValueError(f"Unsupported input provider: {provider_name}")
