@@ -10,7 +10,13 @@ This guide covers everything you need to know to use MeetScribe effectively.
 - [Running Pipelines](#running-pipelines)
 - [Discord Daemon](#discord-daemon)
 - [Output Formats](#output-formats)
+- [Input Sources](#input-sources)
+- [Transcription Engines](#transcription-engines)
+- [LLM Engines](#llm-engines)
+- [Use Case Guides](#use-case-guides)
 - [Troubleshooting](#troubleshooting)
+- [FAQ](#faq)
+- [Glossary](#glossary)
 
 ---
 
@@ -516,3 +522,305 @@ cat ./meetings/meetscribe.log
 4. **Enable `vad_filter`** with faster-whisper for long meetings
 5. **Use multiple outputs** to generate different formats in one run
 6. **Monitor Discord daemon** logs for connection issues
+
+---
+
+## Use Case Guides
+
+### Use Case 1: Generate Minutes from Local Audio File
+
+The most basic use case. Generate meeting minutes from a pre-recorded audio file.
+
+**Configuration:**
+
+```yaml
+input:
+  provider: file
+  params:
+    audio_path: ./meeting_2024-01-15.mp3
+
+convert:
+  engine: whisper
+  params:
+    model: whisper-1
+    language: en
+
+llm:
+  engine: chatgpt
+  params:
+    model: gpt-4-turbo
+    temperature: 0.3
+
+output:
+  format: markdown
+  params:
+    output_dir: ./meetings
+    include_toc: true
+```
+
+**Run:**
+
+```bash
+meetscribe run --config config.yaml
+```
+
+### Use Case 2: Discord Meeting Auto-Recording
+
+Monitor Discord voice channels and automatically record and transcribe meetings.
+
+**Prerequisites:**
+- Discord Bot created and invited (see [Discord Daemon](#discord-daemon) section)
+
+**Configuration:**
+
+```yaml
+input:
+  provider: discord
+  params:
+    bot_token: ${DISCORD_BOT_TOKEN}
+    guild_id: "123456789"
+
+convert:
+  engine: faster-whisper
+  params:
+    model_size: large-v3
+    language: en
+
+llm:
+  engine: chatgpt
+  params:
+    model: gpt-4-turbo
+
+output:
+  - format: markdown
+    params:
+      output_dir: ./meetings
+  - format: webhook
+    params:
+      webhook_url: ${DISCORD_WEBHOOK_URL}
+
+daemon:
+  mode: auto_record
+  channel_patterns:
+    - "meeting-*"
+    - "standup"
+  min_users: 2
+```
+
+**Run as Daemon:**
+
+```bash
+meetscribe daemon --config config.yaml
+```
+
+### Use Case 3: Process Google Meet Recordings
+
+Process Google Meet recordings stored in Google Drive.
+
+**Configuration:**
+
+```yaml
+input:
+  provider: meet
+  params:
+    credentials_file: ./google_credentials.json
+    download_dir: ./downloads
+    keep_downloaded: false
+
+convert:
+  engine: gemini
+  params:
+    model: gemini-1.5-pro
+
+llm:
+  engine: gemini
+  params:
+    model: gemini-1.5-pro
+
+output:
+  format: docs
+  params:
+    folder_id: "your-google-drive-folder-id"
+```
+
+### Use Case 4: Multiple Output Formats
+
+Generate multiple output formats from a single processing run.
+
+**Configuration:**
+
+```yaml
+input:
+  provider: file
+  params:
+    audio_path: ./recording.mp3
+
+convert:
+  engine: whisper
+  params:
+    model: whisper-1
+    language: en
+
+llm:
+  engine: chatgpt
+  params:
+    model: gpt-4-turbo
+
+output:
+  - format: markdown
+    params:
+      output_dir: ./meetings
+      include_toc: true
+  - format: json
+    params:
+      output_dir: ./meetings
+  - format: pdf
+    params:
+      output_dir: ./meetings
+      page_size: A4
+  - format: webhook
+    params:
+      webhook_url: ${DISCORD_WEBHOOK_URL}
+```
+
+### Use Case 5: Cost-Effective Processing
+
+Minimize API costs by using local transcription and efficient LLMs.
+
+**Configuration:**
+
+```yaml
+input:
+  provider: file
+  params:
+    audio_path: ./recording.mp3
+
+convert:
+  engine: faster-whisper  # Free, runs locally
+  params:
+    model_size: base      # Smaller model for faster processing
+    device: cuda
+    vad_filter: true      # Remove silence to reduce processing time
+
+llm:
+  engine: gemini
+  params:
+    model: gemini-1.5-flash  # Lower cost than Pro
+
+output:
+  format: markdown
+  params:
+    output_dir: ./meetings
+```
+
+---
+
+## FAQ
+
+### Q: What audio formats are supported?
+
+A: MeetScribe supports almost all formats that ffmpeg supports:
+- MP3, WAV, M4A, FLAC, OGG, WebM, MP4, MKV, and more
+
+### Q: Can I transcribe in languages other than English?
+
+A: Yes, all transcription engines support multiple languages. Set the `language` parameter:
+```yaml
+convert:
+  engine: whisper
+  params:
+    language: ja  # Japanese
+```
+
+### Q: Can I use MeetScribe offline?
+
+A: Yes, using local faster-whisper with an offline-capable LLM:
+```yaml
+convert:
+  engine: faster-whisper
+  params:
+    model_size: large-v3
+    device: cuda
+```
+
+### Q: Can I process long meetings (4+ hours)?
+
+A: Yes, but we recommend:
+- Using local faster-whisper (no API limits)
+- Setting `vad_filter: true` to remove silence
+- Ensuring sufficient memory and disk space
+
+### Q: Is speaker diarization supported?
+
+A: Yes, Deepgram supports speaker diarization:
+```yaml
+convert:
+  engine: deepgram
+  params:
+    diarize: true
+```
+
+### Q: Can I process multiple files at once?
+
+A: Yes, specify a directory to process multiple files:
+```yaml
+input:
+  provider: file
+  params:
+    audio_path: ./recordings/
+    pattern: "*.mp3"
+```
+
+### Q: Can I use custom templates?
+
+A: Yes, you can customize Markdown templates. See the API Reference for details.
+
+### Q: How can I reduce costs?
+
+A: Several strategies:
+1. Use local faster-whisper (free)
+2. Use cost-effective LLMs like Gemini Flash
+3. Use smaller models for shorter meetings
+
+### Q: How do I handle large files that exceed API limits?
+
+A: Options:
+1. Use local faster-whisper (no size limits)
+2. Split files before processing
+3. Enable `vad_filter` to reduce file size by removing silence
+
+### Q: Can I run MeetScribe in Docker?
+
+A: Yes, use the provided Dockerfile:
+```bash
+docker build -t meetscribe .
+docker run -v $(pwd)/meetings:/app/meetings meetscribe run --config config.yaml
+```
+
+---
+
+## Glossary
+
+| Term | Description |
+|------|-------------|
+| **Pipeline** | The processing flow from input to output |
+| **Provider** | Component that retrieves input from a source |
+| **Converter** | Component that converts audio to text |
+| **Renderer** | Component that outputs minutes in a specific format |
+| **Daemon** | Background process that runs continuously |
+| **Transcription** | The process of converting audio to text |
+| **Diarization** | Speaker identification and separation |
+| **VAD** | Voice Activity Detection - detects speech vs silence |
+| **LLM** | Large Language Model |
+| **Minutes** | Structured meeting summary with decisions and action items |
+| **Passthrough** | Mode where audio is passed directly to LLM without transcription |
+
+---
+
+## Next Steps
+
+- [API Reference](api-reference.md) - Detailed API documentation
+- [Architecture](architecture.md) - System design details
+- [Contributing Guide](contributing.md) - How to contribute
+- [Tutorial](tutorial.md) - Step-by-step tutorials
+- [日本語ガイド](user-guide-ja.md) - Japanese User Guide
