@@ -117,7 +117,7 @@ class TestPipelineConfigMultipleOutputs:
     def test_pipeline_config_with_single_output_legacy(self):
         """Test backward compatibility with single output config."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {}},
+            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
             'convert': {'engine': 'passthrough', 'params': {}},
             'llm': {'engine': 'notebooklm', 'params': {}},
             'output': {'format': 'url', 'params': {}}
@@ -130,7 +130,7 @@ class TestPipelineConfigMultipleOutputs:
     def test_pipeline_config_with_multiple_outputs(self):
         """Test PipelineConfig with outputs list."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {}},
+            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
             'convert': {'engine': 'passthrough', 'params': {}},
             'llm': {'engine': 'notebooklm', 'params': {}},
             'outputs': [
@@ -151,7 +151,7 @@ class TestPipelineConfigMultipleOutputs:
     def test_pipeline_config_get_output_configs_single(self):
         """Test get_output_configs() returns list for single output."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {}},
+            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
             'convert': {'engine': 'passthrough', 'params': {}},
             'llm': {'engine': 'notebooklm', 'params': {}},
             'output': {'format': 'markdown', 'params': {}}
@@ -166,7 +166,7 @@ class TestPipelineConfigMultipleOutputs:
     def test_pipeline_config_get_output_configs_multiple(self):
         """Test get_output_configs() returns outputs list."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {}},
+            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
             'convert': {'engine': 'passthrough', 'params': {}},
             'llm': {'engine': 'notebooklm', 'params': {}},
             'outputs': [
@@ -184,7 +184,7 @@ class TestPipelineConfigMultipleOutputs:
     def test_pipeline_config_get_output_configs_filters_disabled(self):
         """Test get_output_configs() filters out disabled outputs."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {}},
+            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
             'convert': {'engine': 'passthrough', 'params': {}},
             'llm': {'engine': 'notebooklm', 'params': {}},
             'outputs': [
@@ -203,14 +203,14 @@ class TestPipelineConfigMultipleOutputs:
     def test_pipeline_config_get_execution_groups(self):
         """Test get_execution_groups() returns grouped outputs."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {}},
+            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
             'convert': {'engine': 'passthrough', 'params': {}},
             'llm': {'engine': 'notebooklm', 'params': {}},
             'outputs': [
                 {'format': 'url', 'execution_group': 0},
                 {'format': 'markdown', 'execution_group': 0},
                 {'format': 'pdf', 'execution_group': 1},
-                {'format': 'discord_webhook', 'execution_group': 2}
+                {'format': 'discord', 'execution_group': 2}
             ]
         }
         config = PipelineConfig.from_dict(config_dict)
@@ -222,12 +222,12 @@ class TestPipelineConfigMultipleOutputs:
         assert 2 in groups
         assert len(groups[0]) == 2  # url, markdown
         assert len(groups[1]) == 1  # pdf
-        assert len(groups[2]) == 1  # discord_webhook
+        assert len(groups[2]) == 1  # discord
 
     def test_pipeline_config_with_output_execution_mode(self):
         """Test PipelineConfig with output_execution_mode."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {}},
+            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
             'convert': {'engine': 'passthrough', 'params': {}},
             'llm': {'engine': 'notebooklm', 'params': {}},
             'outputs': [
@@ -243,7 +243,7 @@ class TestPipelineConfigMultipleOutputs:
     def test_pipeline_config_default_execution_mode_is_auto(self):
         """Test PipelineConfig defaults to output_execution_mode='auto'."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {}},
+            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
             'convert': {'engine': 'passthrough', 'params': {}},
             'llm': {'engine': 'notebooklm', 'params': {}},
             'outputs': [{'format': 'url'}]
@@ -258,7 +258,7 @@ class TestPipelineConfigMultipleOutputs:
 
         for mode in valid_modes:
             config_dict = {
-                'input': {'provider': 'file', 'params': {}},
+                'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
                 'convert': {'engine': 'passthrough', 'params': {}},
                 'llm': {'engine': 'notebooklm', 'params': {}},
                 'outputs': [{'format': 'url'}],
@@ -313,7 +313,8 @@ outputs:
         yaml_content = """
 input:
   provider: file
-  params: {}
+  params:
+    audio_path: ./test.mp3
 
 convert:
   engine: passthrough
@@ -332,7 +333,7 @@ outputs:
     execution_group: 1
     params:
       output_dir: ./meetings
-  - format: discord_webhook
+  - format: discord
     execution_group: 2
     depends_on: ["pdf"]
     params:
@@ -354,7 +355,8 @@ outputs:
         yaml_content = """
 input:
   provider: file
-  params: {}
+  params:
+    audio_path: ./test.mp3
 
 convert:
   engine: passthrough
