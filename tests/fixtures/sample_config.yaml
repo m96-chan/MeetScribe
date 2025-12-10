@@ -1,0 +1,65 @@
+# Sample MeetScribe configuration for testing
+# This is a complete example showing all available options
+
+input:
+  provider: file
+  params:
+    audio_path: ./tests/fixtures/sample_audio.mp3
+    copy_to_working_dir: false
+    validate_format: true
+
+convert:
+  engine: whisper
+  params:
+    model: whisper-1
+    language: en
+    response_format: verbose_json
+    temperature: 0.0
+
+llm:
+  engine: chatgpt
+  params:
+    model: gpt-4-turbo
+    temperature: 0.3
+    max_tokens: 4096
+    system_prompt: |
+      You are a professional meeting minutes assistant.
+      Generate structured meeting minutes with:
+      - Clear summary
+      - Key decisions
+      - Action items with assignees and deadlines
+      - Key discussion points
+
+output:
+  format: markdown
+  params:
+    output_dir: ./meetings
+    include_toc: true
+    include_participants: true
+    include_statistics: true
+
+# Optional: Multiple outputs
+# output:
+#   - format: markdown
+#     params:
+#       output_dir: ./meetings
+#   - format: json
+#     params:
+#       output_dir: ./meetings
+#   - format: pdf
+#     params:
+#       output_dir: ./meetings
+
+working_dir: ./meetings
+cleanup_audio: false
+
+# Optional: Daemon configuration for Discord
+# daemon:
+#   mode: auto_record
+#   guild_ids:
+#     - "123456789"
+#   channel_patterns:
+#     - "meeting-*"
+#     - "standup"
+#   min_users: 2
+#   max_silence: 300

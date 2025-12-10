@@ -1,0 +1,55 @@
+{
+  "meeting_id": "2024-01-15T14-00_discord_team-jp",
+  "summary": "週次チームミーティングで、プロジェクトの進捗状況、認証モジュールの優先順位付け、タスクの割り当てについて議論しました。チームは来週の水曜日までに認証モジュールを完成させることに合意し、田中さんが月曜日までに最初のPRを作成します。全チームメンバーは24時間以内にコードレビューを完了するよう確認されました。",
+  "decisions": [
+    {
+      "description": "認証モジュールの実装を優先する",
+      "responsible": "田中",
+      "deadline": "2024-01-22",
+      "rationale": "認証モジュールはログインページを含む他の機能をブロックしている"
+    },
+    {
+      "description": "認証モジュールの完了期限を来週水曜日に設定",
+      "responsible": "チーム",
+      "deadline": "2024-01-22",
+      "rationale": "プロジェクトを軌道に乗せるための合意されたタイムライン"
+    }
+  ],
+  "action_items": [
+    {
+      "description": "認証モジュールの最初のPRを作成",
+      "assignee": "田中",
+      "deadline": "2024-01-20",
+      "priority": "high",
+      "status": "pending"
+    },
+    {
+      "description": "フロントエンドコンポーネントのテスト準備",
+      "assignee": "佐藤",
+      "deadline": "2024-01-19",
+      "priority": "high",
+      "status": "in_progress"
+    },
+    {
+      "description": "データベース移行スクリプトの準備",
+      "assignee": "山田",
+      "deadline": "2024-01-22",
+      "priority": "medium",
+      "status": "pending"
+    }
+  ],
+  "key_points": [
+    "API統合が完了し、バックエンドは完全に機能している",
+    "フロントエンドコンポーネントは金曜日までにテスト準備完了予定",
+    "認証モジュールがブロッキング問題のため現在の優先事項",
+    "週次ミーティングは継続される"
+  ],
+  "participants": ["田中", "佐藤", "山田", "鈴木"],
+  "url": "https://notebooklm.google.com/notebook/sample-jp-123",
+  "generated_at": "2024-01-15T15:05:00",
+  "metadata": {
+    "llm_engine": "chatgpt",
+    "model": "gpt-4-turbo",
+    "language": "ja"
+  }
+}

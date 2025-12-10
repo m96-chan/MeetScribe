@@ -1,0 +1,85 @@
+{
+  "meeting_id": "2024-01-15T10-00_discord_general",
+  "summary": "Weekly team sync meeting covering project status updates, prioritization of the authentication module, and assignment of tasks. The team agreed to focus on completing the auth module by next Wednesday, with Bob creating the initial PR by Monday. All team members were reminded to complete code reviews within 24 hours.",
+  "decisions": [
+    {
+      "description": "Prioritize authentication module implementation",
+      "responsible": "Bob",
+      "deadline": "2024-01-22",
+      "rationale": "Auth module is blocking several other features including the login page"
+    },
+    {
+      "description": "Set auth module completion deadline for next Wednesday",
+      "responsible": "Team",
+      "deadline": "2024-01-22",
+      "rationale": "Agreed upon timeline to keep project on track"
+    },
+    {
+      "description": "Maintain 24-hour code review turnaround",
+      "responsible": "Team",
+      "deadline": null,
+      "rationale": "Improve development velocity and reduce PR backlog"
+    }
+  ],
+  "action_items": [
+    {
+      "description": "Create initial authentication module PR",
+      "assignee": "Bob",
+      "deadline": "2024-01-20",
+      "priority": "high",
+      "status": "pending"
+    },
+    {
+      "description": "Complete frontend components for testing",
+      "assignee": "Charlie",
+      "deadline": "2024-01-19",
+      "priority": "high",
+      "status": "in_progress"
+    },
+    {
+      "description": "Coordinate with Bob on frontend auth integration",
+      "assignee": "Charlie",
+      "deadline": "2024-01-22",
+      "priority": "medium",
+      "status": "pending"
+    },
+    {
+      "description": "Prepare database migration scripts",
+      "assignee": "David",
+      "deadline": "2024-01-22",
+      "priority": "medium",
+      "status": "pending"
+    },
+    {
+      "description": "Complete pending code reviews",
+      "assignee": "Charlie",
+      "deadline": "2024-01-15",
+      "priority": "medium",
+      "status": "pending"
+    },
+    {
+      "description": "Complete pending code reviews",
+      "assignee": "David",
+      "deadline": "2024-01-15",
+      "priority": "medium",
+      "status": "pending"
+    }
+  ],
+  "key_points": [
+    "API integration completed, backend is fully functional",
+    "Frontend components will be ready for testing by Friday",
+    "User preferences table is on the roadmap but not immediate priority",
+    "Authentication module is the current priority due to blocking issues",
+    "Weekly sync meetings will continue"
+  ],
+  "participants": ["Alice", "Bob", "Charlie", "David"],
+  "url": "https://notebooklm.google.com/notebook/sample123",
+  "generated_at": "2024-01-15T11:35:00",
+  "metadata": {
+    "llm_engine": "chatgpt",
+    "model": "gpt-4-turbo",
+    "prompt_tokens": 850,
+    "completion_tokens": 420,
+    "cost_estimate": 0.025
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "meeting_info": {
+    "meeting_id": "2024-01-15T10-00_discord_general",
+    "source_type": "discord",
+    "start_time": "2024-01-15T10:00:00",
+    "end_time": "2024-01-15T11:30:00",
+    "channel_id": "general",
+    "participants": ["Alice", "Bob", "Charlie", "David"]
+  },
+  "text": "Alice: Good morning everyone. Let's start with the project status update. Bob: Sure. We've completed the API integration last week. The backend is now fully functional. Charlie: That's great news. I've been working on the frontend components. Should be ready for testing by Friday. David: I have a question about the database schema. Are we still planning to add the user preferences table? Alice: Yes, that's on the roadmap. Let's discuss the timeline. Bob: I think we should prioritize the authentication module first. It's blocking several other features. Charlie: Agreed. I'll need the auth endpoints to complete the login page. David: I can help with the database migrations once we finalize the schema. Alice: Perfect. Let's set a deadline for the auth module. How about next Wednesday? Bob: That works for me. I'll create the initial PR by Monday for review. Charlie: I'll coordinate with Bob on the frontend integration. David: And I'll prepare the database scripts. Alice: Great. Any other items to discuss? Bob: Just a reminder about the code review process. Please review PRs within 24 hours. Charlie: Noted. I have a few pending reviews I'll complete today. David: Same here. Alice: Alright, I think we covered everything. Let's reconvene next week. Thanks everyone!",
+  "segments": [
+    {
+      "start": 0.0,
+      "end": 5.5,
+      "text": "Good morning everyone. Let's start with the project status update.",
+      "speaker": "Alice",
+      "confidence": 0.95
+    },
+    {
+      "start": 5.5,
+      "end": 15.0,
+      "text": "Sure. We've completed the API integration last week. The backend is now fully functional.",
+      "speaker": "Bob",
+      "confidence": 0.93
+    },
+    {
+      "start": 15.0,
+      "end": 25.0,
+      "text": "That's great news. I've been working on the frontend components. Should be ready for testing by Friday.",
+      "speaker": "Charlie",
+      "confidence": 0.91
+    },
+    {
+      "start": 25.0,
+      "end": 35.0,
+      "text": "I have a question about the database schema. Are we still planning to add the user preferences table?",
+      "speaker": "David",
+      "confidence": 0.94
+    },
+    {
+      "start": 35.0,
+      "end": 42.0,
+      "text": "Yes, that's on the roadmap. Let's discuss the timeline.",
+      "speaker": "Alice",
+      "confidence": 0.96
+    },
+    {
+      "start": 42.0,
+      "end": 52.0,
+      "text": "I think we should prioritize the authentication module first. It's blocking several other features.",
+      "speaker": "Bob",
+      "confidence": 0.92
+    },
+    {
+      "start": 52.0,
+      "end": 60.0,
+      "text": "Agreed. I'll need the auth endpoints to complete the login page.",
+      "speaker": "Charlie",
+      "confidence": 0.94
+    },
+    {
+      "start": 60.0,
+      "end": 68.0,
+      "text": "I can help with the database migrations once we finalize the schema.",
+      "speaker": "David",
+      "confidence": 0.93
+    },
+    {
+      "start": 68.0,
+      "end": 78.0,
+      "text": "Perfect. Let's set a deadline for the auth module. How about next Wednesday?",
+      "speaker": "Alice",
+      "confidence": 0.95
+    },
+    {
+      "start": 78.0,
+      "end": 88.0,
+      "text": "That works for me. I'll create the initial PR by Monday for review.",
+      "speaker": "Bob",
+      "confidence": 0.91
+    },
+    {
+      "start": 88.0,
+      "end": 95.0,
+      "text": "I'll coordinate with Bob on the frontend integration.",
+      "speaker": "Charlie",
+      "confidence": 0.94
+    },
+    {
+      "start": 95.0,
+      "end": 100.0,
+      "text": "And I'll prepare the database scripts.",
+      "speaker": "David",
+      "confidence": 0.92
+    },
+    {
+      "start": 100.0,
+      "end": 108.0,
+      "text": "Great. Any other items to discuss?",
+      "speaker": "Alice",
+      "confidence": 0.96
+    },
+    {
+      "start": 108.0,
+      "end": 118.0,
+      "text": "Just a reminder about the code review process. Please review PRs within 24 hours.",
+      "speaker": "Bob",
+      "confidence": 0.93
+    },
+    {
+      "start": 118.0,
+      "end": 125.0,
+      "text": "Noted. I have a few pending reviews I'll complete today.",
+      "speaker": "Charlie",
+      "confidence": 0.91
+    },
+    {
+      "start": 125.0,
+      "end": 128.0,
+      "text": "Same here.",
+      "speaker": "David",
+      "confidence": 0.95
+    },
+    {
+      "start": 128.0,
+      "end": 138.0,
+      "text": "Alright, I think we covered everything. Let's reconvene next week. Thanks everyone!",
+      "speaker": "Alice",
+      "confidence": 0.94
+    }
+  ],
+  "audio_info": {
+    "duration": 138.0,
+    "samplerate": 48000,
+    "codec": "opus",
+    "channels": 2,
+    "bitrate": 128000
+  },
+  "metadata": {
+    "converter": "whisper-api",
+    "model": "whisper-1",
+    "language": "en",
+    "cost_estimate": 0.12
+  }
+}
