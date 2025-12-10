@@ -14,11 +14,11 @@ def get_init_template(provider: str) -> str:
         YAML configuration template
     """
     templates = {
-        'discord': DISCORD_TEMPLATE,
-        'zoom': ZOOM_TEMPLATE,
-        'meet': MEET_TEMPLATE,
-        'proctap': PROCTAP_TEMPLATE,
-        'obs': OBS_TEMPLATE,
+        "discord": DISCORD_TEMPLATE,
+        "zoom": ZOOM_TEMPLATE,
+        "meet": MEET_TEMPLATE,
+        "proctap": PROCTAP_TEMPLATE,
+        "obs": OBS_TEMPLATE,
     }
 
     return templates.get(provider, DEFAULT_TEMPLATE)

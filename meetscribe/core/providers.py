@@ -6,9 +6,9 @@ These abstract classes define the contract for each pipeline stage.
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
-from .models import Transcript, Minutes
+from .models import Minutes, Transcript
 
 
 class InputProvider(ABC):

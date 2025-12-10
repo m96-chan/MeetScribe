@@ -4,14 +4,11 @@ Pipeline runner for MeetScribe.
 Orchestrates the full INPUT → CONVERT → LLM → OUTPUT pipeline.
 """
 
-from pathlib import Path
-from typing import Optional
 import logging
+from typing import Optional
 
 from .config import PipelineConfig
-from .models import Transcript, Minutes
-from .providers import InputProvider, ConvertProvider, LLMProvider, OutputRenderer
-
+from .providers import ConvertProvider, InputProvider, LLMProvider, OutputRenderer
 
 logger = logging.getLogger(__name__)
 
@@ -61,10 +58,8 @@ class PipelineRunner:
         # Dynamic import will be implemented in provider modules
         # For now, we create a placeholder
         from ..inputs.factory import get_input_provider
-        self.input_provider = get_input_provider(
-            provider_name,
-            self.config.input.params
-        )
+
+        self.input_provider = get_input_provider(provider_name, self.config.input.params)
 
     def _setup_converter(self):
         """Initialize CONVERT layer provider."""
@@ -72,10 +67,8 @@ class PipelineRunner:
         logger.info(f"Setting up CONVERT engine: {engine_name}")
 
         from ..converters.factory import get_converter
-        self.converter = get_converter(
-            engine_name,
-            self.config.convert.params
-        )
+
+        self.converter = get_converter(engine_name, self.config.convert.params)
 
     def _setup_llm_provider(self):
         """Initialize LLM layer provider."""
@@ -83,10 +76,8 @@ class PipelineRunner:
         logger.info(f"Setting up LLM engine: {engine_name}")
 
         from ..llm.factory import get_llm_provider
-        self.llm_provider = get_llm_provider(
-            engine_name,
-            self.config.llm.params
-        )
+
+        self.llm_provider = get_llm_provider(engine_name, self.config.llm.params)
 
     def _setup_output_renderer(self):
         """Initialize OUTPUT layer renderer."""
@@ -94,10 +85,8 @@ class PipelineRunner:
         logger.info(f"Setting up OUTPUT renderer: {format_name}")
 
         from ..outputs.factory import get_output_renderer
-        self.output_renderer = get_output_renderer(
-            format_name,
-            self.config.output.params
-        )
+
+        self.output_renderer = get_output_renderer(format_name, self.config.output.params)
 
     def run(self, meeting_id: str) -> str:
         """

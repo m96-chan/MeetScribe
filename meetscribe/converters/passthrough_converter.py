@@ -5,15 +5,14 @@ Does not perform transcription - passes audio directly to LLM layer.
 Used when LLM can consume audio files directly (e.g., NotebookLM, ChatGPT Audio).
 """
 
-from pathlib import Path
-from typing import Dict, Any
-from datetime import datetime
 import logging
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict
 
-from ..core.providers import ConvertProvider
-from ..core.models import Transcript, AudioInfo, MeetingInfo
 from ..core.meeting_id import parse_meeting_id
-
+from ..core.models import AudioInfo, MeetingInfo, Transcript
+from ..core.providers import ConvertProvider
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +33,7 @@ class PassthroughConverter(ConvertProvider):
             include_audio_info: Whether to analyze audio metadata (default: True)
         """
         super().__init__(config)
-        self.include_audio_info = config.get('include_audio_info', True)
+        self.include_audio_info = config.get("include_audio_info", True)
 
     def transcribe(self, audio_path: Path, meeting_id: str) -> Transcript:
         """
@@ -63,7 +62,7 @@ class PassthroughConverter(ConvertProvider):
             meeting_id=meeting_id,
             source_type=source_type,
             start_time=start_time,
-            channel_id=channel
+            channel_id=channel,
         )
 
         # Get audio info if requested
@@ -78,19 +77,19 @@ class PassthroughConverter(ConvertProvider):
             audio_path=audio_path,
             audio_info=audio_info,
             metadata={
-                'converter': 'passthrough',
-                'mode': 'audio_only',
-                'note': 'Audio will be processed directly by LLM'
-            }
+                "converter": "passthrough",
+                "mode": "audio_only",
+                "note": "Audio will be processed directly by LLM",
+            },
         )
 
         transcript.add_processing_step(
-            'passthrough_convert',
+            "passthrough_convert",
             {
-                'converter': 'passthrough',
-                'audio_path': str(audio_path),
-                'audio_exists': audio_path.exists()
-            }
+                "converter": "passthrough",
+                "audio_path": str(audio_path),
+                "audio_exists": audio_path.exists(),
+            },
         )
 
         logger.info(f"Passthrough conversion complete for {meeting_id}")
@@ -118,17 +117,12 @@ class PassthroughConverter(ConvertProvider):
             return AudioInfo(
                 duration=estimated_duration * 60,  # seconds
                 samplerate=44100,  # default assumption
-                codec=file_extension.replace('.', ''),
+                codec=file_extension.replace(".", ""),
                 channels=2,  # stereo assumption
             )
         except Exception as e:
             logger.warning(f"Could not get audio info: {e}")
-            return AudioInfo(
-                duration=0,
-                samplerate=0,
-                codec='unknown',
-                channels=0
-            )
+            return AudioInfo(duration=0, samplerate=0, codec="unknown", channels=0)
 
     def validate_config(self) -> bool:
         """

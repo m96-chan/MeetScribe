@@ -1,17 +1,17 @@
 # MeetScribe Dockerfile - Multi-stage build for optimized image size
 # Stage 1: Builder
-FROM python:3.11-alpine AS builder
+FROM python:3.11-slim AS builder
 
 LABEL maintainer="MeetScribe Contributors"
 LABEL description="Multi-source AI Meeting Pipeline Framework"
 
 # Install build dependencies
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
-    musl-dev \
-    linux-headers \
+    g++ \
+    libffi-dev \
     ffmpeg \
-    ffmpeg-dev
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
@@ -26,16 +26,16 @@ RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # Stage 2: Runtime
-FROM python:3.11-alpine
+FROM python:3.11-slim
 
 # Install runtime dependencies only
-RUN apk add --no-cache \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
-    libstdc++
+    && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user for security
-RUN addgroup -g 1000 meetscribe && \
-    adduser -D -u 1000 -G meetscribe meetscribe
+RUN groupadd -g 1000 meetscribe && \
+    useradd -u 1000 -g meetscribe -m meetscribe
 
 # Set working directory
 WORKDIR /app
@@ -56,11 +56,11 @@ ENV PATH="/opt/venv/bin:$PATH" \
 RUN mkdir -p /app/meetings && \
     chown -R meetscribe:meetscribe /app/meetings
 
+# Install meetscribe package (before switching to non-root user)
+RUN pip install --no-cache-dir .
+
 # Switch to non-root user
 USER meetscribe
-
-# Install meetscribe package
-RUN pip install --no-cache-dir -e .
 
 # Volume for meeting data persistence
 VOLUME ["/app/meetings"]

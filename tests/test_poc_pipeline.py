@@ -4,22 +4,22 @@ PoC pipeline test script.
 Tests the entire pipeline without requiring pytest.
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Set UTF-8 encoding for Windows console
-if sys.platform == 'win32':
-    os.environ['PYTHONIOENCODING'] = 'utf-8'
-    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
-    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+if sys.platform == "win32":
+    os.environ["PYTHONIOENCODING"] = "utf-8"
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 # Add meetscribe to path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from meetscribe.core.config import load_config
-from meetscribe.core.runner import PipelineRunner
 from meetscribe.core.meeting_id import generate_meeting_id
+from meetscribe.core.runner import PipelineRunner
 
 
 def test_poc_pipeline():
@@ -33,7 +33,7 @@ def test_poc_pipeline():
     audio_path = Path("sample_audio.mp3")
     if not audio_path.exists():
         print("Creating dummy audio file...")
-        with open(audio_path, 'w') as f:
+        with open(audio_path, "w") as f:
             f.write("Dummy audio data for testing")
         print(f"Created: {audio_path}")
         print()
@@ -64,14 +64,12 @@ def test_poc_pipeline():
     except Exception as e:
         print(f"ERROR: Failed to initialize pipeline: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
     # Generate meeting ID
-    meeting_id = generate_meeting_id(
-        source="file",
-        channel_or_pid="poc_test"
-    )
+    meeting_id = generate_meeting_id(source="file", channel_or_pid="poc_test")
     print(f"Meeting ID: {meeting_id}")
     print()
 
@@ -92,7 +90,7 @@ def test_poc_pipeline():
             print("[OK] Output file created successfully")
             print()
             print("Contents:")
-            with open(output, 'r', encoding='utf-8') as f:
+            with open(output, encoding="utf-8") as f:
                 content = f.read()
                 print(content)
         else:
@@ -103,11 +101,12 @@ def test_poc_pipeline():
     except Exception as e:
         print(f"ERROR: Pipeline failed: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print()
     success = test_poc_pipeline()
     print()

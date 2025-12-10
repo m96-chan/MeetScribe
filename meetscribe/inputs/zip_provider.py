@@ -5,14 +5,13 @@ Extracts audio files and metadata from ZIP archives.
 Supports both single mode (first file only) and multiple mode (all files).
 """
 
-import zipfile
 import json
 import logging
+import zipfile
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from ..core.providers import InputProvider
-
 
 logger = logging.getLogger(__name__)
 
@@ -24,8 +23,8 @@ class ZipProvider(InputProvider):
     Extracts audio files and metadata from ZIP archives.
     """
 
-    SUPPORTED_AUDIO_FORMATS = {'.mp3', '.wav', '.m4a', '.flac', '.ogg', '.opus'}
-    METADATA_FILES = {'metadata.json', 'metadata.yaml', 'info.json', 'info.yaml'}
+    SUPPORTED_AUDIO_FORMATS = {".mp3", ".wav", ".m4a", ".flac", ".ogg", ".opus"}
+    METADATA_FILES = {"metadata.json", "metadata.yaml", "info.json", "info.yaml"}
 
     def __init__(self, config: Dict[str, Any]):
         """
@@ -41,16 +40,16 @@ class ZipProvider(InputProvider):
         super().__init__(config)
 
         # Set attributes before validation (so validate_config can check them)
-        self.mode = config.get('mode', 'single')
+        self.mode = config.get("mode", "single")
 
         # Validate configuration
         self.validate_config()
 
         # Set remaining attributes after validation
-        self.zip_path = Path(config['zip_path'])
-        self.working_dir = Path(config.get('working_dir', './meetings'))
-        self.cleanup_after = config.get('cleanup_after_extraction', False)
-        self.sort_by = config.get('sort_by', 'name')
+        self.zip_path = Path(config["zip_path"])
+        self.working_dir = Path(config.get("working_dir", "./meetings"))
+        self.cleanup_after = config.get("cleanup_after_extraction", False)
+        self.sort_by = config.get("sort_by", "name")
         self.metadata: Optional[Dict] = None
 
     def record(self, meeting_id: str) -> Path:
@@ -73,12 +72,12 @@ class ZipProvider(InputProvider):
             raise FileNotFoundError(f"ZIP file not found: {self.zip_path}")
 
         # 2. Create extraction directory
-        extract_dir = self.working_dir / meeting_id / 'extracted'
+        extract_dir = self.working_dir / meeting_id / "extracted"
         extract_dir.mkdir(parents=True, exist_ok=True)
 
         # 3. Extract ZIP
         logger.info(f"Extracting ZIP: {self.zip_path} -> {extract_dir}")
-        with zipfile.ZipFile(self.zip_path, 'r') as zip_ref:
+        with zipfile.ZipFile(self.zip_path, "r") as zip_ref:
             zip_ref.extractall(extract_dir)
 
         # 4. Find audio files
@@ -113,12 +112,12 @@ class ZipProvider(InputProvider):
             raise FileNotFoundError(f"ZIP file not found: {self.zip_path}")
 
         # 2. Create extraction directory
-        extract_dir = self.working_dir / meeting_id / 'extracted'
+        extract_dir = self.working_dir / meeting_id / "extracted"
         extract_dir.mkdir(parents=True, exist_ok=True)
 
         # 3. Extract ZIP
         logger.info(f"Extracting ZIP: {self.zip_path} -> {extract_dir}")
-        with zipfile.ZipFile(self.zip_path, 'r') as zip_ref:
+        with zipfile.ZipFile(self.zip_path, "r") as zip_ref:
             zip_ref.extractall(extract_dir)
 
         # 4. Find audio files
@@ -144,16 +143,16 @@ class ZipProvider(InputProvider):
             List of audio file paths, sorted according to sort_by setting
         """
         audio_files = []
-        for file_path in directory.rglob('*'):
+        for file_path in directory.rglob("*"):
             if file_path.is_file() and file_path.suffix.lower() in self.SUPPORTED_AUDIO_FORMATS:
                 audio_files.append(file_path)
 
         # Sort files based on configuration
-        if self.sort_by == 'name':
+        if self.sort_by == "name":
             audio_files.sort(key=lambda p: p.name)
-        elif self.sort_by == 'modified':
+        elif self.sort_by == "modified":
             audio_files.sort(key=lambda p: p.stat().st_mtime)
-        elif self.sort_by == 'size':
+        elif self.sort_by == "size":
             audio_files.sort(key=lambda p: p.stat().st_size)
 
         logger.info(f"Found {len(audio_files)} audio files (sorted by {self.sort_by})")
@@ -173,8 +172,8 @@ class ZipProvider(InputProvider):
             metadata_path = directory / metadata_file
             if metadata_path.exists():
                 logger.info(f"Loading metadata: {metadata_path}")
-                if metadata_path.suffix == '.json':
-                    with open(metadata_path, 'r', encoding='utf-8') as f:
+                if metadata_path.suffix == ".json":
+                    with open(metadata_path, encoding="utf-8") as f:
                         return json.load(f)
                 # TODO: Add YAML support if needed
                 # elif metadata_path.suffix in ['.yaml', '.yml']:
@@ -187,8 +186,8 @@ class ZipProvider(InputProvider):
             for metadata_path in directory.rglob(metadata_file):
                 if metadata_path.is_file():
                     logger.info(f"Loading metadata from subdirectory: {metadata_path}")
-                    if metadata_path.suffix == '.json':
-                        with open(metadata_path, 'r', encoding='utf-8') as f:
+                    if metadata_path.suffix == ".json":
+                        with open(metadata_path, encoding="utf-8") as f:
                             return json.load(f)
 
         logger.info("No metadata file found")
@@ -204,10 +203,10 @@ class ZipProvider(InputProvider):
         Raises:
             ValueError: If config is invalid
         """
-        if 'zip_path' not in self.config:
+        if "zip_path" not in self.config:
             raise ValueError("'zip_path' is required in config")
 
-        if self.mode not in ['single', 'multiple']:
+        if self.mode not in ["single", "multiple"]:
             raise ValueError(f"Invalid mode: {self.mode}. Must be 'single' or 'multiple'")
 
         return True
