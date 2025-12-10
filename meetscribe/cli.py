@@ -49,7 +49,7 @@ def cmd_run(args):
     logger.info(f"Starting pipeline for: {meeting_id}")
     output = runner.run(meeting_id)
 
-    logger.info(f"Pipeline complete!")
+    logger.info("Pipeline complete!")
     logger.info(f"Output: {output}")
     print(f"\nSuccess! Output available at:\n{output}")
 
@@ -91,7 +91,7 @@ def cmd_init(args):
 
     logger.info(f"Configuration template created: {output_path}")
     print(f"\nConfiguration template created: {output_path}")
-    print(f"Please edit this file with your credentials and settings.")
+    print("Please edit this file with your credentials and settings.")
 
 
 def main():

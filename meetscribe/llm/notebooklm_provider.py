@@ -8,7 +8,7 @@ import logging
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from ..core.models import ActionItem, Decision, Minutes, Transcript
 from ..core.providers import LLMProvider

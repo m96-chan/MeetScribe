@@ -4,15 +4,13 @@ OBS Recording INPUT provider for MeetScribe.
 Monitors OBS recording output directory and uses recorded files.
 """
 
-import json
 import logging
 import os
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
-from ..core.meeting_id import generate_meeting_id_from_file
 from ..core.providers import InputProvider
 
 logger = logging.getLogger(__name__)

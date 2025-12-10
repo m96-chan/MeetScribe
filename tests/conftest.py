@@ -2,9 +2,6 @@
 Pytest configuration and shared fixtures for MeetScribe tests.
 """
 
-import json
-import shutil
-import tempfile
 from datetime import datetime
 from pathlib import Path
 

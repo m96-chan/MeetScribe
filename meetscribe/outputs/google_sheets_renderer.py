@@ -7,9 +7,8 @@ Creates Google Spreadsheets with structured meeting data using Google Sheets API
 import json
 import logging
 import os
-from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 from ..core.models import Minutes
 from ..core.providers import OutputRenderer

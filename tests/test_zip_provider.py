@@ -406,4 +406,4 @@ class TestZipProviderConfiguration:
 
         # Then: supported formats include common audio types
         expected_formats = {".mp3", ".wav", ".m4a", ".flac", ".ogg", ".opus"}
-        assert provider.SUPPORTED_AUDIO_FORMATS == expected_formats
+        assert expected_formats == provider.SUPPORTED_AUDIO_FORMATS

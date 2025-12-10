@@ -173,7 +173,7 @@ class ZipProvider(InputProvider):
             if metadata_path.exists():
                 logger.info(f"Loading metadata: {metadata_path}")
                 if metadata_path.suffix == ".json":
-                    with open(metadata_path, "r", encoding="utf-8") as f:
+                    with open(metadata_path, encoding="utf-8") as f:
                         return json.load(f)
                 # TODO: Add YAML support if needed
                 # elif metadata_path.suffix in ['.yaml', '.yml']:
@@ -187,7 +187,7 @@ class ZipProvider(InputProvider):
                 if metadata_path.is_file():
                     logger.info(f"Loading metadata from subdirectory: {metadata_path}")
                     if metadata_path.suffix == ".json":
-                        with open(metadata_path, "r", encoding="utf-8") as f:
+                        with open(metadata_path, encoding="utf-8") as f:
                             return json.load(f)
 
         logger.info("No metadata file found")

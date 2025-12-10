@@ -2,21 +2,15 @@
 Unit tests for configuration management.
 """
 
-import tempfile
-from pathlib import Path
 
 import pytest
 import yaml
 
 from meetscribe.core.config import (
     ConfigValidationError,
-    ConvertConfig,
-    InputConfig,
-    LLMConfig,
     OutputConfig,
     PipelineConfig,
     create_default_config,
-    load_config,
     validate_config,
 )
 

@@ -4,11 +4,8 @@ Tests for core data models.
 
 from datetime import datetime
 
-import pytest
-
 from meetscribe.core.models import (
     ActionItem,
-    AudioInfo,
     Decision,
     MeetingInfo,
     Minutes,

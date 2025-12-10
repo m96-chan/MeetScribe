@@ -8,7 +8,7 @@ import logging
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from ..core.meeting_id import parse_meeting_id
 from ..core.models import AudioInfo, MeetingInfo, Segment, Transcript

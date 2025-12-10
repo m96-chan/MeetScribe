@@ -5,14 +5,9 @@ This test suite covers Phase 1: Config Layer implementation
 for Issue #200 - Multiple Output Formats Support.
 """
 
-from pathlib import Path
 
-import pytest
 
 from meetscribe.core.config import (
-    ConvertConfig,
-    InputConfig,
-    LLMConfig,
     OutputConfig,
     PipelineConfig,
 )

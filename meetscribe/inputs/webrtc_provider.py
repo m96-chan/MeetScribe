@@ -7,7 +7,6 @@ Captures audio from WebRTC streams.
 import asyncio
 import json
 import logging
-import os
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -179,11 +178,10 @@ class WebRTCProvider(InputProvider):
         try:
             import aiohttp
 
-            async with aiohttp.ClientSession() as session:
-                async with session.post(
-                    f"{self.stream_url}/answer", json={"sdp": answer.sdp, "type": answer.type}
-                ) as response:
-                    return response.status == 200
+            async with aiohttp.ClientSession() as session, session.post(
+                f"{self.stream_url}/answer", json={"sdp": answer.sdp, "type": answer.type}
+            ) as response:
+                return response.status == 200
         except Exception as e:
             logger.error(f"Failed to send answer: {e}")
 

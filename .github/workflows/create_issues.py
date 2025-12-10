@@ -42,7 +42,7 @@ def create_issue_body(data):
         for file in data["related_files"]:
             lines.append(f"- `{file}`")
 
-    lines.extend(["", "---", "", f"*Auto-generated issue*"])
+    lines.extend(["", "---", "", "*Auto-generated issue*"])
 
     return "\n".join(lines)
 
@@ -119,7 +119,7 @@ def process_zip(zip_path, repo):
             print(f"  - {json_file.name}")
 
             try:
-                with open(json_file, "r", encoding="utf-8") as f:
+                with open(json_file, encoding="utf-8") as f:
                     data = json.load(f)
 
                 title = data.get("title", "Untitled Issue")

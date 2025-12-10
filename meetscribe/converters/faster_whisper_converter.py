@@ -5,10 +5,9 @@ Uses faster-whisper for local GPU-accelerated transcription.
 """
 
 import logging
-import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Tuple
 
 from ..core.meeting_id import parse_meeting_id
 from ..core.models import AudioInfo, MeetingInfo, Segment, Transcript

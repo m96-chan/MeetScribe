@@ -7,7 +7,6 @@ Supports various audio formats and preprocessing.
 
 import json
 import logging
-import os
 import shutil
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -154,7 +153,7 @@ class FileProvider(InputProvider):
         metadata_file = Path(self.metadata_path)
         if metadata_file.exists():
             try:
-                with open(metadata_file, "r", encoding="utf-8") as f:
+                with open(metadata_file, encoding="utf-8") as f:
                     self._metadata = json.load(f)
                 logger.info(f"Loaded metadata from {metadata_file}")
             except Exception as e:

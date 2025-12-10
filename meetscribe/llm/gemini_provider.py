@@ -7,9 +7,8 @@ Uses Google's Gemini models for meeting minutes generation.
 import json
 import logging
 import os
-from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 from ..core.models import ActionItem, Decision, Minutes, Transcript
 from ..core.providers import LLMProvider

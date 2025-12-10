@@ -10,7 +10,7 @@ import mimetypes
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from ..core.meeting_id import parse_meeting_id
 from ..core.models import AudioInfo, MeetingInfo, Segment, Transcript
@@ -216,7 +216,6 @@ class GeminiAudioConverter(ConvertProvider):
 
     def _prepare_inline_audio(self, audio_path: Path) -> Dict[str, Any]:
         """Prepare audio for inline upload."""
-        import google.generativeai as genai
 
         mime_type = mimetypes.guess_type(str(audio_path))[0] or "audio/mpeg"
 

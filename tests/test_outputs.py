@@ -3,7 +3,6 @@ Unit tests for OUTPUT layer renderers.
 """
 
 import json
-from datetime import datetime
 from pathlib import Path
 
 import pytest

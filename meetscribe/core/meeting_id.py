@@ -6,7 +6,6 @@ Extended: YYYY-MM-DDTHH-MM-SS_<source>_<channel>_<suffix>
 Example: 2025-11-21T19-00_discord_channel1234
 """
 
-import hashlib
 import re
 import uuid
 from dataclasses import dataclass

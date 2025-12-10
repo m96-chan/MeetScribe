@@ -90,7 +90,7 @@ def test_poc_pipeline():
             print("[OK] Output file created successfully")
             print()
             print("Contents:")
-            with open(output, "r", encoding="utf-8") as f:
+            with open(output, encoding="utf-8") as f:
                 content = f.read()
                 print(content)
         else:
