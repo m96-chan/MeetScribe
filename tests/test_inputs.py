@@ -2,7 +2,6 @@
 Unit tests for INPUT layer providers.
 """
 
-
 import pytest
 
 from meetscribe.inputs.factory import get_input_provider

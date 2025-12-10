@@ -178,9 +178,12 @@ class WebRTCProvider(InputProvider):
         try:
             import aiohttp
 
-            async with aiohttp.ClientSession() as session, session.post(
-                f"{self.stream_url}/answer", json={"sdp": answer.sdp, "type": answer.type}
-            ) as response:
+            async with (
+                aiohttp.ClientSession() as session,
+                session.post(
+                    f"{self.stream_url}/answer", json={"sdp": answer.sdp, "type": answer.type}
+                ) as response,
+            ):
                 return response.status == 200
         except Exception as e:
             logger.error(f"Failed to send answer: {e}")

@@ -5,8 +5,6 @@ This test suite covers Phase 1: Config Layer implementation
 for Issue #200 - Multiple Output Formats Support.
 """
 
-
-
 from meetscribe.core.config import (
     OutputConfig,
     PipelineConfig,

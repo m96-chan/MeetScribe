@@ -2,7 +2,6 @@
 Unit tests for CONVERT layer providers.
 """
 
-
 import pytest
 
 from meetscribe.converters.deepgram_converter import DeepgramConverter
