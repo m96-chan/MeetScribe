@@ -4,15 +4,14 @@ Google Meet Drive INPUT provider for MeetScribe.
 Downloads Google Meet recordings from Google Drive.
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional, List
-from datetime import datetime
+import json
 import logging
 import os
-import json
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from ..core.providers import InputProvider
-
 
 logger = logging.getLogger(__name__)
 
@@ -68,10 +67,10 @@ class GoogleMeetProvider(InputProvider):
     def _init_service(self):
         """Initialize Google Drive API service."""
         try:
+            from google.auth.transport.requests import Request
             from google.oauth2 import service_account
             from google.oauth2.credentials import Credentials
             from google_auth_oauthlib.flow import InstalledAppFlow
-            from google.auth.transport.requests import Request
             from googleapiclient.discovery import build
 
             creds = None
@@ -144,8 +143,9 @@ class GoogleMeetProvider(InputProvider):
 
     def _download_recording(self, meeting_id: str) -> Path:
         """Download actual recording from Drive."""
-        from googleapiclient.http import MediaIoBaseDownload
         import io
+
+        from googleapiclient.http import MediaIoBaseDownload
 
         # Find recording file
         file_info = self._find_recording()

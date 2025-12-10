@@ -4,18 +4,19 @@ Integration tests for MeetScribe pipeline.
 Tests the full pipeline flow from input to output.
 """
 
-import pytest
-from pathlib import Path
-from datetime import datetime
 import json
+from datetime import datetime
+from pathlib import Path
+
+import pytest
 import yaml
 
-from meetscribe.core.config import PipelineConfig, load_config
-from meetscribe.core.models import Transcript, Minutes, MeetingInfo, AudioInfo
-from meetscribe.inputs.factory import get_input_provider
 from meetscribe.converters.factory import get_converter
+from meetscribe.core.config import PipelineConfig, load_config
+from meetscribe.core.models import AudioInfo, MeetingInfo, Minutes, Transcript
+from meetscribe.inputs.factory import get_input_provider
 from meetscribe.llm.factory import get_llm_provider
-from meetscribe.outputs.factory import get_output_renderer, get_multiple_renderers
+from meetscribe.outputs.factory import get_multiple_renderers, get_output_renderer
 
 
 @pytest.mark.integration

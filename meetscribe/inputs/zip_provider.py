@@ -5,14 +5,13 @@ Extracts audio files and metadata from ZIP archives.
 Supports both single mode (first file only) and multiple mode (all files).
 """
 
-import zipfile
 import json
 import logging
+import zipfile
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from ..core.providers import InputProvider
-
 
 logger = logging.getLogger(__name__)
 

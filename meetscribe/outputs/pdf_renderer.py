@@ -4,14 +4,13 @@ PDF OUTPUT renderer for MeetScribe.
 Generates formatted PDF meeting minutes using ReportLab.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List
-from datetime import datetime
 import logging
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
 
-from ..core.providers import OutputRenderer
 from ..core.models import Minutes
-
+from ..core.providers import OutputRenderer
 
 logger = logging.getLogger(__name__)
 
@@ -57,19 +56,19 @@ class PDFRenderer(OutputRenderer):
     def _init_reportlab(self):
         """Initialize ReportLab components."""
         try:
-            from reportlab.lib.pagesizes import A4, LETTER
             from reportlab.lib import colors
-            from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-            from reportlab.lib.units import inch, cm
+            from reportlab.lib.pagesizes import A4, LETTER
+            from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+            from reportlab.lib.units import cm, inch
             from reportlab.platypus import (
-                SimpleDocTemplate,
+                ListFlowable,
+                ListItem,
+                PageBreak,
                 Paragraph,
+                SimpleDocTemplate,
                 Spacer,
                 Table,
                 TableStyle,
-                PageBreak,
-                ListFlowable,
-                ListItem,
             )
 
             self.reportlab_available = True
@@ -118,20 +117,20 @@ class PDFRenderer(OutputRenderer):
 
     def _generate_pdf(self, minutes: Minutes, meeting_id: str, output_path: Path):
         """Generate actual PDF using ReportLab."""
-        from reportlab.lib.pagesizes import A4, LETTER
         from reportlab.lib import colors
-        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.enums import TA_CENTER, TA_LEFT
+        from reportlab.lib.pagesizes import A4, LETTER
+        from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
         from reportlab.lib.units import inch
         from reportlab.platypus import (
-            SimpleDocTemplate,
+            ListFlowable,
+            ListItem,
             Paragraph,
+            SimpleDocTemplate,
             Spacer,
             Table,
             TableStyle,
-            ListFlowable,
-            ListItem,
         )
-        from reportlab.lib.enums import TA_CENTER, TA_LEFT
 
         # Create document
         doc = SimpleDocTemplate(

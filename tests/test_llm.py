@@ -2,16 +2,17 @@
 Unit tests for LLM layer providers.
 """
 
-import pytest
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
-from meetscribe.llm.factory import get_llm_provider
-from meetscribe.llm.notebooklm_provider import NotebookLMProvider
+import pytest
+
+from meetscribe.core.models import MeetingInfo, Minutes, Transcript
 from meetscribe.llm.chatgpt_provider import ChatGPTProvider
 from meetscribe.llm.claude_provider import ClaudeProvider
+from meetscribe.llm.factory import get_llm_provider
 from meetscribe.llm.gemini_provider import GeminiProvider
-from meetscribe.core.models import Transcript, MeetingInfo, Minutes
+from meetscribe.llm.notebooklm_provider import NotebookLMProvider
 
 
 @pytest.fixture

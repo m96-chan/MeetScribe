@@ -4,16 +4,15 @@ WebRTC Stream INPUT provider for MeetScribe.
 Captures audio from WebRTC streams.
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional, List
-from datetime import datetime
+import asyncio
+import json
 import logging
 import os
-import json
-import asyncio
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 from ..core.providers import InputProvider
-
 
 logger = logging.getLogger(__name__)
 

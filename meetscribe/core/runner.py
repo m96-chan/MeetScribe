@@ -4,14 +4,13 @@ Pipeline runner for MeetScribe.
 Orchestrates the full INPUT → CONVERT → LLM → OUTPUT pipeline.
 """
 
+import logging
 from pathlib import Path
 from typing import Optional
-import logging
 
 from .config import PipelineConfig
-from .models import Transcript, Minutes
-from .providers import InputProvider, ConvertProvider, LLMProvider, OutputRenderer
-
+from .models import Minutes, Transcript
+from .providers import ConvertProvider, InputProvider, LLMProvider, OutputRenderer
 
 logger = logging.getLogger(__name__)
 

@@ -2,23 +2,23 @@
 Pytest configuration and shared fixtures for MeetScribe tests.
 """
 
-import pytest
-from pathlib import Path
-from datetime import datetime
 import json
-import tempfile
 import shutil
+import tempfile
+from datetime import datetime
+from pathlib import Path
+
+import pytest
 
 from meetscribe.core.models import (
-    Transcript,
-    Minutes,
-    MeetingInfo,
-    AudioInfo,
-    Segment,
-    Decision,
     ActionItem,
+    AudioInfo,
+    Decision,
+    MeetingInfo,
+    Minutes,
+    Segment,
+    Transcript,
 )
-
 
 # ============================================================================
 # Path Fixtures

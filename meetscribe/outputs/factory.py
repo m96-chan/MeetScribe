@@ -2,7 +2,7 @@
 Factory for OUTPUT layer renderers.
 """
 
-from typing import Dict, Any, List
+from typing import Any, Dict, List
 
 from ..core.providers import OutputRenderer
 

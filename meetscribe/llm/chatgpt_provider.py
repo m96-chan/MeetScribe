@@ -4,16 +4,15 @@ ChatGPT LLM provider for MeetScribe.
 Uses OpenAI's GPT models for meeting minutes generation.
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional, List
-from datetime import datetime
+import json
 import logging
 import os
-import json
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
+from ..core.models import ActionItem, Decision, Minutes, Transcript
 from ..core.providers import LLMProvider
-from ..core.models import Transcript, Minutes, Decision, ActionItem
-
 
 logger = logging.getLogger(__name__)
 

@@ -13,9 +13,8 @@ import sys
 from pathlib import Path
 
 from .core.config import load_config
-from .core.runner import PipelineRunner
 from .core.meeting_id import generate_meeting_id
-
+from .core.runner import PipelineRunner
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"

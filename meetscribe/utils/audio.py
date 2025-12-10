@@ -4,12 +4,12 @@ Audio processing utilities for MeetScribe.
 Provides functions for audio preprocessing, analysis, and conversion.
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional, Tuple, List
-import logging
-import subprocess
 import json
+import logging
 import os
+import subprocess
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 

@@ -2,19 +2,20 @@
 Unit tests for CONVERT layer providers.
 """
 
-import pytest
-from pathlib import Path
-from datetime import datetime
-from unittest.mock import Mock, patch, MagicMock
-import tempfile
 import os
+import tempfile
+from datetime import datetime
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
 
+import pytest
+
+from meetscribe.converters.deepgram_converter import DeepgramConverter
 from meetscribe.converters.factory import get_converter
-from meetscribe.converters.passthrough_converter import PassthroughConverter
-from meetscribe.converters.whisper_converter import WhisperAPIConverter
 from meetscribe.converters.faster_whisper_converter import FasterWhisperConverter
 from meetscribe.converters.gemini_converter import GeminiAudioConverter
-from meetscribe.converters.deepgram_converter import DeepgramConverter
+from meetscribe.converters.passthrough_converter import PassthroughConverter
+from meetscribe.converters.whisper_converter import WhisperAPIConverter
 from meetscribe.core.models import Transcript
 
 

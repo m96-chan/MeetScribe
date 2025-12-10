@@ -2,8 +2,10 @@
 Tests for meeting ID generation and parsing.
 """
 
-import pytest
 from datetime import datetime
+
+import pytest
+
 from meetscribe.core.meeting_id import generate_meeting_id, parse_meeting_id, validate_meeting_id
 
 

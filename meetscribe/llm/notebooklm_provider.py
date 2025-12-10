@@ -4,15 +4,14 @@ NotebookLM LLM provider for MeetScribe.
 Creates a new NotebookLM notebook with audio/transcript and generates meeting minutes.
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional
-from datetime import datetime
 import logging
 import os
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, Optional
 
+from ..core.models import ActionItem, Decision, Minutes, Transcript
 from ..core.providers import LLMProvider
-from ..core.models import Transcript, Minutes, Decision, ActionItem
-
 
 logger = logging.getLogger(__name__)
 

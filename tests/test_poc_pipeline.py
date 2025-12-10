@@ -4,8 +4,8 @@ PoC pipeline test script.
 Tests the entire pipeline without requiring pytest.
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Set UTF-8 encoding for Windows console
@@ -18,8 +18,8 @@ if sys.platform == "win32":
 sys.path.insert(0, str(Path(__file__).parent))
 
 from meetscribe.core.config import load_config
-from meetscribe.core.runner import PipelineRunner
 from meetscribe.core.meeting_id import generate_meeting_id
+from meetscribe.core.runner import PipelineRunner
 
 
 def test_poc_pipeline():

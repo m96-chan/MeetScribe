@@ -2,7 +2,7 @@
 Factory for INPUT layer providers.
 """
 
-from typing import Dict, Any
+from typing import Any, Dict
 
 from ..core.providers import InputProvider
 

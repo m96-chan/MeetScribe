@@ -4,17 +4,16 @@ OBS Recording INPUT provider for MeetScribe.
 Monitors OBS recording output directory and uses recorded files.
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional, List
-from datetime import datetime
+import json
 import logging
 import os
-import json
 import time
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from ..core.providers import InputProvider
 from ..core.meeting_id import generate_meeting_id_from_file
-
+from ..core.providers import InputProvider
 
 logger = logging.getLogger(__name__)
 
@@ -156,7 +155,8 @@ class OBSProvider(InputProvider):
     def _record_via_websocket(self, meeting_id: str) -> Path:
         """Control OBS via websocket to start/stop recording."""
         try:
-            from obswebsocket import obsws, requests as obs_requests
+            from obswebsocket import obsws
+            from obswebsocket import requests as obs_requests
 
             # Connect to OBS
             ws = obsws(self.websocket_host, self.websocket_port, self.websocket_password)

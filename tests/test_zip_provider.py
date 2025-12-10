@@ -4,10 +4,11 @@ Tests for ZipProvider.
 Following TDD approach - tests written before implementation.
 """
 
-import pytest
-import zipfile
 import json
+import zipfile
 from pathlib import Path
+
+import pytest
 
 from meetscribe.inputs.zip_provider import ZipProvider
 

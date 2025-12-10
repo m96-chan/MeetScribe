@@ -5,9 +5,9 @@ These models unify data flow across all pipeline stages.
 """
 
 from dataclasses import dataclass, field
-from typing import Optional, List, Dict, Any
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 @dataclass

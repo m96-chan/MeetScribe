@@ -4,14 +4,13 @@ Markdown OUTPUT renderer for MeetScribe.
 Generates formatted Markdown meeting minutes.
 """
 
-from pathlib import Path
-from typing import Dict, Any
-from datetime import datetime
 import logging
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict
 
-from ..core.providers import OutputRenderer
 from ..core.models import Minutes
-
+from ..core.providers import OutputRenderer
 
 logger = logging.getLogger(__name__)
 

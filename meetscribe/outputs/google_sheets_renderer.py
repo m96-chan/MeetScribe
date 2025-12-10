@@ -4,16 +4,15 @@ Google Spreadsheet OUTPUT renderer for MeetScribe.
 Creates Google Spreadsheets with structured meeting data using Google Sheets API.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional
-from datetime import datetime
+import json
 import logging
 import os
-import json
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from ..core.providers import OutputRenderer
 from ..core.models import Minutes
-
+from ..core.providers import OutputRenderer
 
 logger = logging.getLogger(__name__)
 
@@ -71,10 +70,10 @@ class GoogleSheetsRenderer(OutputRenderer):
     def _init_services(self):
         """Initialize Google API services."""
         try:
+            from google.auth.transport.requests import Request
             from google.oauth2 import service_account
             from google.oauth2.credentials import Credentials
             from google_auth_oauthlib.flow import InstalledAppFlow
-            from google.auth.transport.requests import Request
             from googleapiclient.discovery import build
 
             creds = None

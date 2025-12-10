@@ -2,18 +2,19 @@
 Unit tests for INPUT layer providers.
 """
 
-import pytest
-from pathlib import Path
-from datetime import datetime
 import json
 import tempfile
+from datetime import datetime
+from pathlib import Path
+
+import pytest
 
 from meetscribe.inputs.factory import get_input_provider
 from meetscribe.inputs.file_provider import FileProvider
-from meetscribe.inputs.zip_provider import ZipProvider
 from meetscribe.inputs.google_meet_provider import GoogleMeetProvider
 from meetscribe.inputs.obs_provider import OBSProvider
 from meetscribe.inputs.webrtc_provider import WebRTCProvider
+from meetscribe.inputs.zip_provider import ZipProvider
 
 
 class TestInputFactory:

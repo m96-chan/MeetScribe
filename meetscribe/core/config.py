@@ -4,13 +4,13 @@ Configuration management for MeetScribe.
 Supports YAML-based pipeline configuration with validation.
 """
 
-from dataclasses import dataclass, field
-from typing import Dict, Any, Optional, List, Union
-from pathlib import Path
-import yaml
-import os
 import logging
+import os
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Union
 
+import yaml
 
 logger = logging.getLogger(__name__)
 

@@ -2,16 +2,18 @@
 Tests for core data models.
 """
 
-import pytest
 from datetime import datetime
+
+import pytest
+
 from meetscribe.core.models import (
-    Transcript,
-    Minutes,
-    AudioInfo,
-    MeetingInfo,
-    Segment,
-    Decision,
     ActionItem,
+    AudioInfo,
+    Decision,
+    MeetingInfo,
+    Minutes,
+    Segment,
+    Transcript,
 )
 
 

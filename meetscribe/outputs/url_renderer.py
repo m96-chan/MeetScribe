@@ -4,14 +4,13 @@ URL OUTPUT renderer for MeetScribe.
 Simply displays the NotebookLM URL and optionally saves basic info.
 """
 
-from pathlib import Path
-from typing import Dict, Any
 import json
 import logging
+from pathlib import Path
+from typing import Any, Dict
 
-from ..core.providers import OutputRenderer
 from ..core.models import Minutes
-
+from ..core.providers import OutputRenderer
 
 logger = logging.getLogger(__name__)
 

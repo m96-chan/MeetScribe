@@ -4,18 +4,17 @@ Gemini Audio CONVERT provider for MeetScribe.
 Uses Google's Gemini API for audio transcription and analysis.
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional, List
-from datetime import datetime
-import logging
-import os
 import base64
+import logging
 import mimetypes
+import os
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
-from ..core.providers import ConvertProvider
-from ..core.models import Transcript, AudioInfo, MeetingInfo, Segment
 from ..core.meeting_id import parse_meeting_id
-
+from ..core.models import AudioInfo, MeetingInfo, Segment, Transcript
+from ..core.providers import ConvertProvider
 
 logger = logging.getLogger(__name__)
 

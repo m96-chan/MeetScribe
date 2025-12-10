@@ -4,17 +4,16 @@ Discord Bot INPUT provider for MeetScribe.
 Records audio from Discord voice channels using discord.py.
 """
 
-from pathlib import Path
-from typing import Dict, Any, Optional, List, Callable
-from datetime import datetime
-import logging
-import os
 import asyncio
 import json
+import logging
+import os
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional
 
-from ..core.providers import InputProvider
 from ..core.meeting_id import generate_meeting_id
-
+from ..core.providers import InputProvider
 
 logger = logging.getLogger(__name__)
 

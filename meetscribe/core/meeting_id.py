@@ -6,12 +6,12 @@ Extended: YYYY-MM-DDTHH-MM-SS_<source>_<channel>_<suffix>
 Example: 2025-11-21T19-00_discord_channel1234
 """
 
-from datetime import datetime
-from typing import Tuple, Optional, Dict, Any
-from dataclasses import dataclass
+import hashlib
 import re
 import uuid
-import hashlib
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Any, Dict, Optional, Tuple
 
 
 @dataclass

@@ -5,15 +5,14 @@ Does not perform transcription - passes audio directly to LLM layer.
 Used when LLM can consume audio files directly (e.g., NotebookLM, ChatGPT Audio).
 """
 
-from pathlib import Path
-from typing import Dict, Any
-from datetime import datetime
 import logging
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict
 
-from ..core.providers import ConvertProvider
-from ..core.models import Transcript, AudioInfo, MeetingInfo
 from ..core.meeting_id import parse_meeting_id
-
+from ..core.models import AudioInfo, MeetingInfo, Transcript
+from ..core.providers import ConvertProvider
 
 logger = logging.getLogger(__name__)
 

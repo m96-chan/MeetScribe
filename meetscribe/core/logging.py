@@ -4,13 +4,12 @@ Logging system for MeetScribe.
 Provides structured logging with multiple output targets and formatting options.
 """
 
+import json
 import logging
 import sys
-from pathlib import Path
-from typing import Optional, Dict, Any, Union
 from datetime import datetime
-import json
-
+from pathlib import Path
+from typing import Any, Dict, Optional, Union
 
 # Default log format
 DEFAULT_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
