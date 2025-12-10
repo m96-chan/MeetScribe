@@ -28,7 +28,7 @@ class OBSProvider(InputProvider):
     """
 
     # Common OBS recording formats
-    SUPPORTED_FORMATS = ['.mkv', '.mp4', '.flv', '.mov', '.ts', '.m3u8']
+    SUPPORTED_FORMATS = [".mkv", ".mp4", ".flv", ".mov", ".ts", ".m3u8"]
 
     def __init__(self, config: Dict[str, Any]):
         """
@@ -49,17 +49,17 @@ class OBSProvider(InputProvider):
         """
         super().__init__(config)
 
-        self.recording_dir = Path(config.get('recording_dir', os.path.expanduser('~/Videos')))
-        self.pattern = config.get('pattern', '*.mkv')
-        self.watch_mode = config.get('watch_mode', False)
-        self.watch_timeout = config.get('watch_timeout', 300)
-        self.use_websocket = config.get('use_websocket', False)
-        self.websocket_host = config.get('websocket_host', 'localhost')
-        self.websocket_port = config.get('websocket_port', 4455)
-        self.websocket_password = config.get('websocket_password')
-        self.output_dir = Path(config.get('output_dir', './recordings'))
-        self.extract_audio = config.get('extract_audio', True)
-        self.audio_format = config.get('audio_format', 'mp3')
+        self.recording_dir = Path(config.get("recording_dir", os.path.expanduser("~/Videos")))
+        self.pattern = config.get("pattern", "*.mkv")
+        self.watch_mode = config.get("watch_mode", False)
+        self.watch_timeout = config.get("watch_timeout", 300)
+        self.use_websocket = config.get("use_websocket", False)
+        self.websocket_host = config.get("websocket_host", "localhost")
+        self.websocket_port = config.get("websocket_port", 4455)
+        self.websocket_password = config.get("websocket_password")
+        self.output_dir = Path(config.get("output_dir", "./recordings"))
+        self.extract_audio = config.get("extract_audio", True)
+        self.audio_format = config.get("audio_format", "mp3")
 
         # OBS websocket client
         self._obs_client = None
@@ -101,13 +101,12 @@ class OBSProvider(InputProvider):
         """Find all recordings in directory."""
         recordings = []
 
-        for pattern in [self.pattern] if self.pattern else ['*']:
+        for pattern in [self.pattern] if self.pattern else ["*"]:
             recordings.extend(self.recording_dir.glob(pattern))
 
         # Filter by supported formats
         recordings = [
-            r for r in recordings
-            if r.is_file() and r.suffix.lower() in self.SUPPORTED_FORMATS
+            r for r in recordings if r.is_file() and r.suffix.lower() in self.SUPPORTED_FORMATS
         ]
 
         return sorted(recordings, key=lambda p: p.stat().st_mtime, reverse=True)
@@ -205,6 +204,7 @@ class OBSProvider(InputProvider):
         else:
             # Copy video file
             import shutil
+
             dest = output_path / recording_path.name
             shutil.copy2(recording_path, dest)
             return dest
@@ -237,9 +237,14 @@ class OBSProvider(InputProvider):
 
         try:
             cmd = [
-                'ffmpeg', '-i', str(video_path),
-                '-vn', '-acodec', 'libmp3lame',
-                '-y', str(audio_path)
+                "ffmpeg",
+                "-i",
+                str(video_path),
+                "-vn",
+                "-acodec",
+                "libmp3lame",
+                "-y",
+                str(audio_path),
             ]
             subprocess.run(cmd, check=True, capture_output=True)
             logger.info(f"Audio extracted via ffmpeg: {audio_path}")
@@ -259,7 +264,7 @@ class OBSProvider(InputProvider):
         output_path.mkdir(parents=True, exist_ok=True)
 
         mock_file = output_path / "mock_obs_recording.txt"
-        with open(mock_file, 'w') as f:
+        with open(mock_file, "w") as f:
             f.write(f"Mock OBS recording for {meeting_id}\n")
             f.write("This is a placeholder file.\n")
             f.write("Configure OBS recording directory to use actual recordings.\n")
@@ -271,10 +276,10 @@ class OBSProvider(InputProvider):
         recordings = self._find_recordings()
         return [
             {
-                'path': str(r),
-                'name': r.name,
-                'size': r.stat().st_size,
-                'modified': datetime.fromtimestamp(r.stat().st_mtime).isoformat()
+                "path": str(r),
+                "name": r.name,
+                "size": r.stat().st_size,
+                "modified": datetime.fromtimestamp(r.stat().st_mtime).isoformat(),
             }
             for r in recordings
         ]

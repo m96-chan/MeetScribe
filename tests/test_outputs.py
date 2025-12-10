@@ -26,28 +26,22 @@ def sample_minutes():
         summary="This is a test meeting summary with important information.",
         decisions=[
             Decision(
-                description="Approved the project plan",
-                responsible="Alice",
-                deadline="2024-01-15"
+                description="Approved the project plan", responsible="Alice", deadline="2024-01-15"
             ),
-            Decision(
-                description="Allocated budget for Q1",
-                responsible="Bob",
-                deadline=None
-            ),
+            Decision(description="Allocated budget for Q1", responsible="Bob", deadline=None),
         ],
         action_items=[
             ActionItem(
                 description="Complete initial implementation",
                 assignee="Charlie",
                 deadline="2024-01-10",
-                priority="high"
+                priority="high",
             ),
             ActionItem(
                 description="Review documentation",
                 assignee="David",
                 deadline="2024-01-12",
-                priority="medium"
+                priority="medium",
             ),
         ],
         key_points=[
@@ -57,7 +51,7 @@ def sample_minutes():
         ],
         participants=["Alice", "Bob", "Charlie", "David"],
         url="https://notebooklm.google.com/notebook/test123",
-        metadata={'llm_engine': 'test'}
+        metadata={"llm_engine": "test"},
     )
 
 
@@ -66,54 +60,54 @@ class TestOutputFactory:
 
     def test_get_url_renderer(self):
         """Test getting URL renderer."""
-        renderer = get_output_renderer('url', {})
+        renderer = get_output_renderer("url", {})
         assert isinstance(renderer, URLRenderer)
 
     def test_get_markdown_renderer(self):
         """Test getting markdown renderer."""
-        renderer = get_output_renderer('markdown', {})
+        renderer = get_output_renderer("markdown", {})
         assert isinstance(renderer, MarkdownRenderer)
 
     def test_get_md_renderer(self):
         """Test getting md renderer alias."""
-        renderer = get_output_renderer('md', {})
+        renderer = get_output_renderer("md", {})
         assert isinstance(renderer, MarkdownRenderer)
 
     def test_get_json_renderer(self):
         """Test getting JSON renderer."""
-        renderer = get_output_renderer('json', {})
+        renderer = get_output_renderer("json", {})
         assert isinstance(renderer, JSONRenderer)
 
     def test_get_pdf_renderer(self):
         """Test getting PDF renderer."""
-        renderer = get_output_renderer('pdf', {})
+        renderer = get_output_renderer("pdf", {})
         assert isinstance(renderer, PDFRenderer)
 
     def test_get_docs_renderer(self):
         """Test getting Google Docs renderer."""
-        renderer = get_output_renderer('docs', {})
+        renderer = get_output_renderer("docs", {})
         assert isinstance(renderer, GoogleDocsRenderer)
 
     def test_get_sheets_renderer(self):
         """Test getting Google Sheets renderer."""
-        renderer = get_output_renderer('sheets', {})
+        renderer = get_output_renderer("sheets", {})
         assert isinstance(renderer, GoogleSheetsRenderer)
 
     def test_get_webhook_renderer(self):
         """Test getting webhook renderer."""
-        renderer = get_output_renderer('webhook', {})
+        renderer = get_output_renderer("webhook", {})
         assert isinstance(renderer, DiscordWebhookRenderer)
 
     def test_unsupported_format(self):
         """Test error for unsupported format."""
         with pytest.raises(ValueError, match="Unsupported output format"):
-            get_output_renderer('invalid', {})
+            get_output_renderer("invalid", {})
 
     def test_get_multiple_renderers(self):
         """Test getting multiple renderers."""
         formats = [
-            {'format': 'markdown'},
-            {'format': 'json'},
+            {"format": "markdown"},
+            {"format": "json"},
         ]
         renderers = get_multiple_renderers(formats)
         assert len(renderers) == 2
@@ -126,21 +120,18 @@ class TestURLRenderer:
 
     def test_init_default_config(self, tmp_path):
         """Test default initialization."""
-        renderer = URLRenderer({'output_dir': str(tmp_path)})
+        renderer = URLRenderer({"output_dir": str(tmp_path)})
         assert renderer.save_metadata is True
 
     def test_render_with_url(self, tmp_path, sample_minutes):
         """Test rendering with URL."""
-        renderer = URLRenderer({
-            'output_dir': str(tmp_path),
-            'save_metadata': True
-        })
+        renderer = URLRenderer({"output_dir": str(tmp_path), "save_metadata": True})
         result = renderer.render(sample_minutes, sample_minutes.meeting_id)
 
         assert Path(result).exists()
         with open(result) as f:
             data = json.load(f)
-        assert data['notebooklm_url'] == sample_minutes.url
+        assert data["notebooklm_url"] == sample_minutes.url
 
 
 class TestMarkdownRenderer:
@@ -148,7 +139,7 @@ class TestMarkdownRenderer:
 
     def test_render_creates_file(self, tmp_path, sample_minutes):
         """Test rendering creates markdown file."""
-        renderer = MarkdownRenderer({'output_dir': str(tmp_path)})
+        renderer = MarkdownRenderer({"output_dir": str(tmp_path)})
         result = renderer.render(sample_minutes, sample_minutes.meeting_id)
 
         assert Path(result).exists()
@@ -158,7 +149,7 @@ class TestMarkdownRenderer:
 
     def test_render_includes_action_items(self, tmp_path, sample_minutes):
         """Test action items are included."""
-        renderer = MarkdownRenderer({'output_dir': str(tmp_path)})
+        renderer = MarkdownRenderer({"output_dir": str(tmp_path)})
         result = renderer.render(sample_minutes, sample_minutes.meeting_id)
 
         content = Path(result).read_text()
@@ -167,7 +158,7 @@ class TestMarkdownRenderer:
 
     def test_render_includes_decisions(self, tmp_path, sample_minutes):
         """Test decisions are included."""
-        renderer = MarkdownRenderer({'output_dir': str(tmp_path)})
+        renderer = MarkdownRenderer({"output_dir": str(tmp_path)})
         result = renderer.render(sample_minutes, sample_minutes.meeting_id)
 
         content = Path(result).read_text()
@@ -176,10 +167,7 @@ class TestMarkdownRenderer:
 
     def test_render_with_toc(self, tmp_path, sample_minutes):
         """Test table of contents is generated."""
-        renderer = MarkdownRenderer({
-            'output_dir': str(tmp_path),
-            'include_toc': True
-        })
+        renderer = MarkdownRenderer({"output_dir": str(tmp_path), "include_toc": True})
         result = renderer.render(sample_minutes, sample_minutes.meeting_id)
 
         content = Path(result).read_text()
@@ -191,28 +179,28 @@ class TestJSONRenderer:
 
     def test_render_creates_valid_json(self, tmp_path, sample_minutes):
         """Test rendering creates valid JSON."""
-        renderer = JSONRenderer({'output_dir': str(tmp_path)})
+        renderer = JSONRenderer({"output_dir": str(tmp_path)})
         result = renderer.render(sample_minutes, sample_minutes.meeting_id)
 
         with open(result) as f:
             data = json.load(f)
 
-        assert data['meeting_id'] == sample_minutes.meeting_id
-        assert data['summary'] == sample_minutes.summary
-        assert len(data['action_items']) == 2
-        assert len(data['decisions']) == 2
+        assert data["meeting_id"] == sample_minutes.meeting_id
+        assert data["summary"] == sample_minutes.summary
+        assert len(data["action_items"]) == 2
+        assert len(data["decisions"]) == 2
 
     def test_render_includes_statistics(self, tmp_path, sample_minutes):
         """Test statistics are included."""
-        renderer = JSONRenderer({'output_dir': str(tmp_path)})
+        renderer = JSONRenderer({"output_dir": str(tmp_path)})
         result = renderer.render(sample_minutes, sample_minutes.meeting_id)
 
         with open(result) as f:
             data = json.load(f)
 
-        assert 'statistics' in data
-        assert data['statistics']['total_action_items'] == 2
-        assert data['statistics']['total_decisions'] == 2
+        assert "statistics" in data
+        assert data["statistics"]["total_action_items"] == 2
+        assert data["statistics"]["total_decisions"] == 2
 
 
 class TestPDFRenderer:
@@ -221,19 +209,19 @@ class TestPDFRenderer:
     def test_init_default_config(self):
         """Test default initialization."""
         renderer = PDFRenderer({})
-        assert renderer.page_size_name == 'A4'
+        assert renderer.page_size_name == "A4"
         assert renderer.body_font_size == 11
 
     def test_render_creates_file(self, tmp_path, sample_minutes):
         """Test rendering creates file."""
-        renderer = PDFRenderer({'output_dir': str(tmp_path)})
+        renderer = PDFRenderer({"output_dir": str(tmp_path)})
         result = renderer.render(sample_minutes, sample_minutes.meeting_id)
 
         assert Path(result).exists()
 
     def test_validate_invalid_page_size(self):
         """Test validation with invalid page size."""
-        renderer = PDFRenderer({'page_size': 'INVALID'})
+        renderer = PDFRenderer({"page_size": "INVALID"})
         with pytest.raises(ValueError, match="page_size"):
             renderer.validate_config()
 
@@ -244,7 +232,7 @@ class TestDiscordWebhookRenderer:
     def test_init_default_config(self):
         """Test default initialization."""
         renderer = DiscordWebhookRenderer({})
-        assert renderer.username == 'MeetScribe'
+        assert renderer.username == "MeetScribe"
         assert renderer.include_action_items is True
 
     def test_build_payload(self, sample_minutes):
@@ -252,9 +240,9 @@ class TestDiscordWebhookRenderer:
         renderer = DiscordWebhookRenderer({})
         payload = renderer._build_payload(sample_minutes, sample_minutes.meeting_id)
 
-        assert 'embeds' in payload
-        assert payload['username'] == 'MeetScribe'
-        assert len(payload['embeds']) >= 1
+        assert "embeds" in payload
+        assert payload["username"] == "MeetScribe"
+        assert len(payload["embeds"]) >= 1
 
     def test_truncate_text(self):
         """Test text truncation."""
@@ -267,10 +255,10 @@ class TestDiscordWebhookRenderer:
 
     def test_mock_output_saves_payload(self, tmp_path, sample_minutes):
         """Test mock mode saves payload."""
-        renderer = DiscordWebhookRenderer({'output_dir': str(tmp_path)})
+        renderer = DiscordWebhookRenderer({"output_dir": str(tmp_path)})
         result = renderer.render(sample_minutes, sample_minutes.meeting_id)
 
         assert Path(result).exists()
-        with open(result, encoding='utf-8') as f:
+        with open(result, encoding="utf-8") as f:
             payload = json.load(f)
-        assert 'embeds' in payload
+        assert "embeds" in payload

@@ -76,10 +76,39 @@ class PipelineConfig:
     daemon: Optional[Dict[str, Any]] = None
 
     # Valid provider/engine/format names
-    VALID_INPUT_PROVIDERS = ['file', 'zip', 'discord', 'meet', 'google-meet', 'zoom', 'webrtc', 'obs', 'proctap']
-    VALID_CONVERT_ENGINES = ['passthrough', 'whisper', 'whisper-api', 'faster-whisper', 'gemini', 'deepgram']
-    VALID_LLM_ENGINES = ['notebooklm', 'chatgpt', 'gpt', 'claude', 'gemini']
-    VALID_OUTPUT_FORMATS = ['url', 'markdown', 'md', 'json', 'pdf', 'docs', 'google-docs', 'sheets', 'google-sheets', 'webhook', 'discord']
+    VALID_INPUT_PROVIDERS = [
+        "file",
+        "zip",
+        "discord",
+        "meet",
+        "google-meet",
+        "zoom",
+        "webrtc",
+        "obs",
+        "proctap",
+    ]
+    VALID_CONVERT_ENGINES = [
+        "passthrough",
+        "whisper",
+        "whisper-api",
+        "faster-whisper",
+        "gemini",
+        "deepgram",
+    ]
+    VALID_LLM_ENGINES = ["notebooklm", "chatgpt", "gpt", "claude", "gemini"]
+    VALID_OUTPUT_FORMATS = [
+        "url",
+        "markdown",
+        "md",
+        "json",
+        "pdf",
+        "docs",
+        "google-docs",
+        "sheets",
+        "google-sheets",
+        "webhook",
+        "discord",
+    ]
 
     @classmethod
     def from_yaml(cls, path: Path) -> "PipelineConfig":
@@ -99,7 +128,7 @@ class PipelineConfig:
         if not path.exists():
             raise FileNotFoundError(f"Config file not found: {path}")
 
-        with open(path, 'r', encoding='utf-8') as f:
+        with open(path, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f)
 
         # Expand environment variables
@@ -127,72 +156,67 @@ class PipelineConfig:
             raise ConfigValidationError(errors)
 
         input_cfg = InputConfig(
-            provider=data['input']['provider'],
-            params=data['input'].get('params', {})
+            provider=data["input"]["provider"], params=data["input"].get("params", {})
         )
 
         convert_cfg = ConvertConfig(
-            engine=data['convert']['engine'],
-            params=data['convert'].get('params', {})
+            engine=data["convert"]["engine"], params=data["convert"].get("params", {})
         )
 
-        llm_cfg = LLMConfig(
-            engine=data['llm']['engine'],
-            params=data['llm'].get('params', {})
-        )
+        llm_cfg = LLMConfig(engine=data["llm"]["engine"], params=data["llm"].get("params", {}))
 
         # Handle both single output (legacy) and multiple outputs
         output_cfg = None
         outputs_cfg = None
 
-        if 'output' in data:
-            output_data = data['output']
+        if "output" in data:
+            output_data = data["output"]
             if isinstance(output_data, list):
                 # Multiple outputs as list
                 output_cfg = [
                     OutputConfig(
-                        format=out['format'],
-                        params=out.get('params', {}),
-                        enabled=out.get('enabled', True),
-                        on_error=out.get('on_error', 'continue'),
-                        execution_group=out.get('execution_group', 0),
-                        depends_on=out.get('depends_on', []),
-                        wait_for_group=out.get('wait_for_group', True)
+                        format=out["format"],
+                        params=out.get("params", {}),
+                        enabled=out.get("enabled", True),
+                        on_error=out.get("on_error", "continue"),
+                        execution_group=out.get("execution_group", 0),
+                        depends_on=out.get("depends_on", []),
+                        wait_for_group=out.get("wait_for_group", True),
                     )
                     for out in output_data
                 ]
             else:
                 # Single output
                 output_cfg = OutputConfig(
-                    format=output_data['format'],
-                    params=output_data.get('params', {}),
-                    enabled=output_data.get('enabled', True),
-                    on_error=output_data.get('on_error', 'continue'),
-                    execution_group=output_data.get('execution_group', 0),
-                    depends_on=output_data.get('depends_on', []),
-                    wait_for_group=output_data.get('wait_for_group', True)
+                    format=output_data["format"],
+                    params=output_data.get("params", {}),
+                    enabled=output_data.get("enabled", True),
+                    on_error=output_data.get("on_error", "continue"),
+                    execution_group=output_data.get("execution_group", 0),
+                    depends_on=output_data.get("depends_on", []),
+                    wait_for_group=output_data.get("wait_for_group", True),
                 )
 
-        if 'outputs' in data:
+        if "outputs" in data:
             # Multiple outputs format (alternative key)
             outputs_cfg = [
                 OutputConfig(
-                    format=output['format'],
-                    params=output.get('params', {}),
-                    enabled=output.get('enabled', True),
-                    on_error=output.get('on_error', 'continue'),
-                    execution_group=output.get('execution_group', 0),
-                    depends_on=output.get('depends_on', []),
-                    wait_for_group=output.get('wait_for_group', True)
+                    format=output["format"],
+                    params=output.get("params", {}),
+                    enabled=output.get("enabled", True),
+                    on_error=output.get("on_error", "continue"),
+                    execution_group=output.get("execution_group", 0),
+                    depends_on=output.get("depends_on", []),
+                    wait_for_group=output.get("wait_for_group", True),
                 )
-                for output in data['outputs']
+                for output in data["outputs"]
             ]
 
-        working_dir = Path(data.get('working_dir', './meetings'))
-        cleanup_audio = data.get('cleanup_audio', False)
-        metadata = data.get('metadata', {})
-        output_execution_mode = data.get('output_execution_mode', 'auto')
-        daemon = data.get('daemon')
+        working_dir = Path(data.get("working_dir", "./meetings"))
+        cleanup_audio = data.get("cleanup_audio", False)
+        metadata = data.get("metadata", {})
+        output_execution_mode = data.get("output_execution_mode", "auto")
+        daemon = data.get("daemon")
 
         config = cls(
             input=input_cfg,
@@ -204,7 +228,7 @@ class PipelineConfig:
             cleanup_audio=cleanup_audio,
             metadata=metadata,
             output_execution_mode=output_execution_mode,
-            daemon=daemon
+            daemon=daemon,
         )
 
         # Validate semantic rules
@@ -220,61 +244,61 @@ class PipelineConfig:
         errors = []
 
         # Required top-level sections
-        required_sections = ['input', 'convert', 'llm']
+        required_sections = ["input", "convert", "llm"]
         for section in required_sections:
             if section not in data:
                 errors.append(f"Missing required section: '{section}'")
 
         # output or outputs required
-        if 'output' not in data and 'outputs' not in data:
+        if "output" not in data and "outputs" not in data:
             errors.append("Missing required section: 'output' or 'outputs'")
 
         # Validate input section
-        if 'input' in data:
-            if not isinstance(data['input'], dict):
+        if "input" in data:
+            if not isinstance(data["input"], dict):
                 errors.append("'input' must be a dictionary")
-            elif 'provider' not in data['input']:
+            elif "provider" not in data["input"]:
                 errors.append("'input.provider' is required")
 
         # Validate convert section
-        if 'convert' in data:
-            if not isinstance(data['convert'], dict):
+        if "convert" in data:
+            if not isinstance(data["convert"], dict):
                 errors.append("'convert' must be a dictionary")
-            elif 'engine' not in data['convert']:
+            elif "engine" not in data["convert"]:
                 errors.append("'convert.engine' is required")
 
         # Validate llm section
-        if 'llm' in data:
-            if not isinstance(data['llm'], dict):
+        if "llm" in data:
+            if not isinstance(data["llm"], dict):
                 errors.append("'llm' must be a dictionary")
-            elif 'engine' not in data['llm']:
+            elif "engine" not in data["llm"]:
                 errors.append("'llm.engine' is required")
 
         # Validate output section
-        if 'output' in data:
-            output = data['output']
+        if "output" in data:
+            output = data["output"]
             if isinstance(output, list):
                 for i, out in enumerate(output):
                     if not isinstance(out, dict):
                         errors.append(f"'output[{i}]' must be a dictionary")
-                    elif 'format' not in out:
+                    elif "format" not in out:
                         errors.append(f"'output[{i}].format' is required")
             elif isinstance(output, dict):
-                if 'format' not in output:
+                if "format" not in output:
                     errors.append("'output.format' is required")
             else:
                 errors.append("'output' must be a dictionary or list")
 
         # Validate outputs section
-        if 'outputs' in data:
-            outputs = data['outputs']
+        if "outputs" in data:
+            outputs = data["outputs"]
             if not isinstance(outputs, list):
                 errors.append("'outputs' must be a list")
             else:
                 for i, out in enumerate(outputs):
                     if not isinstance(out, dict):
                         errors.append(f"'outputs[{i}]' must be a dictionary")
-                    elif 'format' not in out:
+                    elif "format" not in out:
                         errors.append(f"'outputs[{i}].format' is required")
 
         return errors
@@ -309,7 +333,7 @@ class PipelineConfig:
             )
 
         # Validate convert engine
-        engine = self.convert.engine.lower().replace('_', '-')
+        engine = self.convert.engine.lower().replace("_", "-")
         if engine not in self.VALID_CONVERT_ENGINES:
             errors.append(
                 f"Unknown convert engine: '{self.convert.engine}'. "
@@ -326,7 +350,7 @@ class PipelineConfig:
 
         # Validate output format(s)
         for out in self.get_outputs():
-            fmt = out.format.lower().replace('_', '-')
+            fmt = out.format.lower().replace("_", "-")
             if fmt not in self.VALID_OUTPUT_FORMATS:
                 errors.append(
                     f"Unknown output format: '{out.format}'. "
@@ -343,25 +367,25 @@ class PipelineConfig:
         errors = []
 
         # File provider requires audio_path
-        if self.input.provider == 'file':
-            if 'audio_path' not in self.input.params:
+        if self.input.provider == "file":
+            if "audio_path" not in self.input.params:
                 errors.append("File provider requires 'audio_path' parameter")
 
         # ZIP provider requires zip_path
-        if self.input.provider == 'zip':
-            if 'zip_path' not in self.input.params:
+        if self.input.provider == "zip":
+            if "zip_path" not in self.input.params:
                 errors.append("ZIP provider requires 'zip_path' parameter")
 
         # Whisper API requires api_key
-        if self.convert.engine in ('whisper', 'whisper-api'):
-            api_key = self.convert.params.get('api_key') or os.getenv('OPENAI_API_KEY')
+        if self.convert.engine in ("whisper", "whisper-api"):
+            api_key = self.convert.params.get("api_key") or os.getenv("OPENAI_API_KEY")
             if not api_key:
                 logger.warning("Whisper API: No API key found (will run in mock mode)")
 
         # Discord webhook requires webhook_url
         for out in self.get_outputs():
-            if out.format in ('webhook', 'discord'):
-                webhook_url = out.params.get('webhook_url') or os.getenv('DISCORD_WEBHOOK_URL')
+            if out.format in ("webhook", "discord"):
+                webhook_url = out.params.get("webhook_url") or os.getenv("DISCORD_WEBHOOK_URL")
                 if not webhook_url:
                     logger.warning("Discord webhook: No webhook URL found (will run in mock mode)")
 
@@ -405,52 +429,39 @@ class PipelineConfig:
     def to_dict(self) -> Dict[str, Any]:
         """Convert config to dictionary."""
         result = {
-            'input': {
-                'provider': self.input.provider,
-                'params': self.input.params
-            },
-            'convert': {
-                'engine': self.convert.engine,
-                'params': self.convert.params
-            },
-            'llm': {
-                'engine': self.llm.engine,
-                'params': self.llm.params
-            },
-            'working_dir': str(self.working_dir),
-            'cleanup_audio': self.cleanup_audio,
-            'metadata': self.metadata,
-            'output_execution_mode': self.output_execution_mode
+            "input": {"provider": self.input.provider, "params": self.input.params},
+            "convert": {"engine": self.convert.engine, "params": self.convert.params},
+            "llm": {"engine": self.llm.engine, "params": self.llm.params},
+            "working_dir": str(self.working_dir),
+            "cleanup_audio": self.cleanup_audio,
+            "metadata": self.metadata,
+            "output_execution_mode": self.output_execution_mode,
         }
 
         # Include output or outputs depending on which is set
         if self.outputs:
-            result['outputs'] = [
+            result["outputs"] = [
                 {
-                    'format': cfg.format,
-                    'params': cfg.params,
-                    'enabled': cfg.enabled,
-                    'on_error': cfg.on_error,
-                    'execution_group': cfg.execution_group,
-                    'depends_on': cfg.depends_on,
-                    'wait_for_group': cfg.wait_for_group
+                    "format": cfg.format,
+                    "params": cfg.params,
+                    "enabled": cfg.enabled,
+                    "on_error": cfg.on_error,
+                    "execution_group": cfg.execution_group,
+                    "depends_on": cfg.depends_on,
+                    "wait_for_group": cfg.wait_for_group,
                 }
                 for cfg in self.outputs
             ]
         elif self.output:
             if isinstance(self.output, list):
-                result['output'] = [
-                    {'format': out.format, 'params': out.params}
-                    for out in self.output
+                result["output"] = [
+                    {"format": out.format, "params": out.params} for out in self.output
                 ]
             else:
-                result['output'] = {
-                    'format': self.output.format,
-                    'params': self.output.params
-                }
+                result["output"] = {"format": self.output.format, "params": self.output.params}
 
         if self.daemon:
-            result['daemon'] = self.daemon
+            result["daemon"] = self.daemon
 
         return result
 
@@ -461,7 +472,7 @@ class PipelineConfig:
         Args:
             path: Output path for config file
         """
-        with open(path, 'w', encoding='utf-8') as f:
+        with open(path, "w", encoding="utf-8") as f:
             yaml.dump(self.to_dict(), f, default_flow_style=False)
 
 
@@ -511,8 +522,8 @@ def create_default_config() -> PipelineConfig:
         PipelineConfig with sensible defaults
     """
     return PipelineConfig(
-        input=InputConfig(provider='file', params={'audio_path': './audio.mp3'}),
-        convert=ConvertConfig(engine='passthrough', params={}),
-        llm=LLMConfig(engine='notebooklm', params={}),
-        output=OutputConfig(format='url', params={})
+        input=InputConfig(provider="file", params={"audio_path": "./audio.mp3"}),
+        convert=ConvertConfig(engine="passthrough", params={}),
+        llm=LLMConfig(engine="notebooklm", params={}),
+        output=OutputConfig(format="url", params={}),
     )

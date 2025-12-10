@@ -108,24 +108,12 @@ class TestPipelineIntegration:
 
         # Create config
         config_dict = {
-            "input": {
-                "provider": "file",
-                "params": {"audio_path": str(audio_file)}
-            },
-            "convert": {
-                "engine": "passthrough",
-                "params": {}
-            },
-            "llm": {
-                "engine": "notebooklm",
-                "params": {}
-            },
-            "output": {
-                "format": "json",
-                "params": {"output_dir": str(output_dir)}
-            },
+            "input": {"provider": "file", "params": {"audio_path": str(audio_file)}},
+            "convert": {"engine": "passthrough", "params": {}},
+            "llm": {"engine": "notebooklm", "params": {}},
+            "output": {"format": "json", "params": {"output_dir": str(output_dir)}},
             "working_dir": str(output_dir),
-            "cleanup_audio": False
+            "cleanup_audio": False,
         }
 
         config_path = tmp_path / "config.yaml"
@@ -139,30 +127,18 @@ class TestPipelineIntegration:
         # Execute pipeline using config
         meeting_id = "2024-01-15T10-00_config_test"
 
-        input_provider = get_input_provider(
-            config.input.provider,
-            config.input.params
-        )
+        input_provider = get_input_provider(config.input.provider, config.input.params)
         audio_path = input_provider.record(meeting_id)
 
-        converter = get_converter(
-            config.convert.engine,
-            config.convert.params
-        )
+        converter = get_converter(config.convert.engine, config.convert.params)
         transcript = converter.transcribe(audio_path, meeting_id)
 
-        llm = get_llm_provider(
-            config.llm.engine,
-            config.llm.params
-        )
+        llm = get_llm_provider(config.llm.engine, config.llm.params)
         minutes = llm.generate_minutes(transcript)
 
         outputs = config.get_outputs()
         for output_config in outputs:
-            renderer = get_output_renderer(
-                output_config.format,
-                output_config.params
-            )
+            renderer = get_output_renderer(output_config.format, output_config.params)
             result = renderer.render(minutes, meeting_id)
             assert Path(result).exists()
 
@@ -268,10 +244,7 @@ class TestInputIntegration:
         (tmp_path / "audio1.mp3").write_bytes(b"audio1" * 100)
         (tmp_path / "audio2.mp3").write_bytes(b"audio2" * 100)
 
-        provider = get_input_provider("file", {
-            "audio_path": str(tmp_path),
-            "pattern": "*.mp3"
-        })
+        provider = get_input_provider("file", {"audio_path": str(tmp_path), "pattern": "*.mp3"})
         result = provider.record("2024-01-15T10-00_dir_test")
 
         assert result.exists()
@@ -295,9 +268,7 @@ class TestErrorHandling:
 
     def test_missing_audio_file_raises_error(self, tmp_path):
         """Test that missing audio file raises appropriate error."""
-        provider = get_input_provider("file", {
-            "audio_path": str(tmp_path / "nonexistent.mp3")
-        })
+        provider = get_input_provider("file", {"audio_path": str(tmp_path / "nonexistent.mp3")})
 
         with pytest.raises(FileNotFoundError):
             provider.record("2024-01-15T10-00_missing")
@@ -308,10 +279,11 @@ class TestErrorHandling:
             "input": {"provider": "invalid_provider"},
             "convert": {"engine": "whisper"},
             "llm": {"engine": "chatgpt"},
-            "output": {"format": "markdown"}
+            "output": {"format": "markdown"},
         }
 
         from meetscribe.core.config import ConfigValidationError
+
         with pytest.raises(ConfigValidationError):
             PipelineConfig.from_dict(config_dict)
 
@@ -320,10 +292,9 @@ class TestErrorHandling:
         audio_file = tmp_path / "test.xyz"
         audio_file.write_bytes(b"data")
 
-        provider = get_input_provider("file", {
-            "audio_path": str(audio_file),
-            "validate_format": True
-        })
+        provider = get_input_provider(
+            "file", {"audio_path": str(audio_file), "validate_format": True}
+        )
 
         with pytest.raises(ValueError, match="Unsupported audio format"):
             provider.record("2024-01-15T10-00_unsupported")

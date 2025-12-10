@@ -32,8 +32,8 @@ class URLRenderer(OutputRenderer):
             save_metadata: Whether to save metadata file (default: True)
         """
         super().__init__(config)
-        self.output_dir = Path(config.get('output_dir', './meetings'))
-        self.save_metadata = config.get('save_metadata', True)
+        self.output_dir = Path(config.get("output_dir", "./meetings"))
+        self.save_metadata = config.get("save_metadata", True)
 
     def render(self, minutes: Minutes, meeting_id: str) -> str:
         """
@@ -86,18 +86,18 @@ class URLRenderer(OutputRenderer):
         metadata_path = meeting_dir / "meeting_info.json"
 
         metadata = {
-            'meeting_id': meeting_id,
-            'notebooklm_url': minutes.url,
-            'summary': minutes.summary,
-            'decisions_count': len(minutes.decisions),
-            'action_items_count': len(minutes.action_items),
-            'key_points_count': len(minutes.key_points),
-            'participants': minutes.participants,
-            'generated_at': minutes.generated_at.isoformat(),
-            'metadata': minutes.metadata
+            "meeting_id": meeting_id,
+            "notebooklm_url": minutes.url,
+            "summary": minutes.summary,
+            "decisions_count": len(minutes.decisions),
+            "action_items_count": len(minutes.action_items),
+            "key_points_count": len(minutes.key_points),
+            "participants": minutes.participants,
+            "generated_at": minutes.generated_at.isoformat(),
+            "metadata": minutes.metadata,
         }
 
-        with open(metadata_path, 'w', encoding='utf-8') as f:
+        with open(metadata_path, "w", encoding="utf-8") as f:
             json.dump(metadata, f, indent=2, ensure_ascii=False)
 
         logger.info(f"Metadata saved: {metadata_path}")

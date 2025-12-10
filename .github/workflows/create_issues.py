@@ -16,16 +16,18 @@ def create_issue_body(data):
     """Create issue body from JSON data."""
     lines = ["## Overview", "", data.get("overview", ""), ""]
 
-    lines.extend([
-        "## Details",
-        "",
-        f"- **Layer**: {data.get('layer', '')}",
-        f"- **Directory**: `{data.get('directory', '')}`",
-        f"- **Priority**: {data.get('priority', '')}",
-        "",
-        "## Tasks",
-        ""
-    ])
+    lines.extend(
+        [
+            "## Details",
+            "",
+            f"- **Layer**: {data.get('layer', '')}",
+            f"- **Directory**: `{data.get('directory', '')}`",
+            f"- **Priority**: {data.get('priority', '')}",
+            "",
+            "## Tasks",
+            "",
+        ]
+    )
 
     for task in data.get("tasks", []):
         lines.append(f"- {task}")
@@ -49,20 +51,25 @@ def ensure_label_exists(label, repo):
     """Create label if it doesn't exist."""
     # Check if label exists
     result = subprocess.run(
-        ['gh', 'label', 'list', '--repo', repo, '--json', 'name'],
-        capture_output=True, text=True, check=False
+        ["gh", "label", "list", "--repo", repo, "--json", "name"],
+        capture_output=True,
+        text=True,
+        check=False,
     )
 
     if result.returncode == 0:
         import json
+
         existing_labels = json.loads(result.stdout)
-        label_names = [l['name'] for l in existing_labels]
+        label_names = [l["name"] for l in existing_labels]
 
         if label not in label_names:
             # Create label with default color
             subprocess.run(
-                ['gh', 'label', 'create', label, '--repo', repo, '--color', 'ededed'],
-                capture_output=True, text=True, check=False
+                ["gh", "label", "create", label, "--repo", repo, "--color", "ededed"],
+                capture_output=True,
+                text=True,
+                check=False,
             )
 
 
@@ -72,15 +79,15 @@ def create_issue(title, body, labels, repo):
     for label in labels:
         ensure_label_exists(label, repo)
 
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.md') as f:
+    with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".md") as f:
         f.write(body)
         body_file = f.name
 
     try:
-        cmd = ['gh', 'issue', 'create', '--repo', repo, '--title', title, '--body-file', body_file]
+        cmd = ["gh", "issue", "create", "--repo", repo, "--title", title, "--body-file", body_file]
 
         for label in labels:
-            cmd.extend(['--label', label])
+            cmd.extend(["--label", label])
 
         result = subprocess.run(cmd, capture_output=True, text=True, check=False)
 
@@ -103,21 +110,21 @@ def process_zip(zip_path, repo):
     issues_failed = 0
 
     with tempfile.TemporaryDirectory() as temp_dir:
-        with zipfile.ZipFile(zip_path, 'r') as zf:
+        with zipfile.ZipFile(zip_path, "r") as zf:
             zf.extractall(temp_dir)
 
-        json_files = sorted(Path(temp_dir).glob('*.json'))
+        json_files = sorted(Path(temp_dir).glob("*.json"))
 
         for json_file in json_files:
             print(f"  - {json_file.name}")
 
             try:
-                with open(json_file, 'r', encoding='utf-8') as f:
+                with open(json_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
 
-                title = data.get('title', 'Untitled Issue')
+                title = data.get("title", "Untitled Issue")
                 body = create_issue_body(data)
-                labels = data.get('labels', [])
+                labels = data.get("labels", [])
 
                 issue_url = create_issue(title, body, labels, repo)
                 print(f"    ✓ Created: {issue_url}")
@@ -133,25 +140,25 @@ def process_zip(zip_path, repo):
 
 
 def main():
-    issues_dir = Path('.github/issues')
+    issues_dir = Path(".github/issues")
 
     if not issues_dir.exists():
         print("No .github/issues directory found")
         return
 
-    repo = os.environ.get('GITHUB_REPOSITORY', '')
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
     if not repo:
         print("ERROR: GITHUB_REPOSITORY not set")
         sys.exit(1)
 
-    zip_files = list(issues_dir.glob('*.zip'))
+    zip_files = list(issues_dir.glob("*.zip"))
 
     if not zip_files:
         print("No ZIP files found")
         return
 
     total_issues = 0
-    processed_dir = issues_dir / 'processed'
+    processed_dir = issues_dir / "processed"
     processed_dir.mkdir(exist_ok=True)
 
     for zip_file in zip_files:
@@ -160,7 +167,8 @@ def main():
 
         # Move to processed
         import datetime
-        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         new_name = processed_dir / f"{timestamp}_{zip_file.name}"
         zip_file.rename(new_name)
         print(f"  Archived: {new_name.name}")
@@ -168,5 +176,5 @@ def main():
     print(f"\nTotal issues created: {total_issues}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

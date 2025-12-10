@@ -27,8 +27,8 @@ class GoogleDocsRenderer(OutputRenderer):
 
     # API scopes required
     SCOPES = [
-        'https://www.googleapis.com/auth/documents',
-        'https://www.googleapis.com/auth/drive.file'
+        "https://www.googleapis.com/auth/documents",
+        "https://www.googleapis.com/auth/drive.file",
     ]
 
     def __init__(self, config: Dict[str, Any]):
@@ -45,15 +45,21 @@ class GoogleDocsRenderer(OutputRenderer):
         """
         super().__init__(config)
 
-        self.credentials_path = config.get('credentials_path') or os.getenv('GOOGLE_CREDENTIALS_PATH')
-        self.service_account_path = config.get('service_account_path') or os.getenv('GOOGLE_SERVICE_ACCOUNT_PATH')
-        self.token_path = config.get('token_path', './token.json')
-        self.folder_id = config.get('folder_id')
-        self.share_with = config.get('share_with', [])
-        self.document_title_template = config.get('document_title_template', 'Meeting Minutes: {meeting_id}')
+        self.credentials_path = config.get("credentials_path") or os.getenv(
+            "GOOGLE_CREDENTIALS_PATH"
+        )
+        self.service_account_path = config.get("service_account_path") or os.getenv(
+            "GOOGLE_SERVICE_ACCOUNT_PATH"
+        )
+        self.token_path = config.get("token_path", "./token.json")
+        self.folder_id = config.get("folder_id")
+        self.share_with = config.get("share_with", [])
+        self.document_title_template = config.get(
+            "document_title_template", "Meeting Minutes: {meeting_id}"
+        )
 
         # Output dir for local backup
-        self.output_dir = Path(config.get('output_dir', './meetings'))
+        self.output_dir = Path(config.get("output_dir", "./meetings"))
 
         # Initialize API client
         self.docs_service = None
@@ -74,8 +80,7 @@ class GoogleDocsRenderer(OutputRenderer):
             # Try service account first
             if self.service_account_path and Path(self.service_account_path).exists():
                 creds = service_account.Credentials.from_service_account_file(
-                    self.service_account_path,
-                    scopes=self.SCOPES
+                    self.service_account_path, scopes=self.SCOPES
                 )
                 logger.info("Using service account credentials")
 
@@ -97,14 +102,14 @@ class GoogleDocsRenderer(OutputRenderer):
 
                     # Save token
                     token_path.parent.mkdir(parents=True, exist_ok=True)
-                    with open(token_path, 'w') as f:
+                    with open(token_path, "w") as f:
                         f.write(creds.to_json())
 
                 logger.info("Using OAuth credentials")
 
             if creds:
-                self.docs_service = build('docs', 'v1', credentials=creds)
-                self.drive_service = build('drive', 'v3', credentials=creds)
+                self.docs_service = build("docs", "v1", credentials=creds)
+                self.drive_service = build("drive", "v3", credentials=creds)
                 logger.info("Google API services initialized")
             else:
                 logger.warning("No credentials found - running in mock mode")
@@ -144,8 +149,8 @@ class GoogleDocsRenderer(OutputRenderer):
         """Create actual Google Doc."""
         # Create document
         title = self.document_title_template.format(meeting_id=meeting_id)
-        doc = self.docs_service.documents().create(body={'title': title}).execute()
-        doc_id = doc['documentId']
+        doc = self.docs_service.documents().create(body={"title": title}).execute()
+        doc_id = doc["documentId"]
         doc_url = f"https://docs.google.com/document/d/{doc_id}/edit"
 
         # Build document content
@@ -154,8 +159,7 @@ class GoogleDocsRenderer(OutputRenderer):
         # Update document
         if requests:
             self.docs_service.documents().batchUpdate(
-                documentId=doc_id,
-                body={'requests': requests}
+                documentId=doc_id, body={"requests": requests}
             ).execute()
 
         # Move to folder if specified
@@ -179,56 +183,53 @@ class GoogleDocsRenderer(OutputRenderer):
         # Helper to add text
         def add_text(text: str, style: Optional[Dict] = None) -> int:
             nonlocal index
-            requests.append({
-                'insertText': {
-                    'location': {'index': index},
-                    'text': text
-                }
-            })
+            requests.append({"insertText": {"location": {"index": index}, "text": text}})
             start = index
             index += len(text)
 
             if style:
-                requests.append({
-                    'updateParagraphStyle': {
-                        'range': {'startIndex': start, 'endIndex': index},
-                        'paragraphStyle': style,
-                        'fields': ','.join(style.keys())
+                requests.append(
+                    {
+                        "updateParagraphStyle": {
+                            "range": {"startIndex": start, "endIndex": index},
+                            "paragraphStyle": style,
+                            "fields": ",".join(style.keys()),
+                        }
                     }
-                })
+                )
 
             return index
 
         def add_heading(text: str, level: int = 1):
-            add_text(text + '\n', {'namedStyleType': f'HEADING_{level}'})
+            add_text(text + "\n", {"namedStyleType": f"HEADING_{level}"})
 
         def add_body(text: str):
-            add_text(text + '\n', {'namedStyleType': 'NORMAL_TEXT'})
+            add_text(text + "\n", {"namedStyleType": "NORMAL_TEXT"})
 
         # Title
         add_heading(f"Meeting Minutes: {meeting_id}", 1)
 
         # Metadata
         add_body(f"Generated: {minutes.generated_at.strftime('%Y-%m-%d %H:%M:%S')}")
-        add_text('\n')
+        add_text("\n")
 
         # Summary
         add_heading("Summary", 2)
         add_body(minutes.summary)
-        add_text('\n')
+        add_text("\n")
 
         # Key Points
         if minutes.key_points:
             add_heading("Key Points", 2)
             for point in minutes.key_points:
                 add_body(f"• {point}")
-            add_text('\n')
+            add_text("\n")
 
         # Participants
         if minutes.participants:
             add_heading("Participants", 2)
             add_body(", ".join(minutes.participants))
-            add_text('\n')
+            add_text("\n")
 
         # Decisions
         if minutes.decisions:
@@ -240,7 +241,7 @@ class GoogleDocsRenderer(OutputRenderer):
                 if decision.deadline:
                     text += f" (Deadline: {decision.deadline})"
                 add_body(text)
-            add_text('\n')
+            add_text("\n")
 
         # Action Items
         if minutes.action_items:
@@ -254,7 +255,7 @@ class GoogleDocsRenderer(OutputRenderer):
                 if item.priority:
                     text += f" [{item.priority}]"
                 add_body(text)
-            add_text('\n')
+            add_text("\n")
 
         # Footer
         add_body("---")
@@ -268,18 +269,15 @@ class GoogleDocsRenderer(OutputRenderer):
         """Move document to specified folder."""
         try:
             # Get current parents
-            file = self.drive_service.files().get(
-                fileId=doc_id,
-                fields='parents'
-            ).execute()
-            previous_parents = ",".join(file.get('parents', []))
+            file = self.drive_service.files().get(fileId=doc_id, fields="parents").execute()
+            previous_parents = ",".join(file.get("parents", []))
 
             # Move to new folder
             self.drive_service.files().update(
                 fileId=doc_id,
                 addParents=folder_id,
                 removeParents=previous_parents,
-                fields='id, parents'
+                fields="id, parents",
             ).execute()
 
             logger.info(f"Moved document to folder: {folder_id}")
@@ -291,12 +289,8 @@ class GoogleDocsRenderer(OutputRenderer):
         try:
             self.drive_service.permissions().create(
                 fileId=doc_id,
-                body={
-                    'type': 'user',
-                    'role': 'writer',
-                    'emailAddress': email
-                },
-                sendNotificationEmail=True
+                body={"type": "user", "role": "writer", "emailAddress": email},
+                sendNotificationEmail=True,
             ).execute()
 
             logger.info(f"Shared document with: {email}")
@@ -309,14 +303,14 @@ class GoogleDocsRenderer(OutputRenderer):
         meeting_dir.mkdir(parents=True, exist_ok=True)
 
         backup_data = {
-            'meeting_id': meeting_id,
-            'google_doc_url': doc_url,
-            'generated_at': minutes.generated_at.isoformat(),
-            'summary': minutes.summary,
+            "meeting_id": meeting_id,
+            "google_doc_url": doc_url,
+            "generated_at": minutes.generated_at.isoformat(),
+            "summary": minutes.summary,
         }
 
-        backup_path = meeting_dir / 'google_doc_info.json'
-        with open(backup_path, 'w', encoding='utf-8') as f:
+        backup_path = meeting_dir / "google_doc_info.json"
+        with open(backup_path, "w", encoding="utf-8") as f:
             json.dump(backup_data, f, indent=2)
 
     def _create_mock_output(self, minutes: Minutes, meeting_id: str) -> str:
@@ -330,15 +324,15 @@ class GoogleDocsRenderer(OutputRenderer):
         mock_url = f"https://docs.google.com/document/d/mock_{meeting_id}/edit"
 
         backup_data = {
-            'meeting_id': meeting_id,
-            'google_doc_url': mock_url,
-            'generated_at': minutes.generated_at.isoformat(),
-            'summary': minutes.summary,
-            'note': 'Mock mode - no actual Google Doc created'
+            "meeting_id": meeting_id,
+            "google_doc_url": mock_url,
+            "generated_at": minutes.generated_at.isoformat(),
+            "summary": minutes.summary,
+            "note": "Mock mode - no actual Google Doc created",
         }
 
-        backup_path = meeting_dir / 'google_doc_info.json'
-        with open(backup_path, 'w', encoding='utf-8') as f:
+        backup_path = meeting_dir / "google_doc_info.json"
+        with open(backup_path, "w", encoding="utf-8") as f:
             json.dump(backup_data, f, indent=2)
 
         return mock_url

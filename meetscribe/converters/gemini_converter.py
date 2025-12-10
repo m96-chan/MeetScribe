@@ -28,7 +28,7 @@ class GeminiAudioConverter(ConvertProvider):
     """
 
     # Supported audio formats
-    SUPPORTED_FORMATS = ['.mp3', '.wav', '.m4a', '.flac', '.ogg', '.webm', '.aac']
+    SUPPORTED_FORMATS = [".mp3", ".wav", ".m4a", ".flac", ".ogg", ".webm", ".aac"]
     # Maximum file size (20MB for inline, larger for File API)
     MAX_INLINE_SIZE = 20 * 1024 * 1024
     MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024  # 2GB via File API
@@ -49,17 +49,17 @@ class GeminiAudioConverter(ConvertProvider):
         super().__init__(config)
 
         # API credentials
-        self.api_key = config.get('api_key') or os.getenv('GEMINI_API_KEY')
+        self.api_key = config.get("api_key") or os.getenv("GEMINI_API_KEY")
         if not self.api_key:
             logger.warning("No Gemini API key provided - running in mock mode")
 
         # Model settings
-        self.model_name = config.get('model', 'gemini-2.0-flash-exp')
-        self.language = config.get('language', 'auto')
-        self.include_timestamps = config.get('include_timestamps', True)
-        self.include_speaker_labels = config.get('include_speaker_labels', False)
-        self.use_file_api = config.get('use_file_api', False)
-        self.generation_config = config.get('generation_config', {})
+        self.model_name = config.get("model", "gemini-2.0-flash-exp")
+        self.language = config.get("language", "auto")
+        self.include_timestamps = config.get("include_timestamps", True)
+        self.include_speaker_labels = config.get("include_speaker_labels", False)
+        self.use_file_api = config.get("use_file_api", False)
+        self.generation_config = config.get("generation_config", {})
 
         # Initialize client
         self.client = None
@@ -73,13 +73,13 @@ class GeminiAudioConverter(ConvertProvider):
 
         try:
             import google.generativeai as genai
+
             genai.configure(api_key=self.api_key)
             self.client = genai.GenerativeModel(self.model_name)
             logger.info(f"Gemini client initialized with model: {self.model_name}")
         except ImportError:
             logger.error(
-                "google-generativeai package not installed. "
-                "Run: pip install google-generativeai"
+                "google-generativeai package not installed. " "Run: pip install google-generativeai"
             )
             raise
         except Exception as e:
@@ -116,7 +116,7 @@ class GeminiAudioConverter(ConvertProvider):
             meeting_id=meeting_id,
             source_type=source_type,
             start_time=start_time,
-            channel_id=channel
+            channel_id=channel,
         )
 
         # Perform transcription
@@ -134,30 +134,32 @@ class GeminiAudioConverter(ConvertProvider):
         # Build transcript
         transcript = Transcript(
             meeting_info=meeting_info,
-            text=result.get('text', ''),
+            text=result.get("text", ""),
             audio_path=audio_path,
             segments=segments,
             audio_info=audio_info,
             metadata={
-                'converter': 'gemini-audio',
-                'model': self.model_name,
-                'language': result.get('language', self.language),
-                'duration': result.get('duration', 0),
-            }
+                "converter": "gemini-audio",
+                "model": self.model_name,
+                "language": result.get("language", self.language),
+                "duration": result.get("duration", 0),
+            },
         )
 
         transcript.add_processing_step(
-            'gemini_audio_transcribe',
+            "gemini_audio_transcribe",
             {
-                'model': self.model_name,
-                'language': result.get('language'),
-                'segments_count': len(segments),
-                'include_timestamps': self.include_timestamps,
-            }
+                "model": self.model_name,
+                "language": result.get("language"),
+                "segments_count": len(segments),
+                "include_timestamps": self.include_timestamps,
+            },
         )
 
-        logger.info(f"Transcription complete: {len(segments)} segments, "
-                    f"{len(transcript.text)} characters")
+        logger.info(
+            f"Transcription complete: {len(segments)} segments, "
+            f"{len(transcript.text)} characters"
+        )
         return transcript
 
     def _validate_audio_file(self, audio_path: Path):
@@ -200,8 +202,8 @@ class GeminiAudioConverter(ConvertProvider):
 
         # Configure generation
         gen_config = genai.GenerationConfig(
-            temperature=self.generation_config.get('temperature', 0),
-            max_output_tokens=self.generation_config.get('max_output_tokens', 8192),
+            temperature=self.generation_config.get("temperature", 0),
+            max_output_tokens=self.generation_config.get("max_output_tokens", 8192),
         )
 
         # Call API
@@ -217,14 +219,14 @@ class GeminiAudioConverter(ConvertProvider):
         """Prepare audio for inline upload."""
         import google.generativeai as genai
 
-        mime_type = mimetypes.guess_type(str(audio_path))[0] or 'audio/mpeg'
+        mime_type = mimetypes.guess_type(str(audio_path))[0] or "audio/mpeg"
 
-        with open(audio_path, 'rb') as f:
+        with open(audio_path, "rb") as f:
             audio_data = f.read()
 
         return {
-            'mime_type': mime_type,
-            'data': base64.standard_b64encode(audio_data).decode('utf-8')
+            "mime_type": mime_type,
+            "data": base64.standard_b64encode(audio_data).decode("utf-8"),
         }
 
     def _upload_to_file_api(self, audio_path: Path):
@@ -233,7 +235,7 @@ class GeminiAudioConverter(ConvertProvider):
 
         logger.info(f"Uploading {audio_path.name} via File API")
 
-        mime_type = mimetypes.guess_type(str(audio_path))[0] or 'audio/mpeg'
+        mime_type = mimetypes.guess_type(str(audio_path))[0] or "audio/mpeg"
 
         uploaded_file = genai.upload_file(
             path=str(audio_path),
@@ -249,13 +251,11 @@ class GeminiAudioConverter(ConvertProvider):
             "Please transcribe the following audio accurately.",
         ]
 
-        if self.language != 'auto':
+        if self.language != "auto":
             prompt_parts.append(f"The audio is in {self.language}.")
 
         if self.include_timestamps:
-            prompt_parts.append(
-                "Include timestamps for each segment in the format [HH:MM:SS]."
-            )
+            prompt_parts.append("Include timestamps for each segment in the format [HH:MM:SS].")
 
         if self.include_speaker_labels:
             prompt_parts.append(
@@ -267,7 +267,7 @@ class GeminiAudioConverter(ConvertProvider):
             "At the end, provide a brief summary of the detected language and duration."
         )
 
-        return '\n'.join(prompt_parts)
+        return "\n".join(prompt_parts)
 
     def _parse_response(self, response) -> Dict[str, Any]:
         """Parse Gemini API response."""
@@ -275,49 +275,55 @@ class GeminiAudioConverter(ConvertProvider):
 
         # Extract segments from timestamped text
         segments = []
-        lines = text.split('\n')
+        lines = text.split("\n")
         current_time = 0.0
 
         for line in lines:
             line = line.strip()
-            if not line or line.startswith('Language:') or line.startswith('Duration:'):
+            if not line or line.startswith("Language:") or line.startswith("Duration:"):
                 continue
 
             # Try to parse timestamp
             import re
-            timestamp_match = re.match(r'\[(\d{2}):(\d{2}):(\d{2})\](.+)', line)
+
+            timestamp_match = re.match(r"\[(\d{2}):(\d{2}):(\d{2})\](.+)", line)
             if timestamp_match:
                 hours, minutes, seconds, content = timestamp_match.groups()
                 start_time = int(hours) * 3600 + int(minutes) * 60 + int(seconds)
-                segments.append({
-                    'start': float(start_time),
-                    'end': float(start_time + 5),  # Estimate
-                    'text': content.strip(),
-                })
+                segments.append(
+                    {
+                        "start": float(start_time),
+                        "end": float(start_time + 5),  # Estimate
+                        "text": content.strip(),
+                    }
+                )
                 current_time = start_time + 5
             elif line:
-                segments.append({
-                    'start': current_time,
-                    'end': current_time + 5,
-                    'text': line,
-                })
+                segments.append(
+                    {
+                        "start": current_time,
+                        "end": current_time + 5,
+                        "text": line,
+                    }
+                )
                 current_time += 5
 
         return {
-            'text': text,
-            'segments': segments,
-            'language': self._detect_language(text),
-            'duration': current_time,
+            "text": text,
+            "segments": segments,
+            "language": self._detect_language(text),
+            "duration": current_time,
         }
 
     def _detect_language(self, text: str) -> str:
         """Simple language detection from text."""
         # Look for explicit language declaration
         import re
-        lang_match = re.search(r'Language:\s*(\w+)', text)
+
+        lang_match = re.search(r"Language:\s*(\w+)", text)
         if lang_match:
             return lang_match.group(1).lower()
-        return self.language if self.language != 'auto' else 'unknown'
+        return self.language if self.language != "auto" else "unknown"
 
     def _mock_transcription(self, audio_path: Path) -> Dict[str, Any]:
         """Return mock transcription for testing."""
@@ -327,7 +333,7 @@ class GeminiAudioConverter(ConvertProvider):
         estimated_duration = file_size / (1024 * 1024) * 60
 
         return {
-            'text': (
+            "text": (
                 "[00:00:00] This is a mock transcription from Gemini Audio.\n"
                 "[00:00:05] The Gemini model provides excellent audio understanding.\n"
                 "[00:00:10] Meeting topics included project updates and planning.\n"
@@ -335,46 +341,59 @@ class GeminiAudioConverter(ConvertProvider):
                 "Language: English\n"
                 f"Duration: {estimated_duration:.0f} seconds"
             ),
-            'segments': [
-                {'start': 0.0, 'end': 5.0, 'text': 'This is a mock transcription from Gemini Audio.'},
-                {'start': 5.0, 'end': 10.0, 'text': 'The Gemini model provides excellent audio understanding.'},
-                {'start': 10.0, 'end': 15.0, 'text': 'Meeting topics included project updates and planning.'},
-                {'start': 15.0, 'end': 20.0, 'text': 'Key decisions were documented for follow-up.'},
+            "segments": [
+                {
+                    "start": 0.0,
+                    "end": 5.0,
+                    "text": "This is a mock transcription from Gemini Audio.",
+                },
+                {
+                    "start": 5.0,
+                    "end": 10.0,
+                    "text": "The Gemini model provides excellent audio understanding.",
+                },
+                {
+                    "start": 10.0,
+                    "end": 15.0,
+                    "text": "Meeting topics included project updates and planning.",
+                },
+                {
+                    "start": 15.0,
+                    "end": 20.0,
+                    "text": "Key decisions were documented for follow-up.",
+                },
             ],
-            'language': 'en',
-            'duration': estimated_duration,
+            "language": "en",
+            "duration": estimated_duration,
         }
 
     def _parse_segments(self, result: Dict[str, Any]) -> List[Segment]:
         """Parse segments from result."""
         segments = []
-        for seg in result.get('segments', []):
-            segments.append(Segment(
-                start=seg.get('start', 0),
-                end=seg.get('end', 0),
-                text=seg.get('text', '').strip(),
-                speaker=seg.get('speaker'),
-                language=result.get('language'),
-            ))
+        for seg in result.get("segments", []):
+            segments.append(
+                Segment(
+                    start=seg.get("start", 0),
+                    end=seg.get("end", 0),
+                    text=seg.get("text", "").strip(),
+                    speaker=seg.get("speaker"),
+                    language=result.get("language"),
+                )
+            )
         return segments
 
     def _get_audio_info(self, audio_path: Path, result: Dict[str, Any]) -> AudioInfo:
         """Extract audio information."""
         try:
             return AudioInfo(
-                duration=result.get('duration', 0),
+                duration=result.get("duration", 0),
                 samplerate=44100,
-                codec=audio_path.suffix.lower().replace('.', ''),
+                codec=audio_path.suffix.lower().replace(".", ""),
                 channels=2,
             )
         except Exception as e:
             logger.warning(f"Could not extract audio info: {e}")
-            return AudioInfo(
-                duration=0,
-                samplerate=0,
-                codec='unknown',
-                channels=0
-            )
+            return AudioInfo(duration=0, samplerate=0, codec="unknown", channels=0)
 
     def validate_config(self) -> bool:
         """
@@ -390,11 +409,11 @@ class GeminiAudioConverter(ConvertProvider):
             logger.warning("No API key - running in mock mode")
 
         valid_models = [
-            'gemini-2.0-flash-exp',
-            'gemini-1.5-flash',
-            'gemini-1.5-pro',
+            "gemini-2.0-flash-exp",
+            "gemini-1.5-flash",
+            "gemini-1.5-pro",
         ]
-        if not any(m in self.model_name for m in ['gemini']):
+        if not any(m in self.model_name for m in ["gemini"]):
             logger.warning(f"Unusual model name: {self.model_name}")
 
         return True

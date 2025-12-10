@@ -23,38 +23,38 @@ class TestConverterFactory:
 
     def test_get_passthrough_converter(self):
         """Test getting passthrough converter."""
-        converter = get_converter('passthrough', {})
+        converter = get_converter("passthrough", {})
         assert isinstance(converter, PassthroughConverter)
 
     def test_get_whisper_converter(self):
         """Test getting whisper converter."""
-        converter = get_converter('whisper', {})
+        converter = get_converter("whisper", {})
         assert isinstance(converter, WhisperAPIConverter)
 
     def test_get_whisper_api_converter(self):
         """Test getting whisper-api converter."""
-        converter = get_converter('whisper-api', {})
+        converter = get_converter("whisper-api", {})
         assert isinstance(converter, WhisperAPIConverter)
 
     def test_get_faster_whisper_converter(self):
         """Test getting faster-whisper converter."""
-        converter = get_converter('faster-whisper', {})
+        converter = get_converter("faster-whisper", {})
         assert isinstance(converter, FasterWhisperConverter)
 
     def test_get_gemini_converter(self):
         """Test getting gemini converter."""
-        converter = get_converter('gemini', {})
+        converter = get_converter("gemini", {})
         assert isinstance(converter, GeminiAudioConverter)
 
     def test_get_deepgram_converter(self):
         """Test getting deepgram converter."""
-        converter = get_converter('deepgram', {})
+        converter = get_converter("deepgram", {})
         assert isinstance(converter, DeepgramConverter)
 
     def test_unsupported_converter(self):
         """Test error for unsupported converter."""
         with pytest.raises(ValueError, match="Unsupported converter"):
-            get_converter('invalid', {})
+            get_converter("invalid", {})
 
 
 class TestPassthroughConverter:
@@ -67,7 +67,7 @@ class TestPassthroughConverter:
 
     def test_init_custom_config(self):
         """Test custom initialization."""
-        converter = PassthroughConverter({'include_audio_info': False})
+        converter = PassthroughConverter({"include_audio_info": False})
         assert converter.include_audio_info is False
 
     def test_transcribe_creates_transcript(self, tmp_path):
@@ -82,7 +82,7 @@ class TestPassthroughConverter:
         assert isinstance(transcript, Transcript)
         assert transcript.audio_path == audio_file
         assert transcript.text is None
-        assert transcript.metadata['converter'] == 'passthrough'
+        assert transcript.metadata["converter"] == "passthrough"
 
     def test_transcribe_missing_file(self, tmp_path):
         """Test transcription with missing file."""
@@ -106,17 +106,15 @@ class TestWhisperAPIConverter:
         """Test initialization without API key."""
         converter = WhisperAPIConverter({})
         assert converter.client is None
-        assert converter.model == 'whisper-1'
+        assert converter.model == "whisper-1"
 
     def test_init_with_config(self):
         """Test initialization with config."""
-        converter = WhisperAPIConverter({
-            'model': 'whisper-1',
-            'language': 'en',
-            'temperature': 0.5
-        })
-        assert converter.model == 'whisper-1'
-        assert converter.language == 'en'
+        converter = WhisperAPIConverter(
+            {"model": "whisper-1", "language": "en", "temperature": 0.5}
+        )
+        assert converter.model == "whisper-1"
+        assert converter.language == "en"
         assert converter.temperature == 0.5
 
     def test_validate_audio_file_unsupported_format(self, tmp_path):
@@ -157,23 +155,21 @@ class TestFasterWhisperConverter:
     def test_init_default_config(self):
         """Test default initialization."""
         converter = FasterWhisperConverter({})
-        assert converter.model_size == 'base'
-        assert converter.device == 'auto'
+        assert converter.model_size == "base"
+        assert converter.device == "auto"
 
     def test_init_custom_config(self):
         """Test custom initialization."""
-        converter = FasterWhisperConverter({
-            'model_size': 'large-v3',
-            'device': 'cuda',
-            'beam_size': 3
-        })
-        assert converter.model_size == 'large-v3'
-        assert converter.device == 'cuda'
+        converter = FasterWhisperConverter(
+            {"model_size": "large-v3", "device": "cuda", "beam_size": 3}
+        )
+        assert converter.model_size == "large-v3"
+        assert converter.device == "cuda"
         assert converter.beam_size == 3
 
     def test_validate_config_invalid_model(self):
         """Test validation with invalid model."""
-        converter = FasterWhisperConverter({'model_size': 'invalid'})
+        converter = FasterWhisperConverter({"model_size": "invalid"})
         with pytest.raises(ValueError, match="model_size"):
             converter.validate_config()
 
@@ -197,7 +193,7 @@ class TestGeminiAudioConverter:
     def test_init_default_config(self):
         """Test default initialization."""
         converter = GeminiAudioConverter({})
-        assert converter.model_name == 'gemini-2.0-flash-exp'
+        assert converter.model_name == "gemini-2.0-flash-exp"
         assert converter.include_timestamps is True
 
     def test_validate_audio_file_unsupported(self, tmp_path):
@@ -218,7 +214,7 @@ class TestGeminiAudioConverter:
         transcript = converter.transcribe(audio_file, "2024-01-01T10-00_test_channel")
 
         assert isinstance(transcript, Transcript)
-        assert transcript.metadata['converter'] == 'gemini-audio'
+        assert transcript.metadata["converter"] == "gemini-audio"
 
 
 class TestDeepgramConverter:
@@ -227,20 +223,16 @@ class TestDeepgramConverter:
     def test_init_default_config(self):
         """Test default initialization."""
         converter = DeepgramConverter({})
-        assert converter.model == 'nova-2'
+        assert converter.model == "nova-2"
         assert converter.diarize is True
         assert converter.punctuate is True
 
     def test_init_custom_config(self):
         """Test custom initialization."""
-        converter = DeepgramConverter({
-            'model': 'nova',
-            'diarize': False,
-            'language': 'ja'
-        })
-        assert converter.model == 'nova'
+        converter = DeepgramConverter({"model": "nova", "diarize": False, "language": "ja"})
+        assert converter.model == "nova"
         assert converter.diarize is False
-        assert converter.language == 'ja'
+        assert converter.language == "ja"
 
     def test_mock_transcription(self, tmp_path):
         """Test mock transcription."""
@@ -251,6 +243,6 @@ class TestDeepgramConverter:
         transcript = converter.transcribe(audio_file, "2024-01-01T10-00_test_channel")
 
         assert isinstance(transcript, Transcript)
-        assert transcript.metadata['converter'] == 'deepgram'
+        assert transcript.metadata["converter"] == "deepgram"
         # Check diarization produced speaker labels
         assert any(seg.speaker for seg in transcript.segments)

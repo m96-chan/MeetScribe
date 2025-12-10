@@ -22,30 +22,36 @@ def get_input_provider(provider_name: str, config: Dict[str, Any]) -> InputProvi
         ValueError: If provider is not supported
     """
     # Normalize provider name
-    provider = provider_name.lower().replace('_', '-').replace(' ', '-')
+    provider = provider_name.lower().replace("_", "-").replace(" ", "-")
 
     # Map provider names to classes
-    if provider == 'file':
+    if provider == "file":
         from .file_provider import FileProvider
+
         return FileProvider(config)
-    elif provider == 'zip':
+    elif provider == "zip":
         from .zip_provider import ZipProvider
+
         return ZipProvider(config)
-    elif provider in ('meet', 'google-meet', 'gmeet'):
+    elif provider in ("meet", "google-meet", "gmeet"):
         from .google_meet_provider import GoogleMeetProvider
+
         return GoogleMeetProvider(config)
-    elif provider in ('discord', 'discord-bot'):
+    elif provider in ("discord", "discord-bot"):
         from .discord_provider import DiscordBotProvider
+
         return DiscordBotProvider(config)
-    elif provider == 'webrtc':
+    elif provider == "webrtc":
         from .webrtc_provider import WebRTCProvider
+
         return WebRTCProvider(config)
-    elif provider == 'obs':
+    elif provider == "obs":
         from .obs_provider import OBSProvider
+
         return OBSProvider(config)
-    elif provider == 'zoom':
+    elif provider == "zoom":
         raise NotImplementedError("Zoom provider not yet implemented")
-    elif provider == 'proctap':
+    elif provider == "proctap":
         raise NotImplementedError("ProcTap provider not yet implemented")
     else:
         raise ValueError(f"Unsupported input provider: {provider_name}")

@@ -22,20 +22,24 @@ def get_llm_provider(engine_name: str, config: Dict[str, Any]) -> LLMProvider:
         ValueError: If engine is not supported
     """
     # Normalize engine name
-    engine = engine_name.lower().replace('_', '-').replace(' ', '-')
+    engine = engine_name.lower().replace("_", "-").replace(" ", "-")
 
     # Map engine names to classes
-    if engine == 'notebooklm':
+    if engine == "notebooklm":
         from .notebooklm_provider import NotebookLMProvider
+
         return NotebookLMProvider(config)
-    elif engine in ('chatgpt', 'gpt', 'openai', 'gpt-4', 'gpt-3.5'):
+    elif engine in ("chatgpt", "gpt", "openai", "gpt-4", "gpt-3.5"):
         from .chatgpt_provider import ChatGPTProvider
+
         return ChatGPTProvider(config)
-    elif engine in ('claude', 'anthropic', 'claude-3'):
+    elif engine in ("claude", "anthropic", "claude-3"):
         from .claude_provider import ClaudeProvider
+
         return ClaudeProvider(config)
-    elif engine in ('gemini', 'google', 'bard'):
+    elif engine in ("gemini", "google", "bard"):
         from .gemini_provider import GeminiProvider
+
         return GeminiProvider(config)
     else:
         raise ValueError(f"Unsupported LLM engine: {engine_name}")

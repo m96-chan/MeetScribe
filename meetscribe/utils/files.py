@@ -33,11 +33,7 @@ def ensure_directory(path: Path, parents: bool = True) -> Path:
     return path
 
 
-def get_meeting_directory(
-    base_dir: Path,
-    meeting_id: str,
-    create: bool = True
-) -> Path:
+def get_meeting_directory(base_dir: Path, meeting_id: str, create: bool = True) -> Path:
     """
     Get the directory for a specific meeting.
 
@@ -69,16 +65,11 @@ def list_meeting_directories(base_dir: Path) -> List[Path]:
     if not base_dir.exists():
         return []
 
-    return sorted([
-        d for d in base_dir.iterdir()
-        if d.is_dir() and not d.name.startswith(".")
-    ])
+    return sorted([d for d in base_dir.iterdir() if d.is_dir() and not d.name.startswith(".")])
 
 
 def find_files_by_extension(
-    directory: Path,
-    extensions: List[str],
-    recursive: bool = False
+    directory: Path, extensions: List[str], recursive: bool = False
 ) -> List[Path]:
     """
     Find files with specific extensions in a directory.
@@ -96,8 +87,7 @@ def find_files_by_extension(
         return []
 
     # Normalize extensions
-    extensions = [ext.lower() if ext.startswith(".") else f".{ext.lower()}"
-                  for ext in extensions]
+    extensions = [ext.lower() if ext.startswith(".") else f".{ext.lower()}" for ext in extensions]
 
     files = []
     if recursive:
@@ -172,11 +162,7 @@ def format_file_size(size_bytes: int) -> str:
     return f"{size_bytes:.1f} PB"
 
 
-def safe_copy(
-    src: Path,
-    dst: Path,
-    overwrite: bool = False
-) -> Path:
+def safe_copy(src: Path, dst: Path, overwrite: bool = False) -> Path:
     """
     Safely copy a file with optional overwrite protection.
 
@@ -203,11 +189,7 @@ def safe_copy(
     return dst
 
 
-def safe_move(
-    src: Path,
-    dst: Path,
-    overwrite: bool = False
-) -> Path:
+def safe_move(src: Path, dst: Path, overwrite: bool = False) -> Path:
     """
     Safely move a file with optional overwrite protection.
 
@@ -234,10 +216,7 @@ def safe_move(
     return dst
 
 
-def safe_delete(
-    path: Path,
-    recursive: bool = False
-) -> bool:
+def safe_delete(path: Path, recursive: bool = False) -> bool:
     """
     Safely delete a file or directory.
 
@@ -272,7 +251,7 @@ def cleanup_old_files(
     directory: Path,
     max_age_days: int,
     extensions: Optional[List[str]] = None,
-    dry_run: bool = False
+    dry_run: bool = False,
 ) -> List[Path]:
     """
     Clean up files older than specified age.
@@ -300,8 +279,7 @@ def cleanup_old_files(
         # Check extension filter
         if extensions:
             if file_path.suffix.lower() not in [
-                ext.lower() if ext.startswith(".") else f".{ext.lower()}"
-                for ext in extensions
+                ext.lower() if ext.startswith(".") else f".{ext.lower()}" for ext in extensions
             ]:
                 continue
 
@@ -320,10 +298,7 @@ def cleanup_old_files(
     return deleted
 
 
-def cleanup_empty_directories(
-    directory: Path,
-    dry_run: bool = False
-) -> List[Path]:
+def cleanup_empty_directories(directory: Path, dry_run: bool = False) -> List[Path]:
     """
     Remove empty directories.
 
@@ -366,9 +341,7 @@ def create_temp_directory(prefix: str = "meetscribe_") -> Path:
 
 
 def create_temp_file(
-    suffix: str = "",
-    prefix: str = "meetscribe_",
-    directory: Optional[Path] = None
+    suffix: str = "", prefix: str = "meetscribe_", directory: Optional[Path] = None
 ) -> Path:
     """
     Create a temporary file.
@@ -382,19 +355,14 @@ def create_temp_file(
         Path to temporary file
     """
     fd, path = tempfile.mkstemp(
-        suffix=suffix,
-        prefix=prefix,
-        dir=str(directory) if directory else None
+        suffix=suffix, prefix=prefix, dir=str(directory) if directory else None
     )
     os.close(fd)
     return Path(path)
 
 
 def save_json(
-    data: Dict[str, Any],
-    file_path: Path,
-    indent: int = 2,
-    ensure_ascii: bool = False
+    data: Dict[str, Any], file_path: Path, indent: int = 2, ensure_ascii: bool = False
 ) -> Path:
     """
     Save data to JSON file.
@@ -432,11 +400,7 @@ def load_json(file_path: Path) -> Dict[str, Any]:
         return json.load(f)
 
 
-def atomic_write(
-    file_path: Path,
-    content: str,
-    encoding: str = "utf-8"
-) -> Path:
+def atomic_write(file_path: Path, content: str, encoding: str = "utf-8") -> Path:
     """
     Atomically write content to file (write to temp, then rename).
 
@@ -483,11 +447,7 @@ def get_directory_size(directory: Path) -> int:
     return total
 
 
-def archive_meeting(
-    meeting_dir: Path,
-    archive_dir: Path,
-    compress: bool = True
-) -> Path:
+def archive_meeting(meeting_dir: Path, archive_dir: Path, compress: bool = True) -> Path:
     """
     Archive a meeting directory.
 
@@ -514,7 +474,7 @@ def archive_meeting(
         str(archive_dir / archive_name),
         archive_format,
         root_dir=str(meeting_dir.parent),
-        base_dir=meeting_dir.name
+        base_dir=meeting_dir.name,
     )
 
     logger.info(f"Archived {meeting_dir.name} -> {archive_path}")

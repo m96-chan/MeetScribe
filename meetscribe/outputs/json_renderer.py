@@ -36,11 +36,11 @@ class JSONRenderer(OutputRenderer):
             schema_version: JSON schema version (default: "1.0")
         """
         super().__init__(config)
-        self.output_dir = Path(config.get('output_dir', './meetings'))
-        self.filename_template = config.get('filename_template', 'minutes.json')
-        self.indent = config.get('indent', 2)
-        self.include_metadata = config.get('include_metadata', True)
-        self.schema_version = config.get('schema_version', '1.0')
+        self.output_dir = Path(config.get("output_dir", "./meetings"))
+        self.filename_template = config.get("filename_template", "minutes.json")
+        self.indent = config.get("indent", 2)
+        self.include_metadata = config.get("include_metadata", True)
+        self.schema_version = config.get("schema_version", "1.0")
 
     def render(self, minutes: Minutes, meeting_id: str) -> str:
         """
@@ -64,7 +64,7 @@ class JSONRenderer(OutputRenderer):
 
         # Write file
         output_path = meeting_dir / self.filename_template
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=self.indent, ensure_ascii=False, default=str)
 
         logger.info(f"JSON saved to: {output_path}")
@@ -80,11 +80,7 @@ class JSONRenderer(OutputRenderer):
             "key_points": minutes.key_points,
             "participants": minutes.participants,
             "decisions": [
-                {
-                    "description": d.description,
-                    "responsible": d.responsible,
-                    "deadline": d.deadline
-                }
+                {"description": d.description, "responsible": d.responsible, "deadline": d.deadline}
                 for d in minutes.decisions
             ],
             "action_items": [
@@ -92,7 +88,7 @@ class JSONRenderer(OutputRenderer):
                     "description": a.description,
                     "assignee": a.assignee,
                     "deadline": a.deadline,
-                    "priority": a.priority
+                    "priority": a.priority,
                 }
                 for a in minutes.action_items
             ],

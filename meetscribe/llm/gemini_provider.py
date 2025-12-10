@@ -58,12 +58,12 @@ Be thorough and accurate. Focus on extracting actionable insights."""
         """
         super().__init__(config)
 
-        self.api_key = config.get('api_key') or os.getenv('GEMINI_API_KEY')
-        self.model = config.get('model', 'gemini-1.5-flash')
-        self.temperature = config.get('temperature', 0.3)
-        self.max_output_tokens = config.get('max_output_tokens', 8192)
-        self.system_prompt = config.get('system_prompt', self.DEFAULT_SYSTEM_PROMPT)
-        self.process_audio_directly = config.get('process_audio_directly', False)
+        self.api_key = config.get("api_key") or os.getenv("GEMINI_API_KEY")
+        self.model = config.get("model", "gemini-1.5-flash")
+        self.temperature = config.get("temperature", 0.3)
+        self.max_output_tokens = config.get("max_output_tokens", 8192)
+        self.system_prompt = config.get("system_prompt", self.DEFAULT_SYSTEM_PROMPT)
+        self.process_audio_directly = config.get("process_audio_directly", False)
 
         # Initialize client
         self.client = None
@@ -77,6 +77,7 @@ Be thorough and accurate. Focus on extracting actionable insights."""
 
         try:
             import google.generativeai as genai
+
             genai.configure(api_key=self.api_key)
             self.client = genai.GenerativeModel(self.model)
             logger.info(f"Gemini client initialized with model: {self.model}")
@@ -115,8 +116,10 @@ Be thorough and accurate. Focus on extracting actionable insights."""
         # Parse result
         minutes = self._parse_result(result, transcript)
 
-        logger.info(f"Minutes generated: {len(minutes.action_items)} action items, "
-                    f"{len(minutes.decisions)} decisions")
+        logger.info(
+            f"Minutes generated: {len(minutes.action_items)} action items, "
+            f"{len(minutes.decisions)} decisions"
+        )
         return minutes
 
     def _generate_with_api(self, text: str, transcript: Transcript) -> Dict[str, Any]:
@@ -135,14 +138,11 @@ Be thorough and accurate. Focus on extracting actionable insights."""
         gen_config = genai.GenerationConfig(
             temperature=self.temperature,
             max_output_tokens=self.max_output_tokens,
-            response_mime_type="application/json"
+            response_mime_type="application/json",
         )
 
         # Generate
-        response = self.client.generate_content(
-            prompt,
-            generation_config=gen_config
-        )
+        response = self.client.generate_content(prompt, generation_config=gen_config)
 
         # Parse response
         content = response.text
@@ -163,8 +163,7 @@ Be thorough and accurate. Focus on extracting actionable insights."""
 
         # Upload audio file
         audio_file = genai.upload_file(
-            path=str(audio_path),
-            mime_type=self._get_mime_type(audio_path)
+            path=str(audio_path), mime_type=self._get_mime_type(audio_path)
         )
 
         # Build prompt
@@ -178,14 +177,11 @@ Please listen to the audio carefully and extract all key information."""
         gen_config = genai.GenerationConfig(
             temperature=self.temperature,
             max_output_tokens=self.max_output_tokens,
-            response_mime_type="application/json"
+            response_mime_type="application/json",
         )
 
         # Generate
-        response = self.client.generate_content(
-            [prompt, audio_file],
-            generation_config=gen_config
-        )
+        response = self.client.generate_content([prompt, audio_file], generation_config=gen_config)
 
         # Clean up uploaded file
         try:
@@ -204,21 +200,21 @@ Please listen to the audio carefully and extract all key information."""
     def _get_mime_type(self, audio_path: Path) -> str:
         """Get MIME type for audio file."""
         mime_types = {
-            '.mp3': 'audio/mpeg',
-            '.wav': 'audio/wav',
-            '.m4a': 'audio/mp4',
-            '.flac': 'audio/flac',
-            '.ogg': 'audio/ogg',
-            '.webm': 'audio/webm',
+            ".mp3": "audio/mpeg",
+            ".wav": "audio/wav",
+            ".m4a": "audio/mp4",
+            ".flac": "audio/flac",
+            ".ogg": "audio/ogg",
+            ".webm": "audio/webm",
         }
-        return mime_types.get(audio_path.suffix.lower(), 'audio/mpeg')
+        return mime_types.get(audio_path.suffix.lower(), "audio/mpeg")
 
     def _extract_json_from_text(self, text: str) -> Dict[str, Any]:
         """Extract JSON from text response."""
         import re
 
         # Try to find JSON block
-        json_match = re.search(r'\{[\s\S]*\}', text)
+        json_match = re.search(r"\{[\s\S]*\}", text)
         if json_match:
             try:
                 return json.loads(json_match.group())
@@ -227,11 +223,11 @@ Please listen to the audio carefully and extract all key information."""
 
         # Fallback
         return {
-            'summary': text,
-            'key_points': [],
-            'decisions': [],
-            'action_items': [],
-            'participants': []
+            "summary": text,
+            "key_points": [],
+            "decisions": [],
+            "action_items": [],
+            "participants": [],
         }
 
     def _mock_generation(self, transcript: Transcript) -> Dict[str, Any]:
@@ -239,82 +235,83 @@ Please listen to the audio carefully and extract all key information."""
         logger.info("[MOCK] Generating mock minutes")
 
         return {
-            'summary': (
+            "summary": (
                 "This is a mock meeting summary generated by the Gemini provider in PoC mode. "
                 "Gemini's multimodal capabilities would provide comprehensive analysis here. "
                 "The meeting addressed strategic planning, operational updates, and team coordination."
             ),
-            'key_points': [
+            "key_points": [
                 "Reviewed Q4 strategic objectives",
                 "Discussed operational efficiency improvements",
                 "Addressed team capacity and workload distribution",
-                "Planned upcoming product releases"
+                "Planned upcoming product releases",
             ],
-            'decisions': [
+            "decisions": [
                 {
-                    'description': 'Approve new product feature roadmap',
-                    'responsible': 'Product Manager',
-                    'deadline': '2025-12-15'
+                    "description": "Approve new product feature roadmap",
+                    "responsible": "Product Manager",
+                    "deadline": "2025-12-15",
                 },
                 {
-                    'description': 'Implement weekly status sync meetings',
-                    'responsible': 'Team Lead',
-                    'deadline': None
-                }
+                    "description": "Implement weekly status sync meetings",
+                    "responsible": "Team Lead",
+                    "deadline": None,
+                },
             ],
-            'action_items': [
+            "action_items": [
                 {
-                    'description': 'Finalize Q4 objectives document',
-                    'assignee': 'Strategy Team',
-                    'deadline': '2025-12-12',
-                    'priority': 'high'
+                    "description": "Finalize Q4 objectives document",
+                    "assignee": "Strategy Team",
+                    "deadline": "2025-12-12",
+                    "priority": "high",
                 },
                 {
-                    'description': 'Prepare capacity planning report',
-                    'assignee': 'Operations',
-                    'deadline': '2025-12-15',
-                    'priority': 'medium'
+                    "description": "Prepare capacity planning report",
+                    "assignee": "Operations",
+                    "deadline": "2025-12-15",
+                    "priority": "medium",
                 },
                 {
-                    'description': 'Schedule cross-team coordination session',
-                    'assignee': 'Project Manager',
-                    'deadline': '2025-12-10',
-                    'priority': 'medium'
-                }
+                    "description": "Schedule cross-team coordination session",
+                    "assignee": "Project Manager",
+                    "deadline": "2025-12-10",
+                    "priority": "medium",
+                },
             ],
-            'participants': transcript.meeting_info.participants or ['Participant 1', 'Participant 2']
+            "participants": transcript.meeting_info.participants
+            or ["Participant 1", "Participant 2"],
         }
 
     def _parse_result(self, result: Dict[str, Any], transcript: Transcript) -> Minutes:
         """Parse API result into Minutes object."""
         return Minutes(
             meeting_id=transcript.meeting_info.meeting_id,
-            summary=result.get('summary', ''),
+            summary=result.get("summary", ""),
             decisions=[
                 Decision(
-                    description=d.get('description', ''),
-                    responsible=d.get('responsible'),
-                    deadline=d.get('deadline')
+                    description=d.get("description", ""),
+                    responsible=d.get("responsible"),
+                    deadline=d.get("deadline"),
                 )
-                for d in result.get('decisions', [])
+                for d in result.get("decisions", [])
             ],
             action_items=[
                 ActionItem(
-                    description=a.get('description', ''),
-                    assignee=a.get('assignee'),
-                    deadline=a.get('deadline'),
-                    priority=a.get('priority')
+                    description=a.get("description", ""),
+                    assignee=a.get("assignee"),
+                    deadline=a.get("deadline"),
+                    priority=a.get("priority"),
                 )
-                for a in result.get('action_items', [])
+                for a in result.get("action_items", [])
             ],
-            key_points=result.get('key_points', []),
-            participants=result.get('participants', transcript.meeting_info.participants),
+            key_points=result.get("key_points", []),
+            participants=result.get("participants", transcript.meeting_info.participants),
             metadata={
-                'llm_engine': 'gemini',
-                'model': self.model,
-                'temperature': self.temperature,
-                'audio_processing': self.process_audio_directly,
-            }
+                "llm_engine": "gemini",
+                "model": self.model,
+                "temperature": self.temperature,
+                "audio_processing": self.process_audio_directly,
+            },
         )
 
     def validate_config(self) -> bool:

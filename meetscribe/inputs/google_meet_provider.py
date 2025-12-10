@@ -26,7 +26,7 @@ class GoogleMeetProvider(InputProvider):
 
     # API scopes required
     SCOPES = [
-        'https://www.googleapis.com/auth/drive.readonly',
+        "https://www.googleapis.com/auth/drive.readonly",
     ]
 
     # Google Meet recording folder name pattern
@@ -48,14 +48,18 @@ class GoogleMeetProvider(InputProvider):
         """
         super().__init__(config)
 
-        self.credentials_path = config.get('credentials_path') or os.getenv('GOOGLE_CREDENTIALS_PATH')
-        self.service_account_path = config.get('service_account_path') or os.getenv('GOOGLE_SERVICE_ACCOUNT_PATH')
-        self.token_path = config.get('token_path', './token.json')
-        self.folder_id = config.get('folder_id')
-        self.meeting_code = config.get('meeting_code')
-        self.date_filter = config.get('date_filter')
-        self.download_dir = Path(config.get('download_dir', './downloads'))
-        self.keep_downloaded = config.get('keep_downloaded', True)
+        self.credentials_path = config.get("credentials_path") or os.getenv(
+            "GOOGLE_CREDENTIALS_PATH"
+        )
+        self.service_account_path = config.get("service_account_path") or os.getenv(
+            "GOOGLE_SERVICE_ACCOUNT_PATH"
+        )
+        self.token_path = config.get("token_path", "./token.json")
+        self.folder_id = config.get("folder_id")
+        self.meeting_code = config.get("meeting_code")
+        self.date_filter = config.get("date_filter")
+        self.download_dir = Path(config.get("download_dir", "./downloads"))
+        self.keep_downloaded = config.get("keep_downloaded", True)
 
         # Initialize API client
         self.drive_service = None
@@ -75,8 +79,7 @@ class GoogleMeetProvider(InputProvider):
             # Try service account first
             if self.service_account_path and Path(self.service_account_path).exists():
                 creds = service_account.Credentials.from_service_account_file(
-                    self.service_account_path,
-                    scopes=self.SCOPES
+                    self.service_account_path, scopes=self.SCOPES
                 )
                 logger.info("Using service account credentials")
 
@@ -98,13 +101,13 @@ class GoogleMeetProvider(InputProvider):
 
                     # Save token
                     token_path.parent.mkdir(parents=True, exist_ok=True)
-                    with open(token_path, 'w') as f:
+                    with open(token_path, "w") as f:
                         f.write(creds.to_json())
 
                 logger.info("Using OAuth credentials")
 
             if creds:
-                self.drive_service = build('drive', 'v3', credentials=creds)
+                self.drive_service = build("drive", "v3", credentials=creds)
                 logger.info("Google Drive API service initialized")
             else:
                 logger.warning("No credentials found - running in mock mode")
@@ -152,8 +155,8 @@ class GoogleMeetProvider(InputProvider):
                 f"{' for meeting code: ' + self.meeting_code if self.meeting_code else ''}"
             )
 
-        file_id = file_info['id']
-        file_name = file_info['name']
+        file_id = file_info["id"]
+        file_name = file_info["name"]
         logger.info(f"Found recording: {file_name}")
 
         # Create download directory
@@ -176,7 +179,7 @@ class GoogleMeetProvider(InputProvider):
 
         # Write to file
         fh.seek(0)
-        with open(output_file, 'wb') as f:
+        with open(output_file, "wb") as f:
             f.write(fh.read())
 
         logger.info(f"Downloaded: {output_file}")
@@ -204,15 +207,19 @@ class GoogleMeetProvider(InputProvider):
         query = " and ".join(query_parts)
 
         # Execute search
-        results = self.drive_service.files().list(
-            q=query,
-            spaces='drive',
-            fields='files(id, name, mimeType, createdTime, size)',
-            orderBy='createdTime desc',
-            pageSize=10
-        ).execute()
+        results = (
+            self.drive_service.files()
+            .list(
+                q=query,
+                spaces="drive",
+                fields="files(id, name, mimeType, createdTime, size)",
+                orderBy="createdTime desc",
+                pageSize=10,
+            )
+            .execute()
+        )
 
-        files = results.get('files', [])
+        files = results.get("files", [])
 
         if not files:
             # Try searching in Meet Recordings folder
@@ -220,20 +227,24 @@ class GoogleMeetProvider(InputProvider):
             if folder_id:
                 query_parts = [
                     "mimeType contains 'video/' or mimeType contains 'audio/'",
-                    f"'{folder_id}' in parents"
+                    f"'{folder_id}' in parents",
                 ]
                 if self.meeting_code:
                     query_parts.append(f"name contains '{self.meeting_code}'")
 
                 query = " and ".join(query_parts)
-                results = self.drive_service.files().list(
-                    q=query,
-                    spaces='drive',
-                    fields='files(id, name, mimeType, createdTime, size)',
-                    orderBy='createdTime desc',
-                    pageSize=10
-                ).execute()
-                files = results.get('files', [])
+                results = (
+                    self.drive_service.files()
+                    .list(
+                        q=query,
+                        spaces="drive",
+                        fields="files(id, name, mimeType, createdTime, size)",
+                        orderBy="createdTime desc",
+                        pageSize=10,
+                    )
+                    .execute()
+                )
+                files = results.get("files", [])
 
         return files[0] if files else None
 
@@ -241,30 +252,30 @@ class GoogleMeetProvider(InputProvider):
         """Find Meet Recordings folder."""
         query = f"name = '{self.MEET_FOLDER_PATTERN}' and mimeType = 'application/vnd.google-apps.folder'"
 
-        results = self.drive_service.files().list(
-            q=query,
-            spaces='drive',
-            fields='files(id, name)'
-        ).execute()
+        results = (
+            self.drive_service.files()
+            .list(q=query, spaces="drive", fields="files(id, name)")
+            .execute()
+        )
 
-        folders = results.get('files', [])
-        return folders[0]['id'] if folders else None
+        folders = results.get("files", [])
+        return folders[0]["id"] if folders else None
 
     def _save_metadata(self, download_path: Path, file_info: Dict[str, Any]):
         """Save recording metadata."""
         metadata = {
-            'source': 'google_meet',
-            'file_id': file_info['id'],
-            'file_name': file_info['name'],
-            'mime_type': file_info.get('mimeType'),
-            'created_time': file_info.get('createdTime'),
-            'size': file_info.get('size'),
-            'meeting_code': self.meeting_code,
-            'downloaded_at': datetime.now().isoformat()
+            "source": "google_meet",
+            "file_id": file_info["id"],
+            "file_name": file_info["name"],
+            "mime_type": file_info.get("mimeType"),
+            "created_time": file_info.get("createdTime"),
+            "size": file_info.get("size"),
+            "meeting_code": self.meeting_code,
+            "downloaded_at": datetime.now().isoformat(),
         }
 
-        meta_path = download_path / 'drive_metadata.json'
-        with open(meta_path, 'w', encoding='utf-8') as f:
+        meta_path = download_path / "drive_metadata.json"
+        with open(meta_path, "w", encoding="utf-8") as f:
             json.dump(metadata, f, indent=2)
 
     def _create_mock_file(self, meeting_id: str) -> Path:
@@ -275,21 +286,21 @@ class GoogleMeetProvider(InputProvider):
         download_path.mkdir(parents=True, exist_ok=True)
 
         mock_file = download_path / f"mock_meet_recording_{meeting_id}.txt"
-        with open(mock_file, 'w') as f:
+        with open(mock_file, "w") as f:
             f.write(f"Mock Google Meet recording for {meeting_id}\n")
             f.write("This is a placeholder file for testing.\n")
             f.write("Configure Google Drive API credentials to download actual recordings.\n")
 
         # Save mock metadata
         metadata = {
-            'source': 'google_meet',
-            'mock': True,
-            'meeting_id': meeting_id,
-            'note': 'No actual recording - running in mock mode'
+            "source": "google_meet",
+            "mock": True,
+            "meeting_id": meeting_id,
+            "note": "No actual recording - running in mock mode",
         }
 
-        meta_path = download_path / 'drive_metadata.json'
-        with open(meta_path, 'w', encoding='utf-8') as f:
+        meta_path = download_path / "drive_metadata.json"
+        with open(meta_path, "w", encoding="utf-8") as f:
             json.dump(metadata, f, indent=2)
 
         return mock_file
@@ -319,15 +330,19 @@ class GoogleMeetProvider(InputProvider):
             "(mimeType contains 'video/' or mimeType contains 'audio/')"
         )
 
-        results = self.drive_service.files().list(
-            q=query,
-            spaces='drive',
-            fields='files(id, name, mimeType, createdTime, size)',
-            orderBy='createdTime desc',
-            pageSize=limit
-        ).execute()
+        results = (
+            self.drive_service.files()
+            .list(
+                q=query,
+                spaces="drive",
+                fields="files(id, name, mimeType, createdTime, size)",
+                orderBy="createdTime desc",
+                pageSize=limit,
+            )
+            .execute()
+        )
 
-        return results.get('files', [])
+        return results.get("files", [])
 
     def validate_config(self) -> bool:
         """Validate provider configuration."""

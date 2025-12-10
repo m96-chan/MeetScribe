@@ -28,8 +28,18 @@ class FileProvider(InputProvider):
 
     # Supported audio formats
     SUPPORTED_FORMATS = [
-        '.mp3', '.wav', '.m4a', '.flac', '.ogg', '.webm',
-        '.aac', '.wma', '.opus', '.mp4', '.mkv', '.avi'
+        ".mp3",
+        ".wav",
+        ".m4a",
+        ".flac",
+        ".ogg",
+        ".webm",
+        ".aac",
+        ".wma",
+        ".opus",
+        ".mp4",
+        ".mkv",
+        ".avi",
     ]
 
     def __init__(self, config: Dict[str, Any]):
@@ -47,14 +57,14 @@ class FileProvider(InputProvider):
             metadata_path: Path to JSON metadata file
         """
         super().__init__(config)
-        self.audio_path = Path(config['audio_path'])
-        self.pattern = config.get('pattern')
-        self.copy_to_working_dir = config.get('copy_to_working_dir', False)
-        self.working_dir = Path(config.get('working_dir', './meetings'))
-        self.validate_format = config.get('validate_format', True)
-        self.convert_to_format = config.get('convert_to_format')
-        self.max_file_size = config.get('max_file_size')
-        self.metadata_path = config.get('metadata_path')
+        self.audio_path = Path(config["audio_path"])
+        self.pattern = config.get("pattern")
+        self.copy_to_working_dir = config.get("copy_to_working_dir", False)
+        self.working_dir = Path(config.get("working_dir", "./meetings"))
+        self.validate_format = config.get("validate_format", True)
+        self.convert_to_format = config.get("convert_to_format")
+        self.max_file_size = config.get("max_file_size")
+        self.metadata_path = config.get("metadata_path")
 
         # Loaded metadata
         self._metadata: Optional[Dict[str, Any]] = None
@@ -101,14 +111,13 @@ class FileProvider(InputProvider):
                 files = list(self.audio_path.glob(self.pattern))
             else:
                 files = [
-                    f for f in self.audio_path.iterdir()
+                    f
+                    for f in self.audio_path.iterdir()
                     if f.is_file() and f.suffix.lower() in self.SUPPORTED_FORMATS
                 ]
 
             if not files:
-                raise FileNotFoundError(
-                    f"No audio files found in {self.audio_path}"
-                )
+                raise FileNotFoundError(f"No audio files found in {self.audio_path}")
 
             # Sort by modification time, newest first
             files.sort(key=lambda f: f.stat().st_mtime, reverse=True)
@@ -135,8 +144,7 @@ class FileProvider(InputProvider):
             file_size = audio_path.stat().st_size
             if file_size > self.max_file_size:
                 raise ValueError(
-                    f"File too large: {file_size} bytes. "
-                    f"Maximum: {self.max_file_size} bytes"
+                    f"File too large: {file_size} bytes. " f"Maximum: {self.max_file_size} bytes"
                 )
 
     def _load_metadata(self):
@@ -147,7 +155,7 @@ class FileProvider(InputProvider):
         metadata_file = Path(self.metadata_path)
         if metadata_file.exists():
             try:
-                with open(metadata_file, 'r', encoding='utf-8') as f:
+                with open(metadata_file, "r", encoding="utf-8") as f:
                     self._metadata = json.load(f)
                 logger.info(f"Loaded metadata from {metadata_file}")
             except Exception as e:
@@ -177,7 +185,7 @@ class FileProvider(InputProvider):
         # Save metadata
         if self._metadata:
             meta_path = meeting_dir / "input_metadata.json"
-            with open(meta_path, 'w', encoding='utf-8') as f:
+            with open(meta_path, "w", encoding="utf-8") as f:
                 json.dump(self._metadata, f, indent=2)
 
         return dest_path
@@ -193,17 +201,14 @@ class FileProvider(InputProvider):
             audio = AudioSegment.from_file(str(input_path))
 
             # Export to new format
-            output_format = output_path.suffix.lower().lstrip('.')
+            output_format = output_path.suffix.lower().lstrip(".")
             audio.export(str(output_path), format=output_format)
 
             logger.info(f"Converted audio saved to: {output_path}")
             return output_path
 
         except ImportError:
-            logger.warning(
-                "pydub not installed. Run: pip install pydub\n"
-                "Falling back to copy."
-            )
+            logger.warning("pydub not installed. Run: pip install pydub\n" "Falling back to copy.")
             shutil.copy2(input_path, output_path)
             return output_path
 
@@ -227,7 +232,8 @@ class FileProvider(InputProvider):
                 return list(self.audio_path.glob(self.pattern))
             else:
                 return [
-                    f for f in self.audio_path.iterdir()
+                    f
+                    for f in self.audio_path.iterdir()
                     if f.is_file() and f.suffix.lower() in self.SUPPORTED_FORMATS
                 ]
 
@@ -243,14 +249,12 @@ class FileProvider(InputProvider):
         Raises:
             ValueError: If config is invalid
         """
-        if 'audio_path' not in self.config:
+        if "audio_path" not in self.config:
             raise ValueError("'audio_path' is required in config")
 
         if self.convert_to_format:
-            valid_formats = ['wav', 'mp3', 'flac', 'ogg', 'm4a']
+            valid_formats = ["wav", "mp3", "flac", "ogg", "m4a"]
             if self.convert_to_format.lower() not in valid_formats:
-                raise ValueError(
-                    f"convert_to_format must be one of: {valid_formats}"
-                )
+                raise ValueError(f"convert_to_format must be one of: {valid_formats}")
 
         return True

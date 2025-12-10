@@ -26,7 +26,7 @@ class WhisperAPIConverter(ConvertProvider):
     """
 
     # Supported audio formats by Whisper API
-    SUPPORTED_FORMATS = ['.mp3', '.mp4', '.mpeg', '.mpga', '.m4a', '.wav', '.webm']
+    SUPPORTED_FORMATS = [".mp3", ".mp4", ".mpeg", ".mpga", ".m4a", ".wav", ".webm"]
     # Maximum file size (25MB)
     MAX_FILE_SIZE = 25 * 1024 * 1024
 
@@ -46,17 +46,17 @@ class WhisperAPIConverter(ConvertProvider):
         super().__init__(config)
 
         # API credentials
-        self.api_key = config.get('api_key') or os.getenv('OPENAI_API_KEY')
+        self.api_key = config.get("api_key") or os.getenv("OPENAI_API_KEY")
         if not self.api_key:
             logger.warning("No OpenAI API key provided - running in mock mode")
 
         # Model settings
-        self.model = config.get('model', 'whisper-1')
-        self.language = config.get('language')  # None for auto-detect
-        self.response_format = config.get('response_format', 'verbose_json')
-        self.temperature = config.get('temperature', 0)
-        self.prompt = config.get('prompt')
-        self.timestamp_granularities = config.get('timestamp_granularities', ['segment'])
+        self.model = config.get("model", "whisper-1")
+        self.language = config.get("language")  # None for auto-detect
+        self.response_format = config.get("response_format", "verbose_json")
+        self.temperature = config.get("temperature", 0)
+        self.prompt = config.get("prompt")
+        self.timestamp_granularities = config.get("timestamp_granularities", ["segment"])
 
         # Initialize client
         self.client = None
@@ -70,6 +70,7 @@ class WhisperAPIConverter(ConvertProvider):
 
         try:
             from openai import OpenAI
+
             self.client = OpenAI(api_key=self.api_key)
             logger.info("OpenAI client initialized successfully")
         except ImportError:
@@ -109,7 +110,7 @@ class WhisperAPIConverter(ConvertProvider):
             meeting_id=meeting_id,
             source_type=source_type,
             start_time=start_time,
-            channel_id=channel
+            channel_id=channel,
         )
 
         # Perform transcription
@@ -127,30 +128,32 @@ class WhisperAPIConverter(ConvertProvider):
         # Build transcript
         transcript = Transcript(
             meeting_info=meeting_info,
-            text=result.get('text', ''),
+            text=result.get("text", ""),
             audio_path=audio_path,
             segments=segments,
             audio_info=audio_info,
             metadata={
-                'converter': 'whisper-api',
-                'model': self.model,
-                'language': result.get('language', self.language or 'auto'),
-                'duration': result.get('duration', 0),
-            }
+                "converter": "whisper-api",
+                "model": self.model,
+                "language": result.get("language", self.language or "auto"),
+                "duration": result.get("duration", 0),
+            },
         )
 
         transcript.add_processing_step(
-            'whisper_api_transcribe',
+            "whisper_api_transcribe",
             {
-                'model': self.model,
-                'language': result.get('language'),
-                'duration': result.get('duration'),
-                'segments_count': len(segments),
-            }
+                "model": self.model,
+                "language": result.get("language"),
+                "duration": result.get("duration"),
+                "segments_count": len(segments),
+            },
         )
 
-        logger.info(f"Transcription complete: {len(segments)} segments, "
-                    f"{len(transcript.text)} characters")
+        logger.info(
+            f"Transcription complete: {len(segments)} segments, "
+            f"{len(transcript.text)} characters"
+        )
         return transcript
 
     def _validate_audio_file(self, audio_path: Path):
@@ -178,53 +181,57 @@ class WhisperAPIConverter(ConvertProvider):
         """Perform actual API transcription."""
         logger.info(f"Calling Whisper API for {audio_path.name}")
 
-        with open(audio_path, 'rb') as audio_file:
+        with open(audio_path, "rb") as audio_file:
             # Build API parameters
             params = {
-                'model': self.model,
-                'file': audio_file,
-                'response_format': self.response_format,
-                'temperature': self.temperature,
+                "model": self.model,
+                "file": audio_file,
+                "response_format": self.response_format,
+                "temperature": self.temperature,
             }
 
             if self.language:
-                params['language'] = self.language
+                params["language"] = self.language
             if self.prompt:
-                params['prompt'] = self.prompt
-            if self.response_format == 'verbose_json':
-                params['timestamp_granularities'] = self.timestamp_granularities
+                params["prompt"] = self.prompt
+            if self.response_format == "verbose_json":
+                params["timestamp_granularities"] = self.timestamp_granularities
 
             # Call API
             response = self.client.audio.transcriptions.create(**params)
 
         # Parse response
-        if self.response_format == 'verbose_json':
+        if self.response_format == "verbose_json":
             return {
-                'text': response.text,
-                'language': response.language,
-                'duration': response.duration,
-                'segments': [
+                "text": response.text,
+                "language": response.language,
+                "duration": response.duration,
+                "segments": [
                     {
-                        'start': seg.start,
-                        'end': seg.end,
-                        'text': seg.text,
+                        "start": seg.start,
+                        "end": seg.end,
+                        "text": seg.text,
                     }
                     for seg in (response.segments or [])
                 ],
-                'words': [
-                    {
-                        'start': word.start,
-                        'end': word.end,
-                        'word': word.word,
-                    }
-                    for word in (response.words or [])
-                ] if hasattr(response, 'words') and response.words else []
+                "words": (
+                    [
+                        {
+                            "start": word.start,
+                            "end": word.end,
+                            "word": word.word,
+                        }
+                        for word in (response.words or [])
+                    ]
+                    if hasattr(response, "words") and response.words
+                    else []
+                ),
             }
         else:
             # Simple text response
             return {
-                'text': response if isinstance(response, str) else response.text,
-                'segments': []
+                "text": response if isinstance(response, str) else response.text,
+                "segments": [],
             }
 
     def _mock_transcription(self, audio_path: Path) -> Dict[str, Any]:
@@ -236,72 +243,69 @@ class WhisperAPIConverter(ConvertProvider):
         estimated_duration = file_size / (1024 * 1024) * 60  # ~1MB per minute
 
         return {
-            'text': (
+            "text": (
                 "This is a mock transcription generated by the Whisper API converter "
                 "in PoC mode. In production, this would contain the actual transcribed "
                 "text from your audio file. The meeting discussed several important "
                 "topics including project updates, timeline reviews, and action items. "
                 "Key decisions were made regarding the implementation approach."
             ),
-            'language': 'en',
-            'duration': estimated_duration,
-            'segments': [
+            "language": "en",
+            "duration": estimated_duration,
+            "segments": [
                 {
-                    'start': 0.0,
-                    'end': 5.0,
-                    'text': 'This is a mock transcription generated by the Whisper API converter.',
+                    "start": 0.0,
+                    "end": 5.0,
+                    "text": "This is a mock transcription generated by the Whisper API converter.",
                 },
                 {
-                    'start': 5.0,
-                    'end': 10.0,
-                    'text': 'In production, this would contain the actual transcribed text.',
+                    "start": 5.0,
+                    "end": 10.0,
+                    "text": "In production, this would contain the actual transcribed text.",
                 },
                 {
-                    'start': 10.0,
-                    'end': 15.0,
-                    'text': 'The meeting discussed several important topics.',
+                    "start": 10.0,
+                    "end": 15.0,
+                    "text": "The meeting discussed several important topics.",
                 },
                 {
-                    'start': 15.0,
-                    'end': 20.0,
-                    'text': 'Key decisions were made regarding the implementation approach.',
+                    "start": 15.0,
+                    "end": 20.0,
+                    "text": "Key decisions were made regarding the implementation approach.",
                 },
-            ]
+            ],
         }
 
     def _parse_segments(self, result: Dict[str, Any]) -> List[Segment]:
         """Parse segments from API response."""
         segments = []
-        for seg in result.get('segments', []):
-            segments.append(Segment(
-                start=seg.get('start', 0),
-                end=seg.get('end', 0),
-                text=seg.get('text', '').strip(),
-                confidence=seg.get('confidence'),
-                language=result.get('language'),
-            ))
+        for seg in result.get("segments", []):
+            segments.append(
+                Segment(
+                    start=seg.get("start", 0),
+                    end=seg.get("end", 0),
+                    text=seg.get("text", "").strip(),
+                    confidence=seg.get("confidence"),
+                    language=result.get("language"),
+                )
+            )
         return segments
 
     def _get_audio_info(self, audio_path: Path, result: Dict[str, Any]) -> AudioInfo:
         """Extract audio information."""
         try:
             file_size = audio_path.stat().st_size
-            duration = result.get('duration', file_size / (1024 * 1024) * 60)
+            duration = result.get("duration", file_size / (1024 * 1024) * 60)
 
             return AudioInfo(
                 duration=duration,
                 samplerate=16000,  # Whisper uses 16kHz
-                codec=audio_path.suffix.lower().replace('.', ''),
+                codec=audio_path.suffix.lower().replace(".", ""),
                 channels=1,  # Whisper converts to mono
             )
         except Exception as e:
             logger.warning(f"Could not extract audio info: {e}")
-            return AudioInfo(
-                duration=0,
-                samplerate=0,
-                codec='unknown',
-                channels=0
-            )
+            return AudioInfo(duration=0, samplerate=0, codec="unknown", channels=0)
 
     def validate_config(self) -> bool:
         """
@@ -319,7 +323,7 @@ class WhisperAPIConverter(ConvertProvider):
         if self.temperature < 0 or self.temperature > 1:
             raise ValueError("temperature must be between 0 and 1")
 
-        valid_formats = ['json', 'text', 'srt', 'vtt', 'verbose_json']
+        valid_formats = ["json", "text", "srt", "vtt", "verbose_json"]
         if self.response_format not in valid_formats:
             raise ValueError(f"response_format must be one of: {valid_formats}")
 

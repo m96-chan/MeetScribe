@@ -15,14 +15,14 @@ logger = logging.getLogger(__name__)
 
 # Supported audio formats
 SUPPORTED_FORMATS = {
-    '.mp3': 'audio/mpeg',
-    '.wav': 'audio/wav',
-    '.m4a': 'audio/mp4',
-    '.flac': 'audio/flac',
-    '.ogg': 'audio/ogg',
-    '.opus': 'audio/opus',
-    '.webm': 'audio/webm',
-    '.aac': 'audio/aac',
+    ".mp3": "audio/mpeg",
+    ".wav": "audio/wav",
+    ".m4a": "audio/mp4",
+    ".flac": "audio/flac",
+    ".ogg": "audio/ogg",
+    ".opus": "audio/opus",
+    ".webm": "audio/webm",
+    ".aac": "audio/aac",
 }
 
 
@@ -51,15 +51,17 @@ def get_audio_info(audio_path: Path) -> Dict[str, Any]:
         result = subprocess.run(
             [
                 "ffprobe",
-                "-v", "quiet",
-                "-print_format", "json",
+                "-v",
+                "quiet",
+                "-print_format",
+                "json",
                 "-show_format",
                 "-show_streams",
-                str(audio_path)
+                str(audio_path),
             ],
             capture_output=True,
             text=True,
-            timeout=30
+            timeout=30,
         )
 
         if result.returncode == 0:
@@ -139,26 +141,21 @@ def convert_audio(
 
     cmd = [
         "ffmpeg",
-        "-i", str(input_path),
-        "-ar", str(samplerate),
-        "-ac", str(channels),
+        "-i",
+        str(input_path),
+        "-ar",
+        str(samplerate),
+        "-ac",
+        str(channels),
     ]
 
     if bitrate:
         cmd.extend(["-b:a", bitrate])
 
-    cmd.extend([
-        "-y",  # Overwrite output file
-        str(output_path)
-    ])
+    cmd.extend(["-y", str(output_path)])  # Overwrite output file
 
     try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=600
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
 
         if result.returncode != 0:
             raise RuntimeError(f"ffmpeg failed: {result.stderr}")
@@ -198,19 +195,16 @@ def normalize_audio(
 
     cmd = [
         "ffmpeg",
-        "-i", str(input_path),
-        "-af", f"loudnorm=I={target_lufs}:TP={target_peak}:LRA=11",
+        "-i",
+        str(input_path),
+        "-af",
+        f"loudnorm=I={target_lufs}:TP={target_peak}:LRA=11",
         "-y",
-        str(output_path)
+        str(output_path),
     ]
 
     try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=600
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
 
         if result.returncode != 0:
             raise RuntimeError(f"ffmpeg failed: {result.stderr}")
@@ -250,22 +244,19 @@ def remove_silence(
 
     cmd = [
         "ffmpeg",
-        "-i", str(input_path),
-        "-af", f"silenceremove=start_periods=1:start_silence={min_silence_duration}:"
-               f"start_threshold={silence_threshold}dB:"
-               f"stop_periods=-1:stop_silence={min_silence_duration}:"
-               f"stop_threshold={silence_threshold}dB",
+        "-i",
+        str(input_path),
+        "-af",
+        f"silenceremove=start_periods=1:start_silence={min_silence_duration}:"
+        f"start_threshold={silence_threshold}dB:"
+        f"stop_periods=-1:stop_silence={min_silence_duration}:"
+        f"stop_threshold={silence_threshold}dB",
         "-y",
-        str(output_path)
+        str(output_path),
     ]
 
     try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=600
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
 
         if result.returncode != 0:
             raise RuntimeError(f"ffmpeg failed: {result.stderr}")
@@ -307,21 +298,19 @@ def extract_audio_from_video(
 
     cmd = [
         "ffmpeg",
-        "-i", str(video_path),
+        "-i",
+        str(video_path),
         "-vn",  # No video
-        "-ar", str(samplerate),
-        "-b:a", bitrate,
+        "-ar",
+        str(samplerate),
+        "-b:a",
+        bitrate,
         "-y",
-        str(output_path)
+        str(output_path),
     ]
 
     try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=600
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
 
         if result.returncode != 0:
             raise RuntimeError(f"ffmpeg failed: {result.stderr}")
@@ -363,21 +352,20 @@ def split_audio(
 
     cmd = [
         "ffmpeg",
-        "-i", str(input_path),
-        "-f", "segment",
-        "-segment_time", str(segment_duration),
-        "-c", "copy",
+        "-i",
+        str(input_path),
+        "-f",
+        "segment",
+        "-segment_time",
+        str(segment_duration),
+        "-c",
+        "copy",
         "-y",
-        output_pattern
+        output_pattern,
     ]
 
     try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=1800
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)
 
         if result.returncode != 0:
             raise RuntimeError(f"ffmpeg failed: {result.stderr}")
@@ -422,21 +410,20 @@ def merge_audio(
 
     cmd = [
         "ffmpeg",
-        "-f", "concat",
-        "-safe", "0",
-        "-i", str(concat_file),
-        "-c", "copy",
+        "-f",
+        "concat",
+        "-safe",
+        "0",
+        "-i",
+        str(concat_file),
+        "-c",
+        "copy",
         "-y",
-        str(output_path)
+        str(output_path),
     ]
 
     try:
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-            timeout=1800
-        )
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)
 
         if result.returncode != 0:
             raise RuntimeError(f"ffmpeg failed: {result.stderr}")
@@ -477,16 +464,10 @@ def analyze_audio_quality(audio_path: Path) -> Dict[str, Any]:
 
         # Get loudness info using ffmpeg
         result = subprocess.run(
-            [
-                "ffmpeg",
-                "-i", str(audio_path),
-                "-af", "ebur128=peak=true",
-                "-f", "null",
-                "-"
-            ],
+            ["ffmpeg", "-i", str(audio_path), "-af", "ebur128=peak=true", "-f", "null", "-"],
             capture_output=True,
             text=True,
-            timeout=120
+            timeout=120,
         )
 
         # Parse loudness info from stderr

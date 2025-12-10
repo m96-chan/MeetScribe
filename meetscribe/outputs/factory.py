@@ -22,29 +22,36 @@ def get_output_renderer(format_name: str, config: Dict[str, Any]) -> OutputRende
         ValueError: If format is not supported
     """
     # Normalize format name
-    fmt = format_name.lower().replace('_', '-').replace(' ', '-')
+    fmt = format_name.lower().replace("_", "-").replace(" ", "-")
 
     # Map format names to classes
-    if fmt == 'url':
+    if fmt == "url":
         from .url_renderer import URLRenderer
+
         return URLRenderer(config)
-    elif fmt in ('markdown', 'md'):
+    elif fmt in ("markdown", "md"):
         from .markdown_renderer import MarkdownRenderer
+
         return MarkdownRenderer(config)
-    elif fmt == 'json':
+    elif fmt == "json":
         from .json_renderer import JSONRenderer
+
         return JSONRenderer(config)
-    elif fmt == 'pdf':
+    elif fmt == "pdf":
         from .pdf_renderer import PDFRenderer
+
         return PDFRenderer(config)
-    elif fmt in ('docs', 'google-docs', 'gdocs'):
+    elif fmt in ("docs", "google-docs", "gdocs"):
         from .google_docs_renderer import GoogleDocsRenderer
+
         return GoogleDocsRenderer(config)
-    elif fmt in ('sheets', 'google-sheets', 'spreadsheet', 'gsheets'):
+    elif fmt in ("sheets", "google-sheets", "spreadsheet", "gsheets"):
         from .google_sheets_renderer import GoogleSheetsRenderer
+
         return GoogleSheetsRenderer(config)
-    elif fmt in ('webhook', 'discord-webhook', 'discord'):
+    elif fmt in ("webhook", "discord-webhook", "discord"):
         from .discord_webhook_renderer import DiscordWebhookRenderer
+
         return DiscordWebhookRenderer(config)
     else:
         raise ValueError(f"Unsupported output format: {format_name}")
@@ -62,7 +69,7 @@ def get_multiple_renderers(formats: List[Dict[str, Any]]) -> List[OutputRenderer
     """
     renderers = []
     for fmt_config in formats:
-        format_name = fmt_config.get('format')
+        format_name = fmt_config.get("format")
         if not format_name:
             raise ValueError("Each output format must specify 'format' key")
         renderer = get_output_renderer(format_name, fmt_config)

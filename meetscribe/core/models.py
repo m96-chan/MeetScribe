@@ -70,11 +70,9 @@ class Transcript:
 
     def add_processing_step(self, step: str, details: Dict[str, Any]):
         """Add a processing step to the history."""
-        self.processing_history.append({
-            "timestamp": datetime.now().isoformat(),
-            "step": step,
-            "details": details
-        })
+        self.processing_history.append(
+            {"timestamp": datetime.now().isoformat(), "step": step, "details": details}
+        )
 
     def get_full_text(self) -> str:
         """Get complete transcript text."""
@@ -126,11 +124,7 @@ class Minutes:
             "meeting_id": self.meeting_id,
             "summary": self.summary,
             "decisions": [
-                {
-                    "description": d.description,
-                    "responsible": d.responsible,
-                    "deadline": d.deadline
-                }
+                {"description": d.description, "responsible": d.responsible, "deadline": d.deadline}
                 for d in self.decisions
             ],
             "action_items": [
@@ -138,7 +132,7 @@ class Minutes:
                     "description": a.description,
                     "assignee": a.assignee,
                     "deadline": a.deadline,
-                    "priority": a.priority
+                    "priority": a.priority,
                 }
                 for a in self.action_items
             ],
@@ -146,5 +140,5 @@ class Minutes:
             "participants": self.participants,
             "url": self.url,
             "metadata": self.metadata,
-            "generated_at": self.generated_at.isoformat()
+            "generated_at": self.generated_at.isoformat(),
         }

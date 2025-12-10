@@ -24,24 +24,12 @@ from meetscribe.core.config import (
 def valid_config_dict():
     """Create valid configuration dictionary."""
     return {
-        'input': {
-            'provider': 'file',
-            'params': {'audio_path': './audio.mp3'}
-        },
-        'convert': {
-            'engine': 'whisper',
-            'params': {}
-        },
-        'llm': {
-            'engine': 'chatgpt',
-            'params': {}
-        },
-        'output': {
-            'format': 'markdown',
-            'params': {}
-        },
-        'working_dir': './meetings',
-        'cleanup_audio': False
+        "input": {"provider": "file", "params": {"audio_path": "./audio.mp3"}},
+        "convert": {"engine": "whisper", "params": {}},
+        "llm": {"engine": "chatgpt", "params": {}},
+        "output": {"format": "markdown", "params": {}},
+        "working_dir": "./meetings",
+        "cleanup_audio": False,
     }
 
 
@@ -49,7 +37,7 @@ def valid_config_dict():
 def valid_config_file(tmp_path, valid_config_dict):
     """Create valid configuration file."""
     config_path = tmp_path / "config.yaml"
-    with open(config_path, 'w') as f:
+    with open(config_path, "w") as f:
         yaml.dump(valid_config_dict, f)
     return config_path
 
@@ -61,25 +49,25 @@ class TestPipelineConfig:
         """Test creating config from dictionary."""
         config = PipelineConfig.from_dict(valid_config_dict)
 
-        assert config.input.provider == 'file'
-        assert config.convert.engine == 'whisper'
-        assert config.llm.engine == 'chatgpt'
+        assert config.input.provider == "file"
+        assert config.convert.engine == "whisper"
+        assert config.llm.engine == "chatgpt"
         assert isinstance(config.output, OutputConfig)
-        assert config.output.format == 'markdown'
+        assert config.output.format == "markdown"
 
     def test_from_yaml(self, valid_config_file):
         """Test loading config from YAML file."""
         config = PipelineConfig.from_yaml(valid_config_file)
 
-        assert config.input.provider == 'file'
-        assert config.convert.engine == 'whisper'
+        assert config.input.provider == "file"
+        assert config.convert.engine == "whisper"
 
     def test_missing_input_section(self):
         """Test error for missing input section."""
         config_dict = {
-            'convert': {'engine': 'whisper'},
-            'llm': {'engine': 'chatgpt'},
-            'output': {'format': 'markdown'}
+            "convert": {"engine": "whisper"},
+            "llm": {"engine": "chatgpt"},
+            "output": {"format": "markdown"},
         }
 
         with pytest.raises(ConfigValidationError) as exc_info:
@@ -90,10 +78,10 @@ class TestPipelineConfig:
     def test_missing_provider(self):
         """Test error for missing provider."""
         config_dict = {
-            'input': {'params': {}},
-            'convert': {'engine': 'whisper'},
-            'llm': {'engine': 'chatgpt'},
-            'output': {'format': 'markdown'}
+            "input": {"params": {}},
+            "convert": {"engine": "whisper"},
+            "llm": {"engine": "chatgpt"},
+            "output": {"format": "markdown"},
         }
 
         with pytest.raises(ConfigValidationError) as exc_info:
@@ -103,7 +91,7 @@ class TestPipelineConfig:
 
     def test_invalid_provider(self, valid_config_dict):
         """Test error for invalid provider."""
-        valid_config_dict['input']['provider'] = 'invalid_provider'
+        valid_config_dict["input"]["provider"] = "invalid_provider"
 
         with pytest.raises(ConfigValidationError) as exc_info:
             PipelineConfig.from_dict(valid_config_dict)
@@ -112,7 +100,7 @@ class TestPipelineConfig:
 
     def test_invalid_convert_engine(self, valid_config_dict):
         """Test error for invalid convert engine."""
-        valid_config_dict['convert']['engine'] = 'invalid_engine'
+        valid_config_dict["convert"]["engine"] = "invalid_engine"
 
         with pytest.raises(ConfigValidationError) as exc_info:
             PipelineConfig.from_dict(valid_config_dict)
@@ -121,7 +109,7 @@ class TestPipelineConfig:
 
     def test_invalid_llm_engine(self, valid_config_dict):
         """Test error for invalid LLM engine."""
-        valid_config_dict['llm']['engine'] = 'invalid_llm'
+        valid_config_dict["llm"]["engine"] = "invalid_llm"
 
         with pytest.raises(ConfigValidationError) as exc_info:
             PipelineConfig.from_dict(valid_config_dict)
@@ -130,7 +118,7 @@ class TestPipelineConfig:
 
     def test_invalid_output_format(self, valid_config_dict):
         """Test error for invalid output format."""
-        valid_config_dict['output']['format'] = 'invalid_format'
+        valid_config_dict["output"]["format"] = "invalid_format"
 
         with pytest.raises(ConfigValidationError) as exc_info:
             PipelineConfig.from_dict(valid_config_dict)
@@ -139,19 +127,19 @@ class TestPipelineConfig:
 
     def test_multiple_outputs(self, valid_config_dict):
         """Test configuration with multiple outputs."""
-        valid_config_dict['output'] = [
-            {'format': 'markdown', 'params': {}},
-            {'format': 'json', 'params': {}},
-            {'format': 'pdf', 'params': {}}
+        valid_config_dict["output"] = [
+            {"format": "markdown", "params": {}},
+            {"format": "json", "params": {}},
+            {"format": "pdf", "params": {}},
         ]
 
         config = PipelineConfig.from_dict(valid_config_dict)
 
         assert isinstance(config.output, list)
         assert len(config.output) == 3
-        assert config.output[0].format == 'markdown'
-        assert config.output[1].format == 'json'
-        assert config.output[2].format == 'pdf'
+        assert config.output[0].format == "markdown"
+        assert config.output[1].format == "json"
+        assert config.output[2].format == "pdf"
 
     def test_get_outputs(self, valid_config_dict):
         """Test get_outputs method."""
@@ -161,10 +149,7 @@ class TestPipelineConfig:
         assert len(outputs) == 1
 
         # Multiple outputs
-        valid_config_dict['output'] = [
-            {'format': 'markdown'},
-            {'format': 'json'}
-        ]
+        valid_config_dict["output"] = [{"format": "markdown"}, {"format": "json"}]
         config = PipelineConfig.from_dict(valid_config_dict)
         outputs = config.get_outputs()
         assert len(outputs) == 2
@@ -174,10 +159,10 @@ class TestPipelineConfig:
         config = PipelineConfig.from_dict(valid_config_dict)
         result = config.to_dict()
 
-        assert result['input']['provider'] == 'file'
-        assert result['convert']['engine'] == 'whisper'
-        assert result['llm']['engine'] == 'chatgpt'
-        assert result['output']['format'] == 'markdown'
+        assert result["input"]["provider"] == "file"
+        assert result["convert"]["engine"] == "whisper"
+        assert result["llm"]["engine"] == "chatgpt"
+        assert result["output"]["format"] == "markdown"
 
     def test_save_and_load(self, tmp_path, valid_config_dict):
         """Test saving and loading config."""
@@ -192,38 +177,36 @@ class TestPipelineConfig:
     def test_env_var_expansion(self, tmp_path):
         """Test environment variable expansion."""
         import os
-        os.environ['TEST_AUDIO_PATH'] = '/path/to/audio.mp3'
+
+        os.environ["TEST_AUDIO_PATH"] = "/path/to/audio.mp3"
 
         config_dict = {
-            'input': {
-                'provider': 'file',
-                'params': {'audio_path': '${TEST_AUDIO_PATH}'}
-            },
-            'convert': {'engine': 'whisper'},
-            'llm': {'engine': 'chatgpt'},
-            'output': {'format': 'markdown'}
+            "input": {"provider": "file", "params": {"audio_path": "${TEST_AUDIO_PATH}"}},
+            "convert": {"engine": "whisper"},
+            "llm": {"engine": "chatgpt"},
+            "output": {"format": "markdown"},
         }
 
         config_path = tmp_path / "config.yaml"
-        with open(config_path, 'w') as f:
+        with open(config_path, "w") as f:
             yaml.dump(config_dict, f)
 
         config = PipelineConfig.from_yaml(config_path)
-        assert config.input.params['audio_path'] == '/path/to/audio.mp3'
+        assert config.input.params["audio_path"] == "/path/to/audio.mp3"
 
-        del os.environ['TEST_AUDIO_PATH']
+        del os.environ["TEST_AUDIO_PATH"]
 
     def test_daemon_config(self, valid_config_dict):
         """Test daemon configuration."""
-        valid_config_dict['daemon'] = {
-            'mode': 'auto_record',
-            'guild_ids': ['123456'],
-            'min_users': 2
+        valid_config_dict["daemon"] = {
+            "mode": "auto_record",
+            "guild_ids": ["123456"],
+            "min_users": 2,
         }
 
         config = PipelineConfig.from_dict(valid_config_dict)
         assert config.daemon is not None
-        assert config.daemon['mode'] == 'auto_record'
+        assert config.daemon["mode"] == "auto_record"
 
 
 class TestValidateConfig:
@@ -243,8 +226,8 @@ class TestValidateConfig:
     def test_validate_invalid_config(self, tmp_path):
         """Test validating invalid config."""
         config_path = tmp_path / "invalid.yaml"
-        with open(config_path, 'w') as f:
-            yaml.dump({'invalid': 'config'}, f)
+        with open(config_path, "w") as f:
+            yaml.dump({"invalid": "config"}, f)
 
         errors = validate_config(config_path)
         assert len(errors) > 0
@@ -258,7 +241,7 @@ class TestCreateDefaultConfig:
         config = create_default_config()
 
         assert isinstance(config, PipelineConfig)
-        assert config.input.provider == 'file'
-        assert config.convert.engine == 'passthrough'
-        assert config.llm.engine == 'notebooklm'
-        assert config.output.format == 'url'
+        assert config.input.provider == "file"
+        assert config.convert.engine == "passthrough"
+        assert config.llm.engine == "notebooklm"
+        assert config.output.format == "url"

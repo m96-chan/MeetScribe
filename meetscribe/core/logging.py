@@ -55,11 +55,28 @@ class JSONFormatter(logging.Formatter):
             extra_fields = {}
             for key, value in record.__dict__.items():
                 if key not in (
-                    "name", "msg", "args", "created", "filename", "funcName",
-                    "levelname", "levelno", "lineno", "module", "msecs",
-                    "pathname", "process", "processName", "relativeCreated",
-                    "stack_info", "exc_info", "exc_text", "thread", "threadName",
-                    "message", "asctime"
+                    "name",
+                    "msg",
+                    "args",
+                    "created",
+                    "filename",
+                    "funcName",
+                    "levelname",
+                    "levelno",
+                    "lineno",
+                    "module",
+                    "msecs",
+                    "pathname",
+                    "process",
+                    "processName",
+                    "relativeCreated",
+                    "stack_info",
+                    "exc_info",
+                    "exc_text",
+                    "thread",
+                    "threadName",
+                    "message",
+                    "asctime",
                 ):
                     try:
                         json.dumps(value)  # Check if serializable
@@ -155,6 +172,7 @@ class MeetScribeLogger:
 
             if file_rotation:
                 from logging.handlers import RotatingFileHandler
+
                 file_handler = RotatingFileHandler(
                     log_file,
                     maxBytes=max_file_size,
@@ -222,7 +240,7 @@ def setup_logging(
     log_format: str = "default",
     json_output: bool = False,
     console_output: bool = True,
-    **kwargs
+    **kwargs,
 ) -> MeetScribeLogger:
     """
     Set up logging for MeetScribe.
@@ -248,7 +266,7 @@ def setup_logging(
         log_format=log_format,
         json_output=json_output,
         console_output=console_output,
-        **kwargs
+        **kwargs,
     )
     return _logger_manager
 
@@ -332,6 +350,7 @@ def log_execution_time(logger: logging.Logger):
                 raise
 
         return wrapper
+
     return decorator
 
 
@@ -360,4 +379,5 @@ def log_async_execution_time(logger: logging.Logger):
                 raise
 
         return wrapper
+
     return decorator

@@ -41,16 +41,14 @@ class WebRTCProvider(InputProvider):
         """
         super().__init__(config)
 
-        self.stream_url = config.get('stream_url')
-        self.ice_servers = config.get('ice_servers', [
-            {'urls': 'stun:stun.l.google.com:19302'}
-        ])
-        self.output_dir = Path(config.get('output_dir', './recordings'))
-        self.recording_format = config.get('recording_format', 'wav')
-        self.max_duration = config.get('max_duration', 14400)  # 4 hours
-        self.auto_reconnect = config.get('auto_reconnect', True)
-        self.stun_servers = config.get('stun_servers', [])
-        self.turn_servers = config.get('turn_servers', [])
+        self.stream_url = config.get("stream_url")
+        self.ice_servers = config.get("ice_servers", [{"urls": "stun:stun.l.google.com:19302"}])
+        self.output_dir = Path(config.get("output_dir", "./recordings"))
+        self.recording_format = config.get("recording_format", "wav")
+        self.max_duration = config.get("max_duration", 14400)  # 4 hours
+        self.auto_reconnect = config.get("auto_reconnect", True)
+        self.stun_servers = config.get("stun_servers", [])
+        self.turn_servers = config.get("turn_servers", [])
 
         # Recording state
         self._is_recording = False
@@ -92,26 +90,24 @@ class WebRTCProvider(InputProvider):
             output_file = self.output_dir / f"{meeting_id}.{self.recording_format}"
 
             # Create peer connection
-            pc = RTCPeerConnection(configuration={
-                'iceServers': self._build_ice_servers()
-            })
+            pc = RTCPeerConnection(configuration={"iceServers": self._build_ice_servers()})
 
             # Create recorder
             recorder = MediaRecorder(str(output_file))
 
-            @pc.on('track')
+            @pc.on("track")
             async def on_track(track):
-                if track.kind == 'audio':
+                if track.kind == "audio":
                     logger.info("Received audio track")
                     recorder.addTrack(track)
 
-            @pc.on('connectionstatechange')
+            @pc.on("connectionstatechange")
             async def on_connectionstatechange():
                 logger.info(f"Connection state: {pc.connectionState}")
-                if pc.connectionState == 'connected':
+                if pc.connectionState == "connected":
                     self._is_recording = True
                     await recorder.start()
-                elif pc.connectionState in ('failed', 'closed'):
+                elif pc.connectionState in ("failed", "closed"):
                     self._is_recording = False
                     await recorder.stop()
 
@@ -146,15 +142,17 @@ class WebRTCProvider(InputProvider):
 
         # Add STUN servers
         for stun in self.stun_servers:
-            servers.append({'urls': f'stun:{stun}'})
+            servers.append({"urls": f"stun:{stun}"})
 
         # Add TURN servers
         for turn in self.turn_servers:
-            servers.append({
-                'urls': f"turn:{turn['host']}",
-                'username': turn.get('username'),
-                'credential': turn.get('credential')
-            })
+            servers.append(
+                {
+                    "urls": f"turn:{turn['host']}",
+                    "username": turn.get("username"),
+                    "credential": turn.get("credential"),
+                }
+            )
 
         return servers
 
@@ -184,8 +182,7 @@ class WebRTCProvider(InputProvider):
 
             async with aiohttp.ClientSession() as session:
                 async with session.post(
-                    f"{self.stream_url}/answer",
-                    json={'sdp': answer.sdp, 'type': answer.type}
+                    f"{self.stream_url}/answer", json={"sdp": answer.sdp, "type": answer.type}
                 ) as response:
                     return response.status == 200
         except Exception as e:
@@ -202,7 +199,7 @@ class WebRTCProvider(InputProvider):
         output_path.mkdir(parents=True, exist_ok=True)
 
         mock_file = output_path / "mock_webrtc_recording.txt"
-        with open(mock_file, 'w') as f:
+        with open(mock_file, "w") as f:
             f.write(f"Mock WebRTC recording for {meeting_id}\n")
             f.write("This is a placeholder file.\n")
             f.write("Configure stream_url to capture actual WebRTC streams.\n")
@@ -210,13 +207,13 @@ class WebRTCProvider(InputProvider):
         # Save metadata
         meta_file = output_path / "webrtc_metadata.json"
         metadata = {
-            'meeting_id': meeting_id,
-            'source': 'webrtc',
-            'mock': True,
-            'stream_url': self.stream_url,
-            'created_at': datetime.now().isoformat()
+            "meeting_id": meeting_id,
+            "source": "webrtc",
+            "mock": True,
+            "stream_url": self.stream_url,
+            "created_at": datetime.now().isoformat(),
         }
-        with open(meta_file, 'w') as f:
+        with open(meta_file, "w") as f:
             json.dump(metadata, f, indent=2)
 
         return mock_file

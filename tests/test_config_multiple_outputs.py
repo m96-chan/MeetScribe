@@ -12,7 +12,7 @@ from meetscribe.core.config import (
     PipelineConfig,
     InputConfig,
     ConvertConfig,
-    LLMConfig
+    LLMConfig,
 )
 
 
@@ -21,29 +21,18 @@ class TestOutputConfig:
 
     def test_output_config_basic(self):
         """Test basic OutputConfig creation."""
-        config = OutputConfig(
-            format="markdown",
-            params={"output_dir": "./meetings"}
-        )
+        config = OutputConfig(format="markdown", params={"output_dir": "./meetings"})
         assert config.format == "markdown"
         assert config.params["output_dir"] == "./meetings"
 
     def test_output_config_with_enabled_flag(self):
         """Test OutputConfig with enabled flag."""
-        config = OutputConfig(
-            format="pdf",
-            params={},
-            enabled=True
-        )
+        config = OutputConfig(format="pdf", params={}, enabled=True)
         assert config.enabled is True
 
     def test_output_config_disabled(self):
         """Test OutputConfig can be disabled."""
-        config = OutputConfig(
-            format="json",
-            params={},
-            enabled=False
-        )
+        config = OutputConfig(format="json", params={}, enabled=False)
         assert config.enabled is False
 
     def test_output_config_default_enabled_is_true(self):
@@ -53,16 +42,10 @@ class TestOutputConfig:
 
     def test_output_config_with_on_error_strategy(self):
         """Test OutputConfig with error handling strategy."""
-        config = OutputConfig(
-            format="markdown",
-            on_error="continue"
-        )
+        config = OutputConfig(format="markdown", on_error="continue")
         assert config.on_error == "continue"
 
-        config2 = OutputConfig(
-            format="pdf",
-            on_error="stop"
-        )
+        config2 = OutputConfig(format="pdf", on_error="stop")
         assert config2.on_error == "stop"
 
     def test_output_config_default_on_error_is_continue(self):
@@ -72,10 +55,7 @@ class TestOutputConfig:
 
     def test_output_config_with_execution_group(self):
         """Test OutputConfig with execution_group for serial execution."""
-        config = OutputConfig(
-            format="pdf",
-            execution_group=1
-        )
+        config = OutputConfig(format="pdf", execution_group=1)
         assert config.execution_group == 1
 
     def test_output_config_default_execution_group_is_zero(self):
@@ -85,10 +65,7 @@ class TestOutputConfig:
 
     def test_output_config_with_dependencies(self):
         """Test OutputConfig with depends_on list."""
-        config = OutputConfig(
-            format="discord_webhook",
-            depends_on=["pdf", "markdown"]
-        )
+        config = OutputConfig(format="discord_webhook", depends_on=["pdf", "markdown"])
         assert config.depends_on == ["pdf", "markdown"]
 
     def test_output_config_default_depends_on_is_empty(self):
@@ -98,11 +75,7 @@ class TestOutputConfig:
 
     def test_output_config_with_wait_for_group(self):
         """Test OutputConfig with wait_for_group flag."""
-        config = OutputConfig(
-            format="pdf",
-            execution_group=1,
-            wait_for_group=True
-        )
+        config = OutputConfig(format="pdf", execution_group=1, wait_for_group=True)
         assert config.wait_for_group is True
 
     def test_output_config_default_wait_for_group_is_true(self):
@@ -117,63 +90,59 @@ class TestPipelineConfigMultipleOutputs:
     def test_pipeline_config_with_single_output_legacy(self):
         """Test backward compatibility with single output config."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
-            'convert': {'engine': 'passthrough', 'params': {}},
-            'llm': {'engine': 'notebooklm', 'params': {}},
-            'output': {'format': 'url', 'params': {}}
+            "input": {"provider": "file", "params": {"audio_path": "./test.mp3"}},
+            "convert": {"engine": "passthrough", "params": {}},
+            "llm": {"engine": "notebooklm", "params": {}},
+            "output": {"format": "url", "params": {}},
         }
         config = PipelineConfig.from_dict(config_dict)
 
-        assert config.output.format == 'url'
+        assert config.output.format == "url"
         # Should work with legacy single output
 
     def test_pipeline_config_with_multiple_outputs(self):
         """Test PipelineConfig with outputs list."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
-            'convert': {'engine': 'passthrough', 'params': {}},
-            'llm': {'engine': 'notebooklm', 'params': {}},
-            'outputs': [
-                {'format': 'url', 'params': {}},
-                {'format': 'markdown', 'params': {'output_dir': './meetings'}},
-                {'format': 'json', 'params': {}}
-            ]
+            "input": {"provider": "file", "params": {"audio_path": "./test.mp3"}},
+            "convert": {"engine": "passthrough", "params": {}},
+            "llm": {"engine": "notebooklm", "params": {}},
+            "outputs": [
+                {"format": "url", "params": {}},
+                {"format": "markdown", "params": {"output_dir": "./meetings"}},
+                {"format": "json", "params": {}},
+            ],
         }
         config = PipelineConfig.from_dict(config_dict)
 
         # Should have outputs attribute
-        assert hasattr(config, 'outputs')
+        assert hasattr(config, "outputs")
         assert len(config.outputs) == 3
-        assert config.outputs[0].format == 'url'
-        assert config.outputs[1].format == 'markdown'
-        assert config.outputs[2].format == 'json'
+        assert config.outputs[0].format == "url"
+        assert config.outputs[1].format == "markdown"
+        assert config.outputs[2].format == "json"
 
     def test_pipeline_config_get_output_configs_single(self):
         """Test get_output_configs() returns list for single output."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
-            'convert': {'engine': 'passthrough', 'params': {}},
-            'llm': {'engine': 'notebooklm', 'params': {}},
-            'output': {'format': 'markdown', 'params': {}}
+            "input": {"provider": "file", "params": {"audio_path": "./test.mp3"}},
+            "convert": {"engine": "passthrough", "params": {}},
+            "llm": {"engine": "notebooklm", "params": {}},
+            "output": {"format": "markdown", "params": {}},
         }
         config = PipelineConfig.from_dict(config_dict)
 
         output_configs = config.get_output_configs()
         assert isinstance(output_configs, list)
         assert len(output_configs) == 1
-        assert output_configs[0].format == 'markdown'
+        assert output_configs[0].format == "markdown"
 
     def test_pipeline_config_get_output_configs_multiple(self):
         """Test get_output_configs() returns outputs list."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
-            'convert': {'engine': 'passthrough', 'params': {}},
-            'llm': {'engine': 'notebooklm', 'params': {}},
-            'outputs': [
-                {'format': 'url'},
-                {'format': 'markdown'},
-                {'format': 'pdf'}
-            ]
+            "input": {"provider": "file", "params": {"audio_path": "./test.mp3"}},
+            "convert": {"engine": "passthrough", "params": {}},
+            "llm": {"engine": "notebooklm", "params": {}},
+            "outputs": [{"format": "url"}, {"format": "markdown"}, {"format": "pdf"}],
         }
         config = PipelineConfig.from_dict(config_dict)
 
@@ -184,34 +153,34 @@ class TestPipelineConfigMultipleOutputs:
     def test_pipeline_config_get_output_configs_filters_disabled(self):
         """Test get_output_configs() filters out disabled outputs."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
-            'convert': {'engine': 'passthrough', 'params': {}},
-            'llm': {'engine': 'notebooklm', 'params': {}},
-            'outputs': [
-                {'format': 'url', 'enabled': True},
-                {'format': 'markdown', 'enabled': False},
-                {'format': 'json', 'enabled': True}
-            ]
+            "input": {"provider": "file", "params": {"audio_path": "./test.mp3"}},
+            "convert": {"engine": "passthrough", "params": {}},
+            "llm": {"engine": "notebooklm", "params": {}},
+            "outputs": [
+                {"format": "url", "enabled": True},
+                {"format": "markdown", "enabled": False},
+                {"format": "json", "enabled": True},
+            ],
         }
         config = PipelineConfig.from_dict(config_dict)
 
         output_configs = config.get_output_configs()
         assert len(output_configs) == 2
-        assert output_configs[0].format == 'url'
-        assert output_configs[1].format == 'json'
+        assert output_configs[0].format == "url"
+        assert output_configs[1].format == "json"
 
     def test_pipeline_config_get_execution_groups(self):
         """Test get_execution_groups() returns grouped outputs."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
-            'convert': {'engine': 'passthrough', 'params': {}},
-            'llm': {'engine': 'notebooklm', 'params': {}},
-            'outputs': [
-                {'format': 'url', 'execution_group': 0},
-                {'format': 'markdown', 'execution_group': 0},
-                {'format': 'pdf', 'execution_group': 1},
-                {'format': 'discord', 'execution_group': 2}
-            ]
+            "input": {"provider": "file", "params": {"audio_path": "./test.mp3"}},
+            "convert": {"engine": "passthrough", "params": {}},
+            "llm": {"engine": "notebooklm", "params": {}},
+            "outputs": [
+                {"format": "url", "execution_group": 0},
+                {"format": "markdown", "execution_group": 0},
+                {"format": "pdf", "execution_group": 1},
+                {"format": "discord", "execution_group": 2},
+            ],
         }
         config = PipelineConfig.from_dict(config_dict)
 
@@ -227,42 +196,39 @@ class TestPipelineConfigMultipleOutputs:
     def test_pipeline_config_with_output_execution_mode(self):
         """Test PipelineConfig with output_execution_mode."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
-            'convert': {'engine': 'passthrough', 'params': {}},
-            'llm': {'engine': 'notebooklm', 'params': {}},
-            'outputs': [
-                {'format': 'url'},
-                {'format': 'markdown'}
-            ],
-            'output_execution_mode': 'parallel'
+            "input": {"provider": "file", "params": {"audio_path": "./test.mp3"}},
+            "convert": {"engine": "passthrough", "params": {}},
+            "llm": {"engine": "notebooklm", "params": {}},
+            "outputs": [{"format": "url"}, {"format": "markdown"}],
+            "output_execution_mode": "parallel",
         }
         config = PipelineConfig.from_dict(config_dict)
 
-        assert config.output_execution_mode == 'parallel'
+        assert config.output_execution_mode == "parallel"
 
     def test_pipeline_config_default_execution_mode_is_auto(self):
         """Test PipelineConfig defaults to output_execution_mode='auto'."""
         config_dict = {
-            'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
-            'convert': {'engine': 'passthrough', 'params': {}},
-            'llm': {'engine': 'notebooklm', 'params': {}},
-            'outputs': [{'format': 'url'}]
+            "input": {"provider": "file", "params": {"audio_path": "./test.mp3"}},
+            "convert": {"engine": "passthrough", "params": {}},
+            "llm": {"engine": "notebooklm", "params": {}},
+            "outputs": [{"format": "url"}],
         }
         config = PipelineConfig.from_dict(config_dict)
 
-        assert config.output_execution_mode == 'auto'
+        assert config.output_execution_mode == "auto"
 
     def test_pipeline_config_execution_mode_validation(self):
         """Test output_execution_mode only accepts valid values."""
-        valid_modes = ['auto', 'parallel', 'serial']
+        valid_modes = ["auto", "parallel", "serial"]
 
         for mode in valid_modes:
             config_dict = {
-                'input': {'provider': 'file', 'params': {'audio_path': './test.mp3'}},
-                'convert': {'engine': 'passthrough', 'params': {}},
-                'llm': {'engine': 'notebooklm', 'params': {}},
-                'outputs': [{'format': 'url'}],
-                'output_execution_mode': mode
+                "input": {"provider": "file", "params": {"audio_path": "./test.mp3"}},
+                "convert": {"engine": "passthrough", "params": {}},
+                "llm": {"engine": "notebooklm", "params": {}},
+                "outputs": [{"format": "url"}],
+                "output_execution_mode": mode,
             }
             config = PipelineConfig.from_dict(config_dict)
             assert config.output_execution_mode == mode
@@ -304,9 +270,9 @@ outputs:
         config = PipelineConfig.from_yaml(config_file)
 
         assert len(config.get_output_configs()) == 3
-        assert config.get_output_configs()[0].format == 'url'
-        assert config.get_output_configs()[1].format == 'markdown'
-        assert config.get_output_configs()[2].format == 'json'
+        assert config.get_output_configs()[0].format == "url"
+        assert config.get_output_configs()[1].format == "markdown"
+        assert config.get_output_configs()[2].format == "json"
 
     def test_parse_yaml_with_execution_groups(self, tmp_path):
         """Test parsing YAML with execution_group and depends_on."""
@@ -379,4 +345,4 @@ output:
         # Should still work with get_output_configs()
         output_configs = config.get_output_configs()
         assert len(output_configs) == 1
-        assert output_configs[0].format == 'markdown'
+        assert output_configs[0].format == "markdown"

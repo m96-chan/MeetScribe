@@ -42,14 +42,14 @@ class DiscordBotProvider(InputProvider):
         """
         super().__init__(config)
 
-        self.bot_token = config.get('bot_token') or os.getenv('DISCORD_BOT_TOKEN')
-        self.guild_id = config.get('guild_id')
-        self.channel_id = config.get('channel_id')
-        self.recording_format = config.get('recording_format', 'mp3')
-        self.max_duration = config.get('max_duration', 14400)  # 4 hours default
-        self.output_dir = Path(config.get('output_dir', './recordings'))
-        self.auto_join = config.get('auto_join', False)
-        self.min_users = config.get('min_users', 1)
+        self.bot_token = config.get("bot_token") or os.getenv("DISCORD_BOT_TOKEN")
+        self.guild_id = config.get("guild_id")
+        self.channel_id = config.get("channel_id")
+        self.recording_format = config.get("recording_format", "mp3")
+        self.max_duration = config.get("max_duration", 14400)  # 4 hours default
+        self.output_dir = Path(config.get("output_dir", "./recordings"))
+        self.auto_join = config.get("auto_join", False)
+        self.min_users = config.get("min_users", 1)
 
         # State
         self._is_recording = False
@@ -97,7 +97,7 @@ class DiscordBotProvider(InputProvider):
             intents.voice_states = True
             intents.guilds = True
 
-            bot = commands.Bot(command_prefix='!', intents=intents)
+            bot = commands.Bot(command_prefix="!", intents=intents)
             self._bot = bot
 
             recording_done = asyncio.Event()
@@ -177,12 +177,7 @@ class DiscordBotProvider(InputProvider):
             # Combine audio chunks
             combined = AudioSegment.empty()
             for chunk in audio_data:
-                segment = AudioSegment(
-                    data=chunk,
-                    sample_width=2,
-                    frame_rate=48000,
-                    channels=2
-                )
+                segment = AudioSegment(data=chunk, sample_width=2, frame_rate=48000, channels=2)
                 combined += segment
 
             # Export
@@ -192,8 +187,8 @@ class DiscordBotProvider(InputProvider):
         except Exception as e:
             logger.error(f"Failed to save audio: {e}")
             # Create placeholder
-            with open(output_file, 'wb') as f:
-                f.write(b'')
+            with open(output_file, "wb") as f:
+                f.write(b"")
 
     def _create_mock_recording(self, meeting_id: str) -> Path:
         """Create mock recording for testing."""
@@ -202,7 +197,7 @@ class DiscordBotProvider(InputProvider):
         self.output_dir.mkdir(parents=True, exist_ok=True)
         output_file = self.output_dir / f"{meeting_id}.txt"
 
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             f.write(f"Mock Discord recording for {meeting_id}\n")
             f.write("This is a placeholder file.\n")
             f.write("Configure Discord bot token to record actual audio.\n")
@@ -210,14 +205,14 @@ class DiscordBotProvider(InputProvider):
         # Save metadata
         meta_file = self.output_dir / f"{meeting_id}_metadata.json"
         metadata = {
-            'meeting_id': meeting_id,
-            'source': 'discord',
-            'mock': True,
-            'guild_id': self.guild_id,
-            'channel_id': self.channel_id,
-            'created_at': datetime.now().isoformat()
+            "meeting_id": meeting_id,
+            "source": "discord",
+            "mock": True,
+            "guild_id": self.guild_id,
+            "channel_id": self.channel_id,
+            "created_at": datetime.now().isoformat(),
         }
-        with open(meta_file, 'w') as f:
+        with open(meta_file, "w") as f:
             json.dump(metadata, f, indent=2)
 
         return output_file
@@ -267,14 +262,14 @@ class DiscordDaemon:
             cooldown: Cooldown between recordings in seconds
             output_dir: Directory for recordings
         """
-        self.bot_token = config.get('bot_token') or os.getenv('DISCORD_BOT_TOKEN')
-        self.guild_ids = config.get('guild_ids', [])
-        self.channel_ids = config.get('channel_ids', [])
-        self.mode = config.get('mode', 'notify')
-        self.webhook_url = config.get('webhook_url') or os.getenv('DISCORD_WEBHOOK_URL')
-        self.min_users = config.get('min_users', 2)
-        self.cooldown = config.get('cooldown', 300)
-        self.output_dir = Path(config.get('output_dir', './recordings'))
+        self.bot_token = config.get("bot_token") or os.getenv("DISCORD_BOT_TOKEN")
+        self.guild_ids = config.get("guild_ids", [])
+        self.channel_ids = config.get("channel_ids", [])
+        self.mode = config.get("mode", "notify")
+        self.webhook_url = config.get("webhook_url") or os.getenv("DISCORD_WEBHOOK_URL")
+        self.min_users = config.get("min_users", 2)
+        self.cooldown = config.get("cooldown", 300)
+        self.output_dir = Path(config.get("output_dir", "./recordings"))
 
         # State
         self._is_running = False
@@ -301,7 +296,7 @@ class DiscordDaemon:
             intents.guilds = True
             intents.members = True
 
-            bot = commands.Bot(command_prefix='!meetscribe ', intents=intents)
+            bot = commands.Bot(command_prefix="!meetscribe ", intents=intents)
             self._bot = bot
 
             @bot.event
@@ -314,12 +309,14 @@ class DiscordDaemon:
             async def on_voice_state_update(member, before, after):
                 await self._handle_voice_update(member, before, after)
 
-            @bot.command(name='status')
+            @bot.command(name="status")
             async def status_command(ctx):
-                await ctx.send(f"MeetScribe Daemon Status: {'Running' if self._is_running else 'Stopped'}")
+                await ctx.send(
+                    f"MeetScribe Daemon Status: {'Running' if self._is_running else 'Stopped'}"
+                )
                 await ctx.send(f"Active recordings: {len(self._active_recordings)}")
 
-            @bot.command(name='record')
+            @bot.command(name="record")
             async def record_command(ctx):
                 if ctx.author.voice:
                     channel = ctx.author.voice.channel
@@ -328,7 +325,7 @@ class DiscordDaemon:
                 else:
                     await ctx.send("You must be in a voice channel to start recording")
 
-            @bot.command(name='stop')
+            @bot.command(name="stop")
             async def stop_command(ctx):
                 if ctx.author.voice:
                     channel = ctx.author.voice.channel
@@ -383,9 +380,9 @@ class DiscordDaemon:
                     logger.debug(f"Cooldown active ({self.cooldown - elapsed}s remaining)")
                     return
 
-            if self.mode == 'notify':
-                await self._send_notification(channel, 'meeting_started')
-            elif self.mode == 'auto_record':
+            if self.mode == "notify":
+                await self._send_notification(channel, "meeting_started")
+            elif self.mode == "auto_record":
                 await self._start_recording(channel)
 
     async def _on_user_left(self, member, channel):
@@ -397,10 +394,10 @@ class DiscordDaemon:
         channel_key = str(channel.id)
 
         if user_count < self.min_users and channel_key in self._active_recordings:
-            if self.mode == 'auto_record':
+            if self.mode == "auto_record":
                 await self._stop_recording(channel)
-            elif self.mode == 'notify':
-                await self._send_notification(channel, 'meeting_ended')
+            elif self.mode == "notify":
+                await self._send_notification(channel, "meeting_ended")
 
     async def _start_recording(self, channel):
         """Start recording a channel."""
@@ -410,7 +407,7 @@ class DiscordDaemon:
             logger.info(f"Already recording {channel.name}")
             return
 
-        meeting_id = generate_meeting_id('discord', channel.name)
+        meeting_id = generate_meeting_id("discord", channel.name)
         self._active_recordings[channel_key] = meeting_id
         self._last_recording[channel_key] = datetime.now()
 
@@ -419,7 +416,7 @@ class DiscordDaemon:
         if self._on_meeting_start:
             self._on_meeting_start(channel, meeting_id)
 
-        await self._send_notification(channel, 'recording_started', meeting_id)
+        await self._send_notification(channel, "recording_started", meeting_id)
 
     async def _stop_recording(self, channel):
         """Stop recording a channel."""
@@ -435,7 +432,7 @@ class DiscordDaemon:
         if self._on_meeting_end:
             self._on_meeting_end(channel, meeting_id)
 
-        await self._send_notification(channel, 'recording_stopped', meeting_id)
+        await self._send_notification(channel, "recording_stopped", meeting_id)
 
     async def _send_notification(self, channel, event_type: str, meeting_id: str = None):
         """Send notification to webhook."""
@@ -446,19 +443,19 @@ class DiscordDaemon:
             import aiohttp
 
             embed = {
-                'title': f'MeetScribe: {event_type.replace("_", " ").title()}',
-                'color': 0x5865F2,
-                'fields': [
-                    {'name': 'Channel', 'value': channel.name, 'inline': True},
-                    {'name': 'Guild', 'value': channel.guild.name, 'inline': True},
+                "title": f'MeetScribe: {event_type.replace("_", " ").title()}',
+                "color": 0x5865F2,
+                "fields": [
+                    {"name": "Channel", "value": channel.name, "inline": True},
+                    {"name": "Guild", "value": channel.guild.name, "inline": True},
                 ],
-                'timestamp': datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
             }
 
             if meeting_id:
-                embed['fields'].append({'name': 'Meeting ID', 'value': meeting_id, 'inline': False})
+                embed["fields"].append({"name": "Meeting ID", "value": meeting_id, "inline": False})
 
-            payload = {'embeds': [embed]}
+            payload = {"embeds": [embed]}
 
             async with aiohttp.ClientSession() as session:
                 await session.post(self.webhook_url, json=payload)

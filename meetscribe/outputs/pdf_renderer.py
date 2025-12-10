@@ -40,16 +40,16 @@ class PDFRenderer(OutputRenderer):
             company_name: Company name for header
         """
         super().__init__(config)
-        self.output_dir = Path(config.get('output_dir', './meetings'))
-        self.filename_template = config.get('filename_template', 'minutes.pdf')
-        self.page_size_name = config.get('page_size', 'A4')
-        self.font_name = config.get('font_name', 'Helvetica')
-        self.title_font_size = config.get('title_font_size', 18)
-        self.heading_font_size = config.get('heading_font_size', 14)
-        self.body_font_size = config.get('body_font_size', 11)
-        self.include_logo = config.get('include_logo', False)
-        self.logo_path = config.get('logo_path')
-        self.company_name = config.get('company_name', '')
+        self.output_dir = Path(config.get("output_dir", "./meetings"))
+        self.filename_template = config.get("filename_template", "minutes.pdf")
+        self.page_size_name = config.get("page_size", "A4")
+        self.font_name = config.get("font_name", "Helvetica")
+        self.title_font_size = config.get("title_font_size", 18)
+        self.heading_font_size = config.get("heading_font_size", 14)
+        self.body_font_size = config.get("body_font_size", 11)
+        self.include_logo = config.get("include_logo", False)
+        self.logo_path = config.get("logo_path")
+        self.company_name = config.get("company_name", "")
 
         # Initialize reportlab
         self._init_reportlab()
@@ -62,14 +62,20 @@ class PDFRenderer(OutputRenderer):
             from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
             from reportlab.lib.units import inch, cm
             from reportlab.platypus import (
-                SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
-                PageBreak, ListFlowable, ListItem
+                SimpleDocTemplate,
+                Paragraph,
+                Spacer,
+                Table,
+                TableStyle,
+                PageBreak,
+                ListFlowable,
+                ListItem,
             )
 
             self.reportlab_available = True
 
             # Set page size
-            self.page_size = A4 if self.page_size_name == 'A4' else LETTER
+            self.page_size = A4 if self.page_size_name == "A4" else LETTER
 
             # Store modules for later use
             self._rl_colors = colors
@@ -117,8 +123,13 @@ class PDFRenderer(OutputRenderer):
         from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
         from reportlab.lib.units import inch
         from reportlab.platypus import (
-            SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
-            ListFlowable, ListItem
+            SimpleDocTemplate,
+            Paragraph,
+            Spacer,
+            Table,
+            TableStyle,
+            ListFlowable,
+            ListItem,
         )
         from reportlab.lib.enums import TA_CENTER, TA_LEFT
 
@@ -129,7 +140,7 @@ class PDFRenderer(OutputRenderer):
             rightMargin=72,
             leftMargin=72,
             topMargin=72,
-            bottomMargin=72
+            bottomMargin=72,
         )
 
         # Get styles
@@ -137,26 +148,23 @@ class PDFRenderer(OutputRenderer):
 
         # Custom styles
         title_style = ParagraphStyle(
-            'CustomTitle',
-            parent=styles['Heading1'],
+            "CustomTitle",
+            parent=styles["Heading1"],
             fontSize=self.title_font_size,
             spaceAfter=30,
-            alignment=TA_CENTER
+            alignment=TA_CENTER,
         )
 
         heading_style = ParagraphStyle(
-            'CustomHeading',
-            parent=styles['Heading2'],
+            "CustomHeading",
+            parent=styles["Heading2"],
             fontSize=self.heading_font_size,
             spaceAfter=12,
-            spaceBefore=20
+            spaceBefore=20,
         )
 
         body_style = ParagraphStyle(
-            'CustomBody',
-            parent=styles['Normal'],
-            fontSize=self.body_font_size,
-            spaceAfter=10
+            "CustomBody", parent=styles["Normal"], fontSize=self.body_font_size, spaceAfter=10
         )
 
         # Build document content
@@ -170,7 +178,7 @@ class PDFRenderer(OutputRenderer):
         meta_text = f"Generated: {minutes.generated_at.strftime('%Y-%m-%d %H:%M:%S')}"
         if self.company_name:
             meta_text = f"{self.company_name} | {meta_text}"
-        content.append(Paragraph(meta_text, styles['Normal']))
+        content.append(Paragraph(meta_text, styles["Normal"]))
         content.append(Spacer(1, 20))
 
         # Summary
@@ -205,33 +213,39 @@ class PDFRenderer(OutputRenderer):
             content.append(Paragraph("Action Items", heading_style))
 
             # Table data
-            table_data = [['#', 'Description', 'Assignee', 'Deadline', 'Priority']]
+            table_data = [["#", "Description", "Assignee", "Deadline", "Priority"]]
             for i, item in enumerate(minutes.action_items, 1):
-                table_data.append([
-                    str(i),
-                    item.description,
-                    item.assignee or '-',
-                    item.deadline or '-',
-                    item.priority or '-'
-                ])
+                table_data.append(
+                    [
+                        str(i),
+                        item.description,
+                        item.assignee or "-",
+                        item.deadline or "-",
+                        item.priority or "-",
+                    ]
+                )
 
             # Create table
             table = Table(table_data, colWidths=[30, 200, 80, 80, 60])
-            table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 10),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-                ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-                ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
-                ('FONTSIZE', (0, 1), (-1, -1), 9),
-                ('ALIGN', (1, 1), (1, -1), 'LEFT'),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black),
-                ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-            ]))
+            table.setStyle(
+                TableStyle(
+                    [
+                        ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
+                        ("TEXTCOLOR", (0, 0), (-1, 0), colors.whitesmoke),
+                        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                        ("FONTSIZE", (0, 0), (-1, 0), 10),
+                        ("BOTTOMPADDING", (0, 0), (-1, 0), 12),
+                        ("BACKGROUND", (0, 1), (-1, -1), colors.beige),
+                        ("TEXTCOLOR", (0, 1), (-1, -1), colors.black),
+                        ("FONTNAME", (0, 1), (-1, -1), "Helvetica"),
+                        ("FONTSIZE", (0, 1), (-1, -1), 9),
+                        ("ALIGN", (1, 1), (1, -1), "LEFT"),
+                        ("GRID", (0, 0), (-1, -1), 1, colors.black),
+                        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ]
+                )
+            )
             content.append(table)
 
         # Footer
@@ -239,7 +253,7 @@ class PDFRenderer(OutputRenderer):
         footer_text = f"<i>Generated by MeetScribe</i>"
         if minutes.url:
             footer_text += f" | <a href='{minutes.url}'>View in NotebookLM</a>"
-        content.append(Paragraph(footer_text, styles['Normal']))
+        content.append(Paragraph(footer_text, styles["Normal"]))
 
         # Build PDF
         doc.build(content)
@@ -259,12 +273,12 @@ Summary:
 Note: This is a placeholder file. Install reportlab to generate actual PDFs:
 pip install reportlab
 """
-        with open(output_path, 'w', encoding='utf-8') as f:
+        with open(output_path, "w", encoding="utf-8") as f:
             f.write(content)
 
     def validate_config(self) -> bool:
         """Validate renderer configuration."""
-        valid_sizes = ['A4', 'LETTER']
+        valid_sizes = ["A4", "LETTER"]
         if self.page_size_name not in valid_sizes:
             raise ValueError(f"page_size must be one of: {valid_sizes}")
         return True

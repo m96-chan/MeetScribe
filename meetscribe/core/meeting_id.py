@@ -17,6 +17,7 @@ import hashlib
 @dataclass
 class MeetingIDComponents:
     """Parsed components of a meeting ID."""
+
     start_time: datetime
     source: str
     channel: str
@@ -26,11 +27,11 @@ class MeetingIDComponents:
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
         return {
-            'start_time': self.start_time.isoformat(),
-            'source': self.source,
-            'channel': self.channel,
-            'suffix': self.suffix,
-            'raw_id': self.raw_id,
+            "start_time": self.start_time.isoformat(),
+            "source": self.source,
+            "channel": self.channel,
+            "suffix": self.suffix,
+            "raw_id": self.raw_id,
         }
 
 
@@ -40,7 +41,7 @@ def generate_meeting_id(
     start_time: Optional[datetime] = None,
     include_seconds: bool = False,
     suffix: Optional[str] = None,
-    unique: bool = False
+    unique: bool = False,
 ) -> str:
     """
     Generate a standardized meeting ID.
@@ -92,9 +93,7 @@ def generate_meeting_id(
 
 
 def generate_meeting_id_from_file(
-    file_path: str,
-    source: str = "file",
-    start_time: Optional[datetime] = None
+    file_path: str, source: str = "file", start_time: Optional[datetime] = None
 ) -> str:
     """
     Generate meeting ID from file path.
@@ -108,6 +107,7 @@ def generate_meeting_id_from_file(
         Meeting ID string
     """
     from pathlib import Path
+
     path = Path(file_path)
 
     # Use filename (without extension) as channel
@@ -121,9 +121,7 @@ def generate_meeting_id_from_file(
 
 
 def generate_meeting_id_from_url(
-    url: str,
-    source: Optional[str] = None,
-    start_time: Optional[datetime] = None
+    url: str, source: Optional[str] = None, start_time: Optional[datetime] = None
 ) -> str:
     """
     Generate meeting ID from URL.
@@ -142,17 +140,17 @@ def generate_meeting_id_from_url(
 
     # Auto-detect source from URL
     if source is None:
-        if 'meet.google.com' in parsed.netloc:
-            source = 'meet'
-        elif 'zoom.us' in parsed.netloc:
-            source = 'zoom'
-        elif 'discord' in parsed.netloc:
-            source = 'discord'
+        if "meet.google.com" in parsed.netloc:
+            source = "meet"
+        elif "zoom.us" in parsed.netloc:
+            source = "zoom"
+        elif "discord" in parsed.netloc:
+            source = "discord"
         else:
-            source = 'webrtc'
+            source = "webrtc"
 
     # Extract meeting code from path
-    path_parts = parsed.path.strip('/').split('/')
+    path_parts = parsed.path.strip("/").split("/")
     channel = path_parts[-1] if path_parts else _generate_unique_part()
 
     return generate_meeting_id(source, channel, start_time)
@@ -195,7 +193,7 @@ def parse_meeting_id_extended(meeting_id: str) -> MeetingIDComponents:
         ValueError: If meeting ID format is invalid
     """
     # Pattern for extended format with optional seconds and suffix
-    pattern = r'^(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}(?:-\d{2})?)_([^_]+)_([^_]+)(?:_(.+))?$'
+    pattern = r"^(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}(?:-\d{2})?)_([^_]+)_([^_]+)(?:_(.+))?$"
     match = re.match(pattern, meeting_id)
 
     if not match:
@@ -210,11 +208,7 @@ def parse_meeting_id_extended(meeting_id: str) -> MeetingIDComponents:
         start_time = datetime.strptime(timestamp_str, "%Y-%m-%dT%H-%M")
 
     return MeetingIDComponents(
-        start_time=start_time,
-        source=source,
-        channel=channel,
-        suffix=suffix,
-        raw_id=meeting_id
+        start_time=start_time, source=source, channel=channel, suffix=suffix, raw_id=meeting_id
     )
 
 
@@ -253,9 +247,9 @@ def normalize_meeting_id(meeting_id: str) -> str:
 
     # Try to extract components and regenerate
     # This handles cases where the ID might have extra characters
-    cleaned = re.sub(r'[^\w\-T]', '_', meeting_id)
-    cleaned = re.sub(r'_+', '_', cleaned)  # Remove duplicate underscores
-    cleaned = cleaned.strip('_')
+    cleaned = re.sub(r"[^\w\-T]", "_", meeting_id)
+    cleaned = re.sub(r"_+", "_", cleaned)  # Remove duplicate underscores
+    cleaned = cleaned.strip("_")
 
     return cleaned
 
@@ -285,11 +279,11 @@ def get_meeting_folder_path(meeting_id: str, base_dir: str = "./meetings") -> st
 def _sanitize_component(component: str) -> str:
     """Sanitize a component for use in meeting ID."""
     # Replace invalid characters with underscore
-    sanitized = re.sub(r'[^\w-]', '_', component)
+    sanitized = re.sub(r"[^\w-]", "_", component)
     # Remove consecutive underscores
-    sanitized = re.sub(r'_+', '_', sanitized)
+    sanitized = re.sub(r"_+", "_", sanitized)
     # Remove leading/trailing underscores
-    return sanitized.strip('_')
+    return sanitized.strip("_")
 
 
 def _generate_unique_part() -> str:
@@ -302,9 +296,9 @@ def _extract_date_from_filename(filename: str) -> Optional[datetime]:
     """Try to extract date from filename."""
     # Common date patterns in filenames
     patterns = [
-        (r'(\d{4})[-_]?(\d{2})[-_]?(\d{2})[-_T]?(\d{2})[-_:]?(\d{2})', '%Y-%m-%dT%H-%M'),
-        (r'(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})', '%Y%m%d_%H%M'),
-        (r'(\d{4})[-_](\d{2})[-_](\d{2})', '%Y-%m-%d'),
+        (r"(\d{4})[-_]?(\d{2})[-_]?(\d{2})[-_T]?(\d{2})[-_:]?(\d{2})", "%Y-%m-%dT%H-%M"),
+        (r"(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})", "%Y%m%d_%H%M"),
+        (r"(\d{4})[-_](\d{2})[-_](\d{2})", "%Y-%m-%d"),
     ]
 
     for pattern, date_format in patterns:
@@ -314,10 +308,10 @@ def _extract_date_from_filename(filename: str) -> Optional[datetime]:
                 groups = match.groups()
                 if len(groups) >= 5:
                     date_str = f"{groups[0]}-{groups[1]}-{groups[2]}T{groups[3]}-{groups[4]}"
-                    return datetime.strptime(date_str, '%Y-%m-%dT%H-%M')
+                    return datetime.strptime(date_str, "%Y-%m-%dT%H-%M")
                 elif len(groups) >= 3:
                     date_str = f"{groups[0]}-{groups[1]}-{groups[2]}"
-                    return datetime.strptime(date_str, '%Y-%m-%d')
+                    return datetime.strptime(date_str, "%Y-%m-%d")
             except ValueError:
                 continue
 
