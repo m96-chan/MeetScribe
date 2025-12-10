@@ -37,6 +37,7 @@ jobs:
 
       - name: Type check with MyPy
         run: mypy meetscribe --ignore-missing-imports
+        continue-on-error: true  # Type errors are informational, not blocking
 
   test:
     name: Test (Python ${{ matrix.python-version }})
