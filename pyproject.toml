@@ -28,64 +28,64 @@ classifiers = [
 keywords = ["meeting", "transcription", "minutes", "ai", "llm", "audio"]
 
 dependencies = [
-    "pyyaml>=6.0",
-    "python-dotenv>=1.0.0",
-    "click>=8.1.0",
-    "rich>=13.0.0",
-    "tqdm>=4.65.0",
+    "pyyaml>=6.0,<7.0",
+    "python-dotenv>=1.0.0,<2.0.0",
+    "click>=8.1.0,<9.0.0",
+    "rich>=13.0.0,<14.0.0",
+    "tqdm>=4.65.0,<5.0.0",
 ]
 
 [project.optional-dependencies]
 audio = [
-    "pydub>=0.25.1",
-    "ffmpeg-python>=0.2.0",
+    "pydub>=0.25.1,<1.0.0",
+    "ffmpeg-python>=0.2.0,<1.0.0",
 ]
 whisper = [
-    "openai>=1.0.0",
+    "openai>=1.0.0,<2.0.0",
 ]
 faster-whisper = [
-    "faster-whisper>=0.10.0",
+    "faster-whisper>=0.10.0,<2.0.0",
 ]
 gemini = [
-    "google-generativeai>=0.3.0",
+    "google-generativeai>=0.3.0,<1.0.0",
 ]
 deepgram = [
-    "deepgram-sdk>=3.0.0",
+    "deepgram-sdk>=3.0.0,<4.0.0",
 ]
 claude = [
-    "anthropic>=0.18.0",
+    "anthropic>=0.18.0,<1.0.0",
 ]
 google = [
-    "google-auth>=2.0.0",
-    "google-auth-oauthlib>=1.0.0",
-    "google-api-python-client>=2.0.0",
+    "google-auth>=2.0.0,<3.0.0",
+    "google-auth-oauthlib>=1.0.0,<2.0.0",
+    "google-api-python-client>=2.0.0,<3.0.0",
 ]
 pdf = [
-    "reportlab>=4.0.0",
+    "reportlab>=4.0.0,<5.0.0",
 ]
 discord = [
-    "discord.py>=2.3.0",
-    "aiohttp>=3.8.0",
+    "discord.py>=2.3.0,<3.0.0",
+    "aiohttp>=3.8.0,<4.0.0",
 ]
 webrtc = [
-    "aiortc>=1.5.0",
+    "aiortc>=1.5.0,<2.0.0",
 ]
 obs = [
-    "obs-websocket-py>=0.5.0",
+    "obs-websocket-py>=0.5.0,<1.0.0",
 ]
 all = [
-    "meetscribe[audio,whisper,faster-whisper,gemini,deepgram,claude,google,pdf,discord]",
+    "meetscribe[audio,whisper,faster-whisper,gemini,deepgram,claude,google,pdf,discord,webrtc]",
 ]
 dev = [
-    "pytest>=7.4.0",
-    "pytest-cov>=4.1.0",
-    "pytest-asyncio>=0.21.0",
-    "black>=23.0.0",
-    "isort>=5.12.0",
-    "flake8>=6.0.0",
-    "mypy>=1.5.0",
-    "ruff>=0.1.0",
-    "pre-commit>=3.0.0",
+    "pytest>=7.4.0,<9.0.0",
+    "pytest-cov>=4.1.0,<6.0.0",
+    "pytest-asyncio>=0.21.0,<1.0.0",
+    "pytest-mock>=3.12.0,<4.0.0",
+    "black>=23.0.0,<25.0.0",
+    "isort>=5.12.0,<6.0.0",
+    "ruff>=0.1.0,<1.0.0",
+    "mypy>=1.5.0,<2.0.0",
+    "pre-commit>=3.0.0,<4.0.0",
 ]
 
 [project.scripts]
@@ -241,7 +241,7 @@ exclude_lines = [
     "pass",
 ]
 show_missing = true
-# Set to 40% as much code requires API keys to test properly in CI
-# Real API-dependent code is tested in integration tests with real credentials
-# Coverage is higher locally when running with all dependencies installed
-fail_under = 40
+# Set to 60% as a baseline; higher coverage requires mocking external APIs
+# Many providers (Discord, Google, etc.) require real credentials for full testing
+# Coverage target increased from 40% to 60% as part of Issue #240
+fail_under = 60

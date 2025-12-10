@@ -1,36 +1,10 @@
-# Core dependencies
-pyyaml>=6.0
-python-dotenv>=1.0.0
+# MeetScribe Core Dependencies
+# For optional dependencies, use: pip install meetscribe[all]
+# Or specific features: pip install meetscribe[whisper,discord]
 
-# Audio processing
-pydub>=0.25.1
-ffmpeg-python>=0.2.0
-
-# Transcription engines
-openai>=1.0.0  # Whisper API
-faster-whisper>=0.10.0  # Local Whisper
-google-generativeai>=0.3.0  # Gemini
-
-# LLM clients
-anthropic>=0.18.0  # Claude
-
-# Output renderers
-reportlab>=4.0.0  # PDF generation
-google-auth>=2.0.0  # Google Drive/Docs
-google-api-python-client>=2.0.0
-
-# Discord support (optional)
-discord.py>=2.3.0
-py-cord>=2.4.0
-
-# CLI and utilities
-click>=8.1.0
-rich>=13.0.0
-tqdm>=4.65.0
-
-# Development dependencies
-pytest>=7.4.0
-pytest-cov>=4.1.0
-black>=23.0.0
-flake8>=6.0.0
-mypy>=1.5.0
+# Core dependencies (required for basic functionality)
+pyyaml>=6.0,<7.0
+python-dotenv>=1.0.0,<2.0.0
+click>=8.1.0,<9.0.0
+rich>=13.0.0,<14.0.0
+tqdm>=4.65.0,<5.0.0
