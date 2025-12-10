@@ -2,9 +2,12 @@
 Factory for OUTPUT layer renderers.
 """
 
+import logging
 from typing import Any, Dict, List
 
 from ..core.providers import OutputRenderer
+
+logger = logging.getLogger(__name__)
 
 
 def get_output_renderer(format_name: str, config: Dict[str, Any]) -> OutputRenderer:
@@ -54,6 +57,19 @@ def get_output_renderer(format_name: str, config: Dict[str, Any]) -> OutputRende
 
         return DiscordWebhookRenderer(config)
     else:
+        # Try plugin registry as fallback
+        try:
+            from ..core.plugin import PluginRegistry
+
+            registry = PluginRegistry()
+            plugin_class = registry.get_plugin_class(fmt)
+
+            if plugin_class is not None:
+                logger.debug(f"Loading output renderer from plugin: {fmt}")
+                return plugin_class(config)
+        except ImportError:
+            pass
+
         raise ValueError(f"Unsupported output format: {format_name}")
 
 

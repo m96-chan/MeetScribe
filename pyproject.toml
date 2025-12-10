@@ -91,6 +91,20 @@ dev = [
 [project.scripts]
 meetscribe = "meetscribe.cli:main"
 
+# Entry point groups for plugin discovery
+# Third-party plugins can register providers using these groups
+[project.entry-points."meetscribe.plugins.input"]
+# Example: custom-input = "my_package:CustomInputProvider"
+
+[project.entry-points."meetscribe.plugins.converter"]
+# Example: custom-stt = "my_package:CustomConverter"
+
+[project.entry-points."meetscribe.plugins.llm"]
+# Example: custom-llm = "my_package:CustomLLMProvider"
+
+[project.entry-points."meetscribe.plugins.output"]
+# Example: custom-output = "my_package:CustomRenderer"
+
 [project.urls]
 Homepage = "https://github.com/m96-chan/MeetScribe"
 Documentation = "https://github.com/m96-chan/MeetScribe#readme"
