@@ -56,11 +56,11 @@ ENV PATH="/opt/venv/bin:$PATH" \
 RUN mkdir -p /app/meetings && \
     chown -R meetscribe:meetscribe /app/meetings
 
+# Install meetscribe package (before switching to non-root user)
+RUN pip install --no-cache-dir .
+
 # Switch to non-root user
 USER meetscribe
-
-# Install meetscribe package
-RUN pip install --no-cache-dir -e .
 
 # Volume for meeting data persistence
 VOLUME ["/app/meetings"]
